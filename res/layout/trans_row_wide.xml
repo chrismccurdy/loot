@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" android:orientation="horizontal">
+    
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" android:id="@+id/IdText"></TextView><CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"></CheckBox>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2008-10-01" android:layout_weight="2" android:id="@+id/DateText"></TextView>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Wilmington Trust Company" android:layout_weight="10" android:id="@+id/PartyText"></TextView>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="215.00" android:layout_weight="2" android:gravity="right" android:id="@+id/AmountText"></TextView>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/BalanceText" android:text="1000.00" android:gravity="right" android:visibility="gone"></TextView>
+
+</TableRow>
