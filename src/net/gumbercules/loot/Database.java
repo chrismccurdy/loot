@@ -11,6 +11,11 @@ public class Database
 	
 	public Database()
 	{
+		openDB();
+	}
+	
+	private void openDB()
+	{
 		// if the database is already set, we don't need to open it again
 		if ( lootDB != null )
 			return;
@@ -51,6 +56,10 @@ public class Database
 	
 	public static SQLiteDatabase getDatabase()
 	{
+		if ( lootDB == null )
+		{
+			Database db = new Database();
+		}
 		return lootDB;
 	}
 	

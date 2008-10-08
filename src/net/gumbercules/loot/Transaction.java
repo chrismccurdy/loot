@@ -88,4 +88,39 @@ public class Transaction
 	{
 		return tags.split(" ");
 	}
+	
+	public int write( int account_num )
+	{
+		return -1;
+	}
+	
+	public boolean update( int account_num )
+	{
+		return true;
+	}
+	
+	public boolean post( boolean p )
+	{
+		return true;
+	}
+	
+	public boolean erase()
+	{
+		return true;
+	}
+	
+	public static String[] getAllTags()
+	{
+		return null;
+	}
+	
+	public static String[] getAllParties()
+	{
+		return null;
+	}
+	
+	public boolean getTags()
+	{
+		return true;
+	}
 }
