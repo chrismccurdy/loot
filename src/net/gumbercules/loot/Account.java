@@ -5,6 +5,7 @@ public class Account
 	int id;
 	String name;
 	double initialBalance;
+	private static int currentAccount;
 	private double actual_balance;
 	private double posted_balance;
 	private double budget_balance;
@@ -17,11 +18,6 @@ public class Account
 	public int write()
 	{
 		return -1;
-	}
-	
-	public boolean update()
-	{
-		return true;
 	}
 	
 	public boolean erase()
@@ -46,12 +42,24 @@ public class Account
 	
 	public static Account getLastUsedAccount()
 	{
+		Account acct = new Account();
+		acct.id = Database.getOptionInt("last_used");
 		return null;
 	}
 	
 	public boolean setLastUsed()
 	{
-		return true;
+		return Database.setOption("last_used", this.id);
+	}
+	
+	public static int getCurrentAccountNum()
+	{
+		return currentAccount;
+	}
+	
+	public void setCurrentAccountNum()
+	{
+		currentAccount = this.id;
 	}
 	
 	public static String[] getAccountNames()

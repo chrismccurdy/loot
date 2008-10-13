@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="app_name">BANK</string>
+    <string name="app_name">loot</string>
 
-<string name="balance"><b>Balance:</b>
-$0.00</string>
+
+<string name="search_text">Search...</string>
 </resources>

@@ -3,6 +3,10 @@ package net.gumbercules.loot;
 import java.util.Date;
 import java.util.ArrayList;
 
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.*;
+
 public class Transaction
 {
 	public static final int DEPOSIT		= 0;
@@ -93,14 +97,11 @@ public class Transaction
 	{
 		return -1;
 	}
-	
-	public boolean update( int account_num )
-	{
-		return true;
-	}
-	
+		
 	public boolean post( boolean p )
 	{
+		this.posted = p;
+		
 		return true;
 	}
 	
@@ -111,12 +112,50 @@ public class Transaction
 	
 	public static String[] getAllTags()
 	{
-		return null;
+		SQLiteDatabase lootDB;
+		try
+		{
+			lootDB = Database.getDatabase();
+		}
+		catch ( SQLException e )
+		{
+			return null;
+		}
+		
+		String[] columns = {"distinct name"};
+		Cursor cur = lootDB.query("tags", columns, null, null, null, "name ASC", null);
+		ArrayList<String> tags = new ArrayList<String>();
+		
+		do
+		{
+			tags.add(cur.getString(0));
+		} while (cur.moveToNext());
+		
+		return (String[])tags.toArray();
 	}
 	
 	public static String[] getAllParties()
 	{
-		return null;
+		SQLiteDatabase lootDB;
+		try
+		{
+			lootDB = Database.getDatabase();
+		}
+		catch (SQLException e)
+		{
+			return null;
+		}
+		
+		String[] columns = {"distinct party"};
+		Cursor cur = lootDB.query("transactions", columns, null, null, null, "party ASC", null);
+		ArrayList<String> parties = new ArrayList<String>();
+		
+		do
+		{
+			parties.add(cur.getString(0));
+		} while (cur.moveToNext());
+		
+		return (String[])parties.toArray();
 	}
 	
 	public boolean getTags()
