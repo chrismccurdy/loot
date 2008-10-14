@@ -2,9 +2,7 @@ package net.gumbercules.loot;
 
 import java.util.Date;
 import java.util.ArrayList;
-
-import android.database.Cursor;
-import android.database.SQLException;
+import android.database.*;
 import android.database.sqlite.*;
 
 public class Transaction
@@ -13,7 +11,7 @@ public class Transaction
 	public static final int WITHDRAW	= 1;
 	public static final int CHECK		= 2;
 	
-	int id;
+	private int id;
 	int account;
 	boolean posted;
 	boolean budget;
@@ -93,6 +91,11 @@ public class Transaction
 		return tags.split(" ");
 	}
 	
+	public int getID()
+	{
+		return this.id;
+	}
+	
 	public int write( int account_num )
 	{
 		return -1;
@@ -100,8 +103,8 @@ public class Transaction
 		
 	public boolean post( boolean p )
 	{
-		this.posted = p;
 		
+		this.posted = p;
 		return true;
 	}
 	
@@ -158,8 +161,16 @@ public class Transaction
 		return (String[])parties.toArray();
 	}
 	
-	public boolean getTags()
+	public void loadTags()
 	{
-		return true;
+		SQLiteDatabase lootDB = Database.getDatabase();
+		String[] columns = {"name"};
+		String[] sArgs = {Integer.toString(this.id)};
+		Cursor cur = lootDB.query("tags", columns, "trans_id = ?", sArgs, null, null, null);
+		
+		do
+		{
+			this.tags.add(cur.getString(0));
+		} while (cur.moveToNext());
 	}
 }

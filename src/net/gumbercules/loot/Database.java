@@ -1,7 +1,6 @@
 package net.gumbercules.loot;
 
-import android.database.SQLException;
-import android.database.Cursor;
+import android.database.*;
 import android.database.sqlite.*;
 
 public class Database
