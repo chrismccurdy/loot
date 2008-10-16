@@ -1,6 +1,7 @@
 package net.gumbercules.loot;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.database.*;
 import android.database.sqlite.*;
@@ -296,5 +297,10 @@ public class Account
 			check_num += 1;
 		
 		return check_num;
+	}
+	
+	public boolean setLastTransactionDate( Date d )
+	{
+		return false;
 	}
 }
