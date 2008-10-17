@@ -156,7 +156,7 @@ public class Account
 	public static Account getLastUsedAccount()
 	{
 		Account acct = new Account();
-		acct.loadById( Database.getOptionInt("last_used") );
+		acct.loadById( (int)Database.getOptionInt("last_used") );
 		return acct;
 	}
 	
@@ -301,6 +301,11 @@ public class Account
 	
 	public boolean setLastTransactionDate( Date d )
 	{
-		return false;
+		return Database.setOption("last_trans_" + this.id, d.getTime());
+	}
+	
+	public long getLastTransactionDate()
+	{
+		return Database.getOptionInt("last_trans_" + this.id);
 	}
 }

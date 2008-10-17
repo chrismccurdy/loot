@@ -209,7 +209,7 @@ public class Database
 		return privSetOption(option, value);
 	}
 	
-	public static boolean setOption( String option, int value )
+	public static boolean setOption( String option, long value )
 	{
 		return privSetOption(option, value);
 	}
@@ -235,8 +235,15 @@ public class Database
 		return cursorGetOption(option).getString(0);
 	}
 	
-	public static int getOptionInt( String option )
+	public static long getOptionInt( String option )
 	{
-		return cursorGetOption(option).getInt(0);
+		return cursorGetOption(option).getLong(0);
+	}
+	
+	public static boolean getBoolean( int b )
+	{
+		if (b == 0)
+			return false;
+		return true;
 	}
 }
