@@ -160,12 +160,27 @@ public class Account
 		return acct;
 	}
 	
-	public void loadById(int id)
+	public boolean loadById(int id)
 	{
-		Account acct = Account.getAccountById(id);
-		this.id = acct.id;
-		this.name = acct.name;
-		this.initialBalance = acct.initialBalance;
+		SQLiteDatabase lootDB;
+		try
+		{
+			lootDB = Database.getDatabase();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		
+		String[] columns = {"id", "name", "balance"};
+		String[] sArgs = {Integer.toString(id)};
+		Cursor cur = lootDB.query("accounts", columns, "id = ? and purged = 0", sArgs,
+				null, null, null, "LIMIT 1");
+		this.id = cur.getInt(0);
+		this.name = cur.getString(1);
+		this.initialBalance = cur.getDouble(2);
+		
+		return true;
 	}
 	
 	public boolean setLastUsed()
@@ -264,25 +279,8 @@ public class Account
 	
 	public static Account getAccountById( int id )
 	{
-		SQLiteDatabase lootDB;
-		try
-		{
-			lootDB = Database.getDatabase();
-		}
-		catch (SQLException e)
-		{
-			return null;
-		}
-		
-		String[] columns = {"id", "name", "balance"};
-		String[] sArgs = {Integer.toString(id)};
-		Cursor cur = lootDB.query("accounts", columns, "id = ? and purged = 0", sArgs,
-				null, null, null, "LIMIT 1");
 		Account acct = new Account();
-		acct.id = cur.getInt(0);
-		acct.name = cur.getString(1);
-		acct.initialBalance = cur.getDouble(2);
-		
+		acct.loadById(id);
 		return acct;
 	}
 

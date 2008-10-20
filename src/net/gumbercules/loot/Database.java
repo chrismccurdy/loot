@@ -152,6 +152,7 @@ public class Database
 		return false;
 	}
 	
+	@SuppressWarnings("unused")
 	public static SQLiteDatabase getDatabase()
 	{
 		if ( lootDB == null )
@@ -167,6 +168,7 @@ public class Database
 		lootDB = null;
 	}
 	
+	@SuppressWarnings("unused")
 	private static boolean privSetOption( Object option, Object value )
 	{
 		Object dummy = getOptionString( (String)option );
@@ -214,6 +216,7 @@ public class Database
 		return privSetOption(option, value);
 	}
 	
+	@SuppressWarnings("unused")
 	private static Cursor cursorGetOption( String option )
 	{
 		try

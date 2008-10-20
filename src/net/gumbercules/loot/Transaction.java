@@ -99,9 +99,9 @@ public class Transaction
 		return i;
 	}
 	
-	public String tagListToString( String[] tags )
+	public String tagListToString()
 	{
-		if ( tags.length == 0 )
+		if ( tags.size() == 0 )
 			return null;
 		
 		String tag_str = new String();
@@ -111,7 +111,16 @@ public class Transaction
 		return tag_str;
 	}
 	
-	public String[] tagStringToList( String tags )
+	public String[] getTagList()
+	{
+		String[] tagList = new String[tags.size()];
+		for ( int i = 0; i < tagList.length; ++i )
+			tagList[i] = tags.get(i);
+		
+		return tagList;
+	}
+	
+	private String[] tagStringToList( String tags )
 	{
 		return tags.split(" ");
 	}
@@ -459,14 +468,32 @@ public class Transaction
 		return trans;
 	}
 	
-	public int transfer(Account acct1, Account acct2)
+	public int transfer(Account acct2)
 	{
+		Account acct1 = Account.getAccountById(this.account);
 		if ( acct1 == null || acct2 == null )
 			return -1;
 	
 		String detail1, detail2;
-		Transaction trans2 = new Transaction(this, false);
 		
+		// check to see if we're updating a transfer or creating a new one
+		int trans_id2 = getTransferId();
+		Transaction trans2, old_trans = null;
+		trans2 = new Transaction(this, false);
+		boolean purged = false, update = false;
+		
+		if (trans_id2 > -1)
+		{
+			trans2.id = trans_id2;
+			update = true;
+			old_trans = Transaction.getTransactionById(trans_id2, false);
+			if (old_trans == null)
+			{
+				purged = true;
+				old_trans = Transaction.getTransactionById(trans_id2, true);
+			}
+		}
+
 		if ( this.type == Transaction.DEPOSIT )
 		{
 			detail1 = "from ";
@@ -490,38 +517,82 @@ public class Transaction
 		trans2.party = "Transfer " + detail2 + acct1.name;
 		int transfer_id = trans2.write(acct2.id());
 		
-		// make sure both transfers succeeded and link them together
-		if (( ret > -1 && transfer_id > -1 ) && linkTransfer(ret, transfer_id))
+		// update the initialBalance of the secondary account if the transaction was purged
+		if (update && purged)
 		{
-			lootDB.setTransactionSuccessful();
+			double a, b;
+			if (trans2.type == Transaction.WITHDRAW)
+			{
+				a = old_trans.amount;
+				b = trans2.amount;
+			}
+			else
+			{
+				a = trans2.amount;
+				b = old_trans.amount;
+			}
+			
+			acct2.initialBalance += a - b;
+			acct2.write();
+			
+			if (ret > -1 && transfer_id > -1)
+			{
+				lootDB.setTransactionSuccessful();
+			}
 		}
 		else
 		{
-			ret = -1;
+			// make sure both transfers succeeded and link them together
+			if (( ret > -1 && transfer_id > -1 ) && linkTransfer(ret, transfer_id))
+			{
+				lootDB.setTransactionSuccessful();
+			}
+			else
+			{
+				ret = -1;
+			}
 		}
-		
+			
 		lootDB.endTransaction();
 		
 		return ret;
 	}
 	
-	/* possibly unnecessary with the change of write() to write both new and updated transactions
-	 * 
-	public boolean updateTransfer(Account acct1, Account acct2)
-	{
-		return true;
-	}*/
-	
 	public boolean eraseTransfer()
 	{
-		Transaction trans2 = Transaction.getTransactionById(getTransferId());
+		Transaction trans2 = Transaction.getTransactionById(getTransferId(), false);
 		boolean purged = false;
 		if ( trans2 == null )
 		{
 			purged = true;
-			
+			trans2 = Transaction.getTransactionById(getTransferId(), true);
 		}
-		return true;
+		if ( trans2 == null )
+		{
+			// remove the transfer link because the linked transaction no longer exists
+			trans2 = new Transaction();
+			removeTransfer(trans2);
+			return false;
+		}
+		if ( !this.erase() || !trans2.erase() )
+		{
+			return false;
+		}
+		
+		// if the second transaction has been purged, update the account balance accordingly
+		if (purged)
+		{
+			Account acct2 = Account.getAccountById(trans2.account);
+			double amt = trans2.amount;
+			if ( trans2.type == Transaction.WITHDRAW )
+			{
+				amt = -trans2.amount;
+			}
+			acct2.initialBalance -= amt;
+			acct2.write();
+		}
+		
+		return removeTransfer(trans2);
 	}
 	
 	private boolean linkTransfer(int id1, int id2)
@@ -584,6 +655,15 @@ public class Transaction
 	
 	public int getTransferId()
 	{
-		return -1;
+		SQLiteDatabase lootDB = Database.getDatabase();
+		String[] columns = {"trans_id1", "trans_id2"};
+		String selection = "trans_id1 = " + this.id + " or trans_id2 = " + this.id;
+		Cursor cur = lootDB.query("transfers", columns, selection, null, null, null, null);
+
+		int ret = -1;
+		if (cur.getCount() > 0)
+			ret = cur.getInt(0);
+		cur.close();
+		return ret;
 	}
 }
