@@ -44,7 +44,7 @@ implements Cloneable
 		this.due = null;
 		this.start = null;
 		this.end = null;
-		this.iter = -1;
+		this.iter = NO_REPEAT;
 		this.freq = -1;
 		this.custom = -1;
 	}
@@ -146,7 +146,7 @@ implements Cloneable
 	{
 		if (this.iter == NO_REPEAT)
 		{
-			this.erase();
+			this.erase(true);
 			return -1;
 		}
 
@@ -185,7 +185,7 @@ implements Cloneable
 		}
 		
 		// instead of trying to update the row, delete it and copy over the updated transaction
-		if (!this.eraseTransactionFromRepeatTable(true))
+		if (!this.eraseTransactionFromRepeatTable(repeat_id2))
 		{
 			lootDB.endTransaction();
 		}
@@ -214,39 +214,158 @@ implements Cloneable
 		return this.id;
 	}
 	
-	public boolean erase()
+	public boolean erase(boolean eraseTransfers)
 	{
-		return false;
+		Transaction trans = Transaction.getTransactionById(this.getTransactionId());
+		int repeat_id2 = -1;
+		if (eraseTransfers)
+		{
+			int trans_id2 = trans.getTransferId();
+			if (trans_id2 != -1)
+				repeat_id2 = RepeatSchedule.getRepeatId(trans_id2);
+		}
+		
+		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
+		
+		boolean ret = false;
+		if (this.erasePattern(repeat_id2) && this.eraseTransactionFromRepeatTable(repeat_id2))
+		{
+			ret = true;
+			lootDB.setTransactionSuccessful();
+		}
+		
+		lootDB.endTransaction();
+
+		return ret;
 	}
 	
-	private boolean erasePattern(boolean eraseTransfers)
+	private boolean erasePattern(int repeat_id2)
 	{
-		return false;
+		String del = "delete from repeat_pattern where id = " + this.id;
+		if (repeat_id2 != -1)
+			del += " or id = " + repeat_id2;
+		
+		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
+		
+		try
+		{
+			lootDB.execSQL(del);
+			lootDB.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		finally
+		{
+			lootDB.endTransaction();
+		}
+		
+		return true;
 	}
 	
 	public boolean load(int repeat_id)
 	{
-		return false;
+		String[] columns = {"start_date", "end_date", "iterator", "frequency", "custom", "due"};
+		
+		SQLiteDatabase lootDB = Database.getDatabase();
+		Cursor cur = lootDB.query("repeat_pattern", columns, "id = " + repeat_id, null, null, null, null);
+		
+		boolean ret = false;
+		if (cur.getCount() != 0)
+		{
+			double end = cur.getLong(1);
+			this.start = new Date(cur.getLong(0));
+			
+			if (end > 0)
+				this.end = new Date(cur.getLong(1));
+			else
+				this.end = null;
+			
+			this.iter = cur.getInt(2);
+			this.freq = cur.getInt(3);
+			this.custom = cur.getInt(4);
+			this.due = new Date(cur.getLong(5));
+			
+			ret = true;
+		}
+		
+		cur.close();
+		return ret;
+	}
+	
+	private static int getId(String column, String where, String[] wArgs)
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		String[] columns = {column};
+		
+		Cursor cur = lootDB.query("repeat_transactions", columns, where, wArgs, null, null, null);
+		
+		int ret = -1;
+		if (cur.getCount() != 0)
+			ret = cur.getInt(0);
+
+		cur.close();
+		return ret;
 	}
 	
 	public static int getRepeatId(int trans_id)
 	{
-		return -1;
+		return getId("repeat_id", "trans_id = " + trans_id, null);
 	}
 	
 	public static RepeatSchedule getSchedule(int repeat_id)
 	{
+		RepeatSchedule rs = new RepeatSchedule();
+		if (rs.load(repeat_id))
+			return rs;
+		
 		return null;
 	}
 	
 	public int getTransactionId()
 	{
-		return -1;
+		return getId("trans_id", "repeat_id = " + this.id, null);
 	}
 	
 	public Transaction getTransaction()
 	{
-		return null;
+		String[] columns = {"account", "date", "party", "amount", "check_num", "budget", "tags"};
+		SQLiteDatabase lootDB = Database.getDatabase();
+		Cursor cur = lootDB.query("repeat_transactions", columns, "repeat_id = " + this.id,
+				null, null, null, null);
+		
+		Transaction trans = null;
+		if (cur.getCount() != 0)
+		{
+			int type, check_num = cur.getInt(4);
+			double amount = cur.getInt(3);
+			boolean budget = Database.getBoolean(cur.getInt(5));
+			Date date = new Date(cur.getLong(1));
+			
+			if (check_num > 0)
+			{
+				amount = -amount;
+				type = Transaction.CHECK;
+			}
+			else if (amount < 0.0)
+			{
+				amount = -amount;
+				type = Transaction.WITHDRAW;
+			}
+			else
+				type = Transaction.DEPOSIT;
+			
+			trans = new Transaction(false, budget, date, type, cur.getString(2), amount, check_num);
+			trans.account = cur.getInt(0);
+			
+			trans.addTags(cur.getString(6));
+		}
+		
+		cur.close();
+		return trans;
 	}
 	
 	public String[] getTags()
@@ -254,14 +373,37 @@ implements Cloneable
 		return null;
 	}
 	
+	private static int[] getIds(String where, String[] wArgs)
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		
+		String[] columns = {"id"};
+		Cursor cur = lootDB.query("repeat_pattern", columns, where, wArgs, null, null, null);
+		
+		int[] ids = new int[cur.getCount()];
+		int i = 0;
+		do
+		{
+			// get the id and increment i when done
+			ids[i++] = cur.getInt(0);
+		} while (cur.moveToNext());
+		
+		// if there are no ids, return null instead of a zero-length list
+		if (ids.length == 0)
+			ids = null;
+
+		return ids;		
+	}
+	
 	public static int[] getRepeatIds()
 	{
-		return null;
+		return getIds(null, null);
 	}
 	
 	public static int[] getDueRepeatIds(Date date)
 	{
-		return null;
+		String[] wArgs = {Double.toString(date.getTime())};
+		return getIds("due <= ", wArgs);
 	}
 	
 	public static int[] processDueRepetitions(Date date)
@@ -271,7 +413,68 @@ implements Cloneable
 	
 	public int writeTransaction(Date date)
 	{
-		return -1;
+		if (date == null)
+			return -1;
+		
+		int trans_id = this.getTransactionId();
+		
+		// have to retrieve the next check num first because android sqlite api
+		// doesn't allow for the creation of sqlite functions
+		Transaction trans = this.getTransaction();
+		int next_check_num = 0;
+		if (trans.check_num > 0)
+		{
+			Account acct = Account.getAccountById(trans.account);
+			next_check_num = acct.getNextCheckNum();
+		}
+		
+		// insert the transaction into the transactions table
+		String insert = "insert into transactions (account,date,party,amount,check_num,timestamp) " +
+						"select account," + date.getTime() + ",party,amount," + next_check_num +
+						",strftime('%%s','now') from repeat_transactions where repeat_id = " + this.id;
+		
+		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
+		
+		try
+		{
+			lootDB.execSQL(insert);
+		}
+		catch (SQLException e)
+		{
+			lootDB.endTransaction();
+			return -1;
+		}
+
+		// retrieve the new id for this row
+		String[] columns = {"max(id)"};
+		Cursor cur = lootDB.query("transactions", columns, null, null, null, null, null);
+		int max = cur.getInt(0);
+		
+		// update any repeat_transactions rows that refer to this transaction as the transfer_id
+		String update = "update repeat_transactions set transfer_id = " + max +
+						" where transfer_id = " + trans_id;
+		
+		try
+		{
+			lootDB.execSQL(update);
+		}
+		catch (SQLException e)
+		{
+			lootDB.endTransaction();
+			return -1;
+		}
+		
+		// write the tags to the tags table for the new transaction
+		trans = Transaction.getTransactionById(max);
+		trans.addTags(this.getTags());
+		
+		int ret = trans.write(trans.account);
+		if (ret != -1)
+			lootDB.setTransactionSuccessful();
+		lootDB.endTransaction();
+		
+		return ret;
 	}
 	
 	public boolean writeTransactionToRepeatTable(int trans_id)
@@ -330,17 +533,8 @@ implements Cloneable
 		return true;
 	}
 	
-	public boolean eraseTransactionFromRepeatTable(boolean delete_transfers)
+	public boolean eraseTransactionFromRepeatTable(int repeat_id2)
 	{
-		Transaction trans = Transaction.getTransactionById(this.getTransactionId());
-		int repeat_id2 = -1;
-		if (delete_transfers)
-		{
-			int trans_id2 = trans.getTransferId();
-			if (trans_id2 != -1)
-				repeat_id2 = RepeatSchedule.getRepeatId(trans_id2);
-		}
-		
 		String del = "delete from repeat_transactions where repeat_id = " + this.id;
 		if (repeat_id2 != -1)
 			del += " or repeat_id = " + repeat_id2;
