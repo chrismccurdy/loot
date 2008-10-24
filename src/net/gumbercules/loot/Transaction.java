@@ -595,7 +595,7 @@ public class Transaction
 		return removeTransfer(trans2);
 	}
 	
-	private boolean linkTransfer(int id1, int id2)
+	protected boolean linkTransfer(int id1, int id2)
 	{
 		if (!removeTransfer(Transaction.getTransactionById(id2)))
 		{

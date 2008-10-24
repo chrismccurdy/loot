@@ -1,7 +1,9 @@
 package net.gumbercules.loot;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ArrayList;
 
 import android.database.*;
 import android.database.sqlite.*;
@@ -63,7 +65,7 @@ implements Cloneable
 	protected Object clone()
 	throws CloneNotSupportedException
 	{
-		return (RepeatSchedule)super.clone();
+		return super.clone();
 	}
 	
 	public int write(int trans_id)
@@ -85,7 +87,10 @@ implements Cloneable
 		{
 			end_time = this.end.getTime();
 		}
-		catch (Exception e) { }
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		
 		String insert = "insert into repeat_pattern (start_date,end_date,iterator,frequency," +
 						"custom,due values (" + start_time + "," + end_time + "," + this.iter +
@@ -155,7 +160,10 @@ implements Cloneable
 		{
 			end_time = this.end.getTime();
 		}
-		catch (Exception e) { }
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		Transaction trans = Transaction.getTransactionById(trans_id);
 		int trans_id2 = trans.getTransferId();
@@ -330,6 +338,11 @@ implements Cloneable
 		return getId("trans_id", "repeat_id = " + this.id, null);
 	}
 	
+	public int getTransferId()
+	{
+		return -1;
+	}
+	
 	public Transaction getTransaction()
 	{
 		String[] columns = {"account", "date", "party", "amount", "check_num", "budget", "tags"};
@@ -408,7 +421,99 @@ implements Cloneable
 	
 	public static int[] processDueRepetitions(Date date)
 	{
-		return null;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		// if we post repetitions early, set the date passed in the future
+		int early_days = (int)Database.getOptionInt("post_repeats_early");
+		if (early_days >= 0)
+			cal.add(Calendar.DAY_OF_YEAR, early_days);
+		
+		int[] ids = getDueRepeatIds(cal.getTime());
+		if (ids == null)
+			return null;
+		
+		ArrayList<Integer> new_trans_ids = new ArrayList<Integer>();
+		ArrayList<Integer> ret_list = null;
+		
+		RepeatSchedule pattern = new RepeatSchedule();
+		ArrayList<Integer> new_ids = new ArrayList<Integer>();
+		
+		int i, id;
+		for (i = 0; i < ids.length; ++i)
+		{
+			id = ids[i];
+			pattern.load(id);
+			
+			// write the transaction
+			int trans_id = pattern.writeTransaction(pattern.due);
+			if (trans_id != -1)
+			{
+				new_trans_ids.add(trans_id);
+				
+				int transfer_id = pattern.getTransferId();
+				if (transfer_id != -1)
+				{
+					Transaction transfer = Transaction.getTransactionById(transfer_id);
+					if (transfer.getTransferId() == transfer_id)
+						transfer.linkTransfer(trans_id, transfer_id);
+				}
+			}
+
+			try
+			{
+				// clone this schedule, then delete it
+				RepeatSchedule new_repeat = (RepeatSchedule) pattern.clone();
+				pattern.erase(false);
+
+				// change the start date and write a new repeat pattern
+				new_repeat.start = (Date)new_repeat.due.clone();
+				new_repeat.id = -1;
+				int repeat_id = new_repeat.write(id);
+
+				// if the write was successful, add it to the list of newly created ids
+				if (repeat_id != -1)
+					new_ids.add(repeat_id);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
+		// if there were new ids in this run, add them to the list of ids to return
+		if (new_ids.size() != 0)
+		{
+			int[] more_trans_ids = processDueRepetitions(date);
+			if (more_trans_ids != null)
+			{
+				// make a new list out of new_trans_ids and more_trans_ids
+				ret_list = new ArrayList<Integer>();
+				ret_list.addAll(new_trans_ids);
+				for ( Integer val : more_trans_ids )
+					ret_list.add(val);
+			}
+			else
+				// if there were no new ids while processing more repetitions,
+				// set the ret_list to the new ids gained from this run
+				ret_list = new_trans_ids;
+		}
+		else
+		{
+			ret_list = new_trans_ids;
+		}
+		
+		if (ret_list == null)
+			return null;
+		
+		// convert ret_list to int[]
+		int[] arr = new int[ret_list.size()];
+		i = 0;
+		for ( int val : ret_list )
+			arr[i++] = val;
+		Arrays.sort(arr);
+		
+		return arr;
 	}
 	
 	public int writeTransaction(Date date)
