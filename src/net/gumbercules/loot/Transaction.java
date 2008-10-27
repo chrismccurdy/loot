@@ -26,6 +26,14 @@ public class Transaction
 	{
 		this.id = -1;
 		this.account = -1;
+		this.posted = false;
+		this.budget = false;
+		this.date = null;
+		this.type = WITHDRAW;
+		this.amount = 0.00;
+		this.check_num = -1;
+		this.party = null;
+		this.tags = new ArrayList<String>();
 	}
 	
 	public Transaction( boolean po, boolean b, Date d, int t, String pa, double a, int c )

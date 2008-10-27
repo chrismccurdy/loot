@@ -1,13 +1,29 @@
 package net.gumbercules.loot;
 
-import android.app.Activity;
+import java.util.ArrayList;
+
+import android.app.ListActivity;
 import android.os.Bundle;
 
-public class Loot extends Activity {
+public class Loot extends ListActivity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        ArrayList<Transaction> transList = new ArrayList<Transaction>();
+        Transaction t;
+        for (int i=0; i<10;++i)
+        {
+	        t = new Transaction(false, false, new java.util.Date(), Transaction.CHECK, "Test 1", 5.25, 1001);
+	        transList.add(t);
+	        t = new Transaction(false, false, new java.util.Date(), Transaction.DEPOSIT, "Test 2", 25.20, 1001);
+	        transList.add(t);
+	        t = new Transaction(true, false, new java.util.Date(), Transaction.WITHDRAW, "Test 3", 15.00, 1001);
+	        transList.add(t);
+        }
+	    TransactionAdapter ta = new TransactionAdapter(this, R.layout.trans_row_narrow, transList);
+        this.setListAdapter(ta);
     }
 }

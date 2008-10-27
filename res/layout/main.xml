@@ -4,20 +4,16 @@
     android:layout_height="fill_parent" android:orientation="vertical">
 
 
-<LinearLayout android:layout_height="wrap_content" android:id="@+id/SearchLayout" android:layout_width="fill_parent">
-
-
-<AutoCompleteTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/SearchEdit" android:text="@string/search_text" android:textColor="#999999"></AutoCompleteTextView>
-<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ClearButton"></ImageButton>
-</LinearLayout>
 
 
 
 
-<ScrollView android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/TransactionView" android:layout_weight="2"><TableLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/TransactionTable"></TableLayout></ScrollView><LinearLayout android:layout_height="wrap_content" android:id="@+id/BalanceLayout" android:layout_width="fill_parent">
+
+<ListView android:layout_height="wrap_content" android:id="@android:id/list" android:layout_width="fill_parent" android:layout_weight="100"></ListView><LinearLayout android:layout_height="wrap_content" android:id="@+id/BalanceLayout" android:layout_width="fill_parent">
 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText1" android:singleLine="false" android:text="Posted: $0.00" android:lines="2" android:gravity="top|left"></TextView><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText2" android:singleLine="false" android:lines="2" android:text="Balance: $0.00" android:gravity="top|center_horizontal"></TextView>
 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText3" android:singleLine="false" android:lines="2" android:text="Budget: $0.00" android:gravity="top|right"></TextView>
 </LinearLayout>
+
 
 
 </LinearLayout>

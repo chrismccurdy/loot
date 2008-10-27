@@ -6,7 +6,7 @@
 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" android:id="@+id/IdText"></TextView><CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"></CheckBox>
 
 <TextView android:layout_width="wrap_content" android:layout_weight="10" android:id="@+id/PartyText" android:ellipsize="end" android:singleLine="false" android:gravity="top|left" android:layout_height="fill_parent" android:text="Wilmington Trust Company" android:lines="2" android:layout_gravity="left|center_vertical"></TextView>
-<TextView android:layout_width="wrap_content" android:text="215.00" android:gravity="right" android:id="@+id/AmountText" android:layout_weight="4" android:layout_height="fill_parent"></TextView>
+<TextView android:layout_width="wrap_content" android:text="215.00" android:gravity="right" android:id="@+id/AmountText" android:layout_weight="4" android:layout_height="fill_parent" android:paddingRight="7px"></TextView>
 
 
 </TableRow>
