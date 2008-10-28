@@ -81,7 +81,7 @@ public class TransactionAdapter extends ArrayAdapter
 		
 		// change the numbers to the locale currency format
 		NumberFormat nf = NumberFormat.getCurrencyInstance();
-		String amountStr = nf.format(trans.amount);
+		String amountStr = nf.format(Math.abs(trans.amount));
 		
 		// if we're in a portrait view, add the date below the party
 		if (rowResId == R.layout.trans_row_narrow)

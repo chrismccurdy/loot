@@ -6,11 +6,18 @@ import android.database.*;
 import android.database.sqlite.*;
 
 public class Transaction
+	implements Comparable<Transaction>
 {
 	public static final int DEPOSIT		= 0;
 	public static final int WITHDRAW	= 1;
 	public static final int CHECK		= 2;
 	
+	public static final int COMP_DATE	= 0;
+	public static final int COMP_AMT	= 1;
+	public static final int COMP_PARTY	= 2;
+	
+	private int comp = COMP_DATE;
+		
 	private int id;
 	int account;
 	private boolean posted;
@@ -672,6 +679,97 @@ public class Transaction
 		if (cur.getCount() > 0)
 			ret = cur.getInt(0);
 		cur.close();
+		return ret;
+	}
+
+	public void setComparator(int comp)
+	{
+		if (this.comp == COMP_DATE || this.comp == COMP_PARTY || this.comp == COMP_AMT)
+			this.comp = comp;
+	}
+	
+	private int compareDates(Transaction t2)
+	{
+		return this.date.compareTo(t2.date);
+	}
+	
+	private int compareAmounts(Transaction t2)
+	{
+		double a = this.amount,
+			b = t2.amount;
+		int alb = 0, agb = 0;
+		if (a < b)
+			alb = 1;
+		if (a > b)
+			agb = 1;
+		return alb - agb;
+	}
+	
+	private int compareParties(Transaction t2)
+	{
+		return this.party.compareTo(t2.party);
+	}
+	
+	private int compareIds(Transaction t2)
+	{
+		int a = this.id,
+			b = t2.id;
+		
+		int alb = 0, agb = 0;
+		if (a > b)
+			agb = 1;
+		if (a < b)
+			alb = 1;
+		return agb - alb;
+	}
+
+	public int compareTo(Transaction t2)
+	{
+		int ret = 0;
+		
+		if (this.comp == COMP_DATE)
+		{
+			ret = this.compareDates(t2);
+			if (ret == 0)
+			{
+				ret = this.compareAmounts(t2);
+				if (ret == 0)
+				{
+					ret = this.compareParties(t2);
+					if (ret == 0)
+						ret = this.compareIds(t2);
+				}
+			}
+		}
+		else if (this.comp == COMP_AMT)
+		{
+			ret = this.compareAmounts(t2);
+			if (ret == 0)
+			{
+				ret = this.compareParties(t2);
+				if (ret == 0)
+				{
+					ret = this.compareDates(t2);
+					if (ret == 0)
+						ret = this.compareIds(t2);
+				}
+			}
+		}
+		else if (this.comp == COMP_PARTY)
+		{
+			ret = this.compareParties(t2);
+			if (ret == 0)
+			{
+				ret = this.compareDates(t2);
+				if (ret == 0)
+				{
+					ret = this.compareAmounts(t2);
+					if (ret == 0)
+						ret = this.compareIds(t2);
+				}
+			}
+		}
+		
 		return ret;
 	}
 }
