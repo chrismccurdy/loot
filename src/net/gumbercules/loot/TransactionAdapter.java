@@ -5,16 +5,14 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class TransactionAdapter extends ArrayAdapter
+public class TransactionAdapter extends ArrayAdapter<Transaction>
 {
 	private ArrayList<Transaction> transList;
 	private int rowResId;
@@ -36,7 +34,7 @@ public class TransactionAdapter extends ArrayAdapter
 		return transList.size();
 	}
 
-	public Object getItem(int position)
+	public Transaction getItem(int position)
 	{
 		return transList.get(position);
 	}

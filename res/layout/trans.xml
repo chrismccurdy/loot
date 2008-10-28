@@ -11,40 +11,42 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent" android:orientation="horizontal"><RadioGroup android:id="@+id/RadioGroup01" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_width="fill_parent"><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Deposit" android:layout_weight="1" android:id="@+id/DepositRadio"></RadioButton><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Withdraw" android:layout_weight="1" android:id="@+id/WithdrawRadio"></RadioButton><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Check" android:layout_weight="1" android:id="@+id/CheckRadio"></RadioButton>
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent" android:orientation="horizontal"><RadioGroup android:id="@+id/RadioGroup01" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_width="fill_parent" android:checkedButton="@+id/withdrawRadio"><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Deposit" android:layout_weight="1" android:id="@+id/depositRadio" android:checked="false"></RadioButton><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Withdraw" android:layout_weight="1" android:id="@+id/withdrawRadio" android:checked="true"></RadioButton><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Check" android:layout_weight="1" android:id="@+id/checkRadio"></RadioButton>
 </RadioGroup>
 </LinearLayout>
 <TableLayout android:id="@+id/TableLayout01" android:layout_height="wrap_content" android:layout_width=
-"fill_parent"><TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:text="Date:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical"></TextView>
+"fill_parent"><TableRow android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/dateRow"><TextView android:layout_width="wrap_content" android:text="Date:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/dateLabel"></TextView>
 
-<LinearLayout android:id="@+id/LinearLayout02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2"><EditText android:id="@+id/EditText01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:editable="false" android:layout_weight="1"></EditText>
-<ImageButton android:id="@+id/ImageButton01" android:layout_width="wrap_content" android:layout_height="wrap_content"></ImageButton>
+<LinearLayout android:id="@+id/LinearLayout02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2"><EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:editable="false" android:layout_weight="1" android:id="@+id/dateEdit" android:enabled="false"></EditText>
+<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/datePickerButton"></ImageButton>
 </LinearLayout>
 </TableRow>
-<TableRow android:id="@+id/TableRow02" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:text="Amount:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical"></TextView>
-<EditText android:id="@+id/EditText02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2"></EditText>
+<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/amountRow"><TextView android:layout_width="wrap_content" android:text="Amount:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/amountLabel"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/amountEdit"></EditText>
 </TableRow>
-<TableRow android:id="@+id/TableRow03" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:text="Party:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical"></TextView>
-<EditText android:id="@+id/EditText03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2"></EditText>
+<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/partyRow"><TextView android:layout_width="wrap_content" android:text="Party:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/partyLabel"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/partyEdit"></EditText>
 </TableRow>
-<TableRow android:id="@+id/TableRow04" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:text="Check #:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical"></TextView>
-<EditText android:id="@+id/EditText04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2"></EditText>
+<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" android:id="@+id/accountRow"><TextView android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/accountLabel" android:text="Account:"></TextView><Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/accountSpinner"></Spinner>
+</TableRow><TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/checkRow"><TextView android:layout_width="wrap_content" android:text="Check #:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/checkLabel"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/checkEdit" android:enabled="false" android:cursorVisible="true"></EditText>
 </TableRow>
-<TableRow android:id="@+id/TableRow05" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView05" android:layout_width="wrap_content" android:text="Tags:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical"></TextView>
-<EditText android:id="@+id/EditText05" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2"></EditText>
+<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/tagsRow"><TextView android:layout_width="wrap_content" android:text="Tags:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/tagsLabel"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/tagsEdit"></EditText>
 </TableRow>
-<TableRow android:id="@+id/TableRow06" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView06" android:layout_width="wrap_content" android:text="Repeat:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical"></TextView>
-<Spinner android:id="@+id/Spinner01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2"></Spinner>
+<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/repeatRow"><TextView android:layout_width="wrap_content" android:text="Repeat:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/repeatLabel"></TextView>
+<Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/repeatSpinner"></Spinner>
 </TableRow>
-<TableRow android:id="@+id/TableRow07" android:layout_width="wrap_content" android:layout_height="wrap_content">
-<RadioGroup android:id="@+id/RadioGroup02" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_span="2" android:layout_width="fill_parent" android:layout_weight="1"><RadioButton android:id="@+id/RadioButton04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Actual" android:layout_weight="1"></RadioButton>
-<RadioButton android:id="@+id/RadioButton05" android:layout_height="wrap_content" android:text="Budget" android:layout_width="wrap_content" android:layout_weight="1"></RadioButton>
+<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/budgetRow">
+<RadioGroup android:id="@+id/RadioGroup02" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_span="2" android:layout_width="fill_parent" android:layout_weight="1" android:checkedButton="@+id/ActualRadio"><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Actual" android:layout_weight="1" android:id="@+id/ActualRadio"></RadioButton>
+<RadioButton android:layout_height="wrap_content" android:text="Budget" android:layout_width="wrap_content" android:layout_weight="1" android:id="@+id/BudgetRadio"></RadioButton>
 </RadioGroup>
 </TableRow>
+
 </TableLayout>
 </LinearLayout>
 </ScrollView>
-<LinearLayout android:id="@+id/LinearLayout03" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"><Button android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Save" android:layout_weight="1"></Button>
-<Button android:id="@+id/Button02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cancel" android:layout_weight="1"></Button>
+<LinearLayout android:id="@+id/LinearLayout03" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Save" android:layout_weight="1" android:id="@+id/saveButton"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cancel" android:layout_weight="1" android:id="@+id/cancelButton"></Button>
 </LinearLayout>
 </LinearLayout>
