@@ -3,12 +3,14 @@
       android:versionCode="1"
       android:versionName="1.0.0" package="net.gumbercules.loot">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:label="@string/app_name" android:name=".Loot">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".AccountChooser" android:label="@string/app_name" android:screenOrientation="sensor"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+<category android:name="android.intent.category.LAUNCHER"></category>
+</intent-filter>
+</activity><activity android:label="@string/app_name" android:name=".TransactionActivity" android:screenOrientation="sensor">
+            
         </activity>
-    <activity android:name=".TransactionEdit"></activity>
+    <activity android:name=".TransactionEdit" android:screenOrientation="sensor"></activity>
+
+<activity android:name=".AccountEdit" android:screenOrientation="sensor"></activity>
 </application>
 </manifest> 

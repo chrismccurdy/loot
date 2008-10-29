@@ -10,4 +10,11 @@
 <string name="transfer">New Transfer</string>
 <string name="sort">Sort</string>
 
+<string name="goto_">Go To</string>
+<string name="purge">Purge</string>
+<string name="new_account">New Account</string>
+<string name="acct_name">Account Name:</string>
+<string name="acct_bal">Initial Balance:</string>
+<string name="save">Save</string>
+<string name="cancel">Cancel</string>
 </resources>

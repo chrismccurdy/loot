@@ -1,5 +1,8 @@
 package net.gumbercules.loot;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.CompoundButton;
@@ -9,6 +12,8 @@ import android.widget.TableRow;
 
 public class TransactionEdit extends Activity
 {
+	private Transaction trans;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -20,7 +25,7 @@ public class TransactionEdit extends Activity
 		int request = extras.getInt("REQUEST");
 		
 		// if we're showing a transfer window, hide the check button, check field, and party field
-		if (request == Loot.ACTIVITY_TRANSFER_CREATE)
+		if (request == TransactionActivity.ACTIVITY_TRANSFER_CREATE)
 		{
 			RadioButton checkButton = (RadioButton)findViewById(R.id.checkRadio);
 			checkButton.setVisibility(RadioButton.GONE);
@@ -51,6 +56,24 @@ public class TransactionEdit extends Activity
 					checkEdit.setEnabled(isChecked);
 				}
 			});
+		}
+		
+		// get the transaction id and load it if it is present
+		int trans_id = extras.getInt("trans_id");
+
+		if (trans_id == 0)
+		{
+			trans = new Transaction();
+			
+			// set the date edittext to the current date by default
+			Calendar cal = Calendar.getInstance();
+			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+			EditText dateEdit = (EditText)findViewById(R.id.dateEdit);
+			dateEdit.setText(df.format(cal.getTime()));
+		}
+		else
+		{
+			trans = Transaction.getTransactionById(trans_id);
 		}
 	}
 }

@@ -6,7 +6,7 @@ import android.database.sqlite.*;
 public class Database
 {
 	private final static String DB_NAME		= "LootDB";
-	private final static String DB_PATH		= "/data/data/loot/" + DB_NAME + ".db";
+	private final static String DB_PATH		= "/data/data/net.gumbercules.loot/" + DB_NAME + ".db";
 	private final static int DB_VERSION		= 1;
 	private static SQLiteDatabase lootDB	= null;
 	

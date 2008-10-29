@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class Loot extends ListActivity
+public class TransactionActivity extends ListActivity
 {
 	public static final int ACTIVITY_CREATE				= 0;
 	public static final int ACTIVITY_TRANSFER_CREATE	= 1;
@@ -17,7 +17,10 @@ public class Loot extends ListActivity
 	public static final int NEW_TRANSACT_ID		= Menu.FIRST;
 	public static final int NEW_TRANSFER_ID		= Menu.FIRST + 1;
 	public static final int SORT_ID				= Menu.FIRST + 2;
-	public static final int SETTINGS_ID			= Menu.FIRST + 3;
+	public static final int GOTO_ID				= Menu.FIRST + 3;
+	public static final int PURGE_ID			= Menu.FIRST + 4;
+	public static final int SETTINGS_ID			= Menu.FIRST + 5;
+	
 	private ArrayList<Transaction> transList;
 	
     @Override
@@ -53,6 +56,8 @@ public class Loot extends ListActivity
     	menu.add(0, NEW_TRANSACT_ID, 0, R.string.new_trans);
     	menu.add(0, NEW_TRANSFER_ID, 0, R.string.transfer);
     	menu.add(0, SORT_ID, 0, R.string.sort);
+    	menu.add(0, GOTO_ID, 0, R.string.goto_);
+    	menu.add(0, PURGE_ID, 0, R.string.purge);
     	menu.add(0, SETTINGS_ID, 0, R.string.settings);
     	
     	return result;
@@ -72,6 +77,12 @@ public class Loot extends ListActivity
     		return true;
     		
     	case SORT_ID:
+    		return true;
+    		
+    	case GOTO_ID:
+    		return true;
+    		
+    	case PURGE_ID:
     		return true;
     		
     	case SETTINGS_ID:

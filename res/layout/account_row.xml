@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:orientation="vertical"><TextView android:layout_height="wrap_content" android:id="@+id/AccountName" android:layout_width="fill_parent" android:textSize="14px"></TextView>
+<TextView android:layout_height="wrap_content" android:id="@+id/AccountBalance" android:layout_width="fill_parent" android:textSize="10px" android:layout_marginLeft="10px"></TextView>
+</LinearLayout>

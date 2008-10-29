@@ -29,16 +29,19 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
+	@Override
 	public int getCount()
 	{
 		return transList.size();
 	}
 
+	@Override
 	public Transaction getItem(int position)
 	{
 		return transList.get(position);
 	}
 
+	@Override
 	public long getItemId(int position)
 	{
 		return transList.get(position).getID();

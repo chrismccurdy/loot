@@ -8,6 +8,10 @@ import android.database.sqlite.*;
 
 public class Account
 {
+	public static final String KEY_NAME	= "name";
+	public static final String KEY_BAL	= "balance";
+	public static final String KEY_ID	= "id";
+	
 	private int id;
 	String name;
 	double initialBalance;
@@ -19,6 +23,13 @@ public class Account
 	public Account()
 	{
 		this.id = -1;
+	}
+	
+	public Account(String name, double initialBalance)
+	{
+		this.id = -1;
+		this.name = name;
+		this.initialBalance = initialBalance;
 	}
 	
 	public int id()
@@ -236,12 +247,19 @@ public class Account
 		
 		String[] columns = {"id"};
 		Cursor cur = lootDB.query("accounts", columns, "purged = 0", null, null, null, null);
+		if (cur.getCount() == 0)
+		{
+			cur.close();
+			return null;
+		}
+		
 		ArrayList<Integer> ids = new ArrayList<Integer>();
 		
 		do
 		{
 			ids.add(cur.getInt(0));
 		} while (cur.moveToNext());
+		cur.close();
 		
 		// convert the Integer ArrayList to int[]
 		int[] acc_ids = new int[ids.size()];
