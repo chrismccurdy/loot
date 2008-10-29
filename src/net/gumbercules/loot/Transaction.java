@@ -157,7 +157,7 @@ public class Transaction
 	{
 		// insert the new row into the database
 		String insert = "insert into transactions (account,date,party,amount,check_num,budget,timestamp) " +
-						"values (?,?,?,?,?,?,strftime('%%s','now')";
+						"values (?,?,?,?,?,?,strftime('%s','now')";
 		
 		// invert the amount if it removed money from the account
 		double amount = this.amount;
@@ -185,8 +185,7 @@ public class Transaction
 		}
 		
 		// get the id of that row
-		String[] columns = {"max(id)"};
-		Cursor cur = lootDB.query("transactions", columns, null, null, null, null, null);
+		Cursor cur = lootDB.rawQuery("select max(id) from transactions", null);
 		int id = cur.getInt(0);
 		
 		// if tag writing is not successful, rollback the changes
@@ -207,7 +206,7 @@ public class Transaction
 	private int updateTransaction()
 	{
 		String update = "update transactions set account = ?, date = ?, party = ?, amount = ?, " +
-						"check_num = ?, budget = ?, timestamp = strftime('%%s','now') where id = ?";
+						"check_num = ?, budget = ?, timestamp = strftime('%s','now') where id = ?";
 		double amount = this.amount;
 		int check = 0;
 		if ( this.type == Transaction.WITHDRAW )
@@ -309,7 +308,7 @@ public class Transaction
 		
 	public boolean post( boolean p )
 	{
-		String post = "update transactions set posted = ?, timestamp = strftime('%%s','now'), " +
+		String post = "update transactions set posted = ?, timestamp = strftime('%s','now'), " +
 					  "budget = 0 where id = ?";
 		Object[] bindArgs = {new Boolean(p), new Integer(this.id)};
 		

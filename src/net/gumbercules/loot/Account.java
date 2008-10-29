@@ -5,6 +5,7 @@ import java.util.Date;
 
 import android.database.*;
 import android.database.sqlite.*;
+import android.util.Log;
 
 public class Account
 {
@@ -48,7 +49,7 @@ public class Account
 	private int newAccount()
 	{
 		// insert the new row into the database
-		String insert = "insert into accounts (name,balance,timestamp) values (?,?,strftime('%%s','now'))";
+		String insert = "insert into accounts (name,balance,timestamp) values (?,?,strftime('%s','now'))";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
@@ -67,8 +68,7 @@ public class Account
 		}
 		
 		// get the id of that row
-		String[] columns = {"max(id)"};
-		Cursor cur = lootDB.query("accounts", columns, null, null, null, null, null);
+		Cursor cur = lootDB.rawQuery("select max(id) from accounts", null);
 		this.id = cur.getInt(0);
 		return this.id;
 	}
@@ -77,7 +77,7 @@ public class Account
 	{
 		// update the row in the database
 		String update = "update accounts set name = ?, balance = ?, " +
-						"timestamp = strftime('%%s','now') where id = ?";
+						"timestamp = strftime('%s','now') where id = ?";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
@@ -101,7 +101,7 @@ public class Account
 	public boolean erase()
 	{
 		// mark the row as 'purged' in the database, so it is still recoverable later
-		String del = "update accounts set purged = 1, timestamp = strftime('%%s','now') where id = ?";
+		String del = "update accounts set purged = 1, timestamp = strftime('%s','now') where id = ?";
 		Object[] bindArgs = {new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
@@ -247,7 +247,7 @@ public class Account
 		
 		String[] columns = {"id"};
 		Cursor cur = lootDB.query("accounts", columns, "purged = 0", null, null, null, null);
-		if (cur.getCount() == 0)
+		if (!cur.moveToFirst())
 		{
 			cur.close();
 			return null;
@@ -305,9 +305,7 @@ public class Account
 	public int getNextCheckNum()
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();
-		String[] columns = {"max(check_num)"};
-		String[] sArgs = {Integer.toString(this.id)};
-		Cursor cur = lootDB.query("transactions", columns, "account = ?", sArgs, null, null, null);
+		Cursor cur = lootDB.rawQuery("select max(check_num) from transactions where account = " + this.id, null);
 		int check_num = cur.getInt(0);
 		if (check_num >= 0)
 			check_num += 1;
