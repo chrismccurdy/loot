@@ -21,7 +21,8 @@ public class TransactionActivity extends ListActivity
 	public static final int PURGE_ID			= Menu.FIRST + 4;
 	public static final int SETTINGS_ID			= Menu.FIRST + 5;
 	
-	private ArrayList<Transaction> transList;
+	private ArrayList<Transaction> mTransList;
+	private Account mAcct;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -29,24 +30,27 @@ public class TransactionActivity extends ListActivity
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.main);
         
-    	transList = new ArrayList<Transaction>();
+    	Bundle bun = getIntent().getExtras();
+    	mAcct = Account.getAccountById(bun.getInt(Account.KEY_ID));
+    	
+    	// TODO: find current orientation and send proper layout to constructor
+    	mTransList = new ArrayList<Transaction>();
+	    TransactionAdapter ta = new TransactionAdapter(this, R.layout.trans_row_narrow, mTransList);
+        this.setListAdapter(ta);
     	/************* TESTING ****************/
     	Transaction t;
         java.util.Date date = new java.util.Date();
         for (int i=0; i<10;++i)
         {
 	        t = new Transaction(false, false, date, Transaction.CHECK, "Test 1", -5.25, 1001);
-	        transList.add(t);
+	        mTransList.add(t);
 	        t = new Transaction(false, false, date, Transaction.DEPOSIT, "Test 2", 25.20, 1001);
-	        transList.add(t);
+	        mTransList.add(t);
 	        t = new Transaction(true, false, date, Transaction.WITHDRAW, "Test 3", -15.00, 1001);
-	        transList.add(t);
+	        mTransList.add(t);
         }
-        Collections.sort(transList);
+        Collections.sort(mTransList);
         /************ END TESTING *************/
-        
-	    TransactionAdapter ta = new TransactionAdapter(this, R.layout.trans_row_narrow, transList);
-        this.setListAdapter(ta);
     }
     
     @Override
@@ -106,5 +110,18 @@ public class TransactionActivity extends ListActivity
     	int request = ACTIVITY_TRANSFER_CREATE;
     	i.putExtra("REQUEST", request);
     	startActivityForResult(i, request);
+    }
+    
+    private void fillList()
+    {
+		int[] transIds = Transaction.getAllIds();
+		mTransList.clear();
+		
+		if (transIds != null)
+			for ( int id : transIds )
+				mTransList.add(Transaction.getTransactionById(id));
+			
+		//TransactionAdapter ta = new TransactionAdapter(this, R.layout.trans_row_narrow, mTransList);
+		//setListAdapter(ta);
     }
 }

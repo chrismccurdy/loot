@@ -230,17 +230,40 @@ public class Database
 
 		String[] columns = {"value"};
 		String[] sArgs = {option};
-		return lootDB.query("options", columns, "option = ?", sArgs, null, null, null, "LIMIT 1");
+		Cursor cur = lootDB.query("options", columns, "option = ?", sArgs, null, null, null, "LIMIT 1");
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		return cur;
 	}
 	
 	public static String getOptionString( String option )
 	{
-		return cursorGetOption(option).getString(0);
+		Cursor cur = cursorGetOption(option);
+		String str = null;
+		if (cur != null)
+		{
+			str = cur.getString(0);
+			cur.close();
+		}
+		
+		return str;
 	}
 	
 	public static long getOptionInt( String option )
 	{
-		return cursorGetOption(option).getLong(0);
+		Cursor cur = cursorGetOption(option);
+		long l = -1;
+		if (cur != null)
+		{
+			l = cur.getLong(0);
+			cur.close();
+		}
+		
+		return l;
 	}
 	
 	public static boolean getBoolean( int b )

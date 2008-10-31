@@ -10,9 +10,10 @@ import android.widget.EditText;
 
 public class AccountEdit extends Activity
 {
-	private EditText NameEdit;
-	private EditText BalanceEdit;
-	private int rowId;
+	private EditText mNameEdit;
+	private EditText mBalanceEdit;
+	private int mRowId;
+	private int mFinishIntent;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -20,16 +21,19 @@ public class AccountEdit extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.account_edit);
 		
-		NameEdit = (EditText)findViewById(R.id.NameEdit);
-		BalanceEdit = (EditText)findViewById(R.id.BalanceEdit);
+		// only assume the finish intent is OK if we explicitly set it
+		mFinishIntent = RESULT_CANCELED;
+		
+		mNameEdit = (EditText)findViewById(R.id.NameEdit);
+		mBalanceEdit = (EditText)findViewById(R.id.BalanceEdit);
 		Button SaveButton = (Button)findViewById(R.id.SaveButton);
 		Button CancelButton = (Button)findViewById(R.id.CancelButton);
 		
-		rowId = savedInstanceState != null ? savedInstanceState.getInt(Account.KEY_ID) : 0;
-		if (rowId == 0)
+		mRowId = savedInstanceState != null ? savedInstanceState.getInt(Account.KEY_ID) : 0;
+		if (mRowId == 0)
 		{
 			Bundle extras = getIntent().getExtras();
-			rowId = extras != null ? extras.getInt(Account.KEY_ID) : 0;
+			mRowId = extras != null ? extras.getInt(Account.KEY_ID) : 0;
 		}
 		
 		SaveButton.setOnClickListener(new View.OnClickListener()
@@ -38,15 +42,16 @@ public class AccountEdit extends Activity
 			{
 				Account acct;
 
-				if (rowId != 0)
-					acct = Account.getAccountById(rowId);
+				if (mRowId != 0)
+					acct = Account.getAccountById(mRowId);
 				else
 					acct = new Account();
 
-				acct.name = NameEdit.getText().toString();
-				acct.initialBalance = new Double(BalanceEdit.getText().toString());
+				acct.name = mNameEdit.getText().toString();
+				acct.initialBalance = new Double(mBalanceEdit.getText().toString());
 				
-				setResult(RESULT_OK);
+				mFinishIntent = RESULT_OK;
+				setResult(mFinishIntent);
 				finish();
 			}
 		});
@@ -55,7 +60,7 @@ public class AccountEdit extends Activity
 		{
 			public void onClick(View view)
 			{
-				setResult(RESULT_CANCELED);
+				setResult(mFinishIntent);
 				finish();
 			}
 		});
@@ -65,7 +70,7 @@ public class AccountEdit extends Activity
 	protected void onSaveInstanceState(Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
-		outState.putInt(Account.KEY_ID, rowId);
+		outState.putInt(Account.KEY_ID, mRowId);
 	}
 
 	@Override
@@ -84,31 +89,50 @@ public class AccountEdit extends Activity
 	
 	private void populateFields()
 	{
-		if (rowId != 0)
+		if (mRowId != 0)
 		{
-			Account acct = Account.getAccountById(rowId);
+			Account acct = Account.getAccountById(mRowId);
 			
-			if (NameEdit != null)
-				NameEdit.setText(acct.name);
-			if (BalanceEdit != null)
+			if (mNameEdit != null)
+				mNameEdit.setText(acct.name);
+			if (mBalanceEdit != null)
 				// TODO: fix to display it as a currency, without the currency symbol
-				BalanceEdit.setText(Double.toString(acct.initialBalance));
+				mBalanceEdit.setText(Double.toString(acct.initialBalance));
 		}
 	}
 	
 	private void saveState()
 	{
+		if (mFinishIntent == RESULT_CANCELED)
+			return;
+		
 		Account acct;
-		if (rowId != 0)
-			acct = Account.getAccountById(rowId);
+		if (mRowId != 0)
+			acct = Account.getAccountById(mRowId);
 		else
 			acct = new Account();
 		
-		acct.name = NameEdit.getText().toString();
-		acct.initialBalance = new Double(BalanceEdit.getText().toString());
+		acct.name = mNameEdit.getText().toString();
+		String balText = mBalanceEdit.getText().toString();
+		
+		if (acct.name == "" || balText == "")
+		{
+			setResult(RESULT_CANCELED);
+			return;
+		}
+		
+		try
+		{
+			acct.initialBalance = new Double(mBalanceEdit.getText().toString());
+		}
+		catch (NumberFormatException e)
+		{
+			// if there is no data (or bad data) in the field, set it to zero
+			acct.initialBalance = 0.0;
+		}
 		
 		int id = acct.write();
 		if (id != -1)
-			rowId = id;
+			mRowId = id;
 	}
 }

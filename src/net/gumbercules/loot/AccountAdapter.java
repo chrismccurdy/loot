@@ -62,7 +62,13 @@ public class AccountAdapter extends ArrayAdapter<Account>
 		if (AccountBal != null)
 		{
 			NumberFormat nf = NumberFormat.getCurrencyInstance();
-			AccountBal.setText(nf.format(acct.calculateActualBalance()));
+			Double bal = acct.calculateActualBalance();
+			String text;
+			if (bal != null)
+				text = nf.format(bal + acct.initialBalance);
+			else
+				text = "Error Calculating Balance";
+			AccountBal.setText(text);
 		}
 
 		return v;

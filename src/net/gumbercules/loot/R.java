@@ -85,6 +85,10 @@ public final class R {
         public static final int trans_row_wide=0x7f030007;
     }
     public static final class string {
+        public static final int about=0x7f040012;
+        public static final int account_del=0x7f04000e;
+        public static final int account_del_box=0x7f040011;
+        public static final int account_edit=0x7f04000d;
         public static final int acct_bal=0x7f04000a;
         public static final int acct_name=0x7f040009;
         public static final int app_name=0x7f040000;
@@ -92,11 +96,13 @@ public final class R {
         public static final int goto_=0x7f040006;
         public static final int new_account=0x7f040008;
         public static final int new_trans=0x7f040002;
+        public static final int no=0x7f040010;
         public static final int purge=0x7f040007;
         public static final int save=0x7f04000b;
         public static final int search_text=0x7f040001;
         public static final int settings=0x7f040003;
         public static final int sort=0x7f040005;
         public static final int transfer=0x7f040004;
+        public static final int yes=0x7f04000f;
     }
 }

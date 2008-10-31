@@ -9,7 +9,7 @@
 
 
 
-<ListView android:layout_height="wrap_content" android:id="@android:id/list" android:layout_width="fill_parent" android:layout_weight="100"></ListView><LinearLayout android:layout_height="wrap_content" android:id="@+id/BalanceLayout" android:layout_width="fill_parent">
+<ListView android:layout_height="wrap_content" android:id="@android:id/list" android:layout_width="fill_parent" android:layout_weight="100" android:paddingRight="5px"></ListView><LinearLayout android:layout_height="wrap_content" android:id="@+id/BalanceLayout" android:layout_width="fill_parent">
 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText1" android:singleLine="false" android:text="Posted: $0.00" android:lines="2" android:gravity="top|left"></TextView><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText2" android:singleLine="false" android:lines="2" android:text="Balance: $0.00" android:gravity="top|center_horizontal"></TextView>
 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText3" android:singleLine="false" android:lines="2" android:text="Budget: $0.00" android:gravity="top|right"></TextView>
 </LinearLayout>

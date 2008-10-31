@@ -69,7 +69,14 @@ public class Account
 		
 		// get the id of that row
 		Cursor cur = lootDB.rawQuery("select max(id) from accounts", null);
-		this.id = cur.getInt(0);
+		if (!cur.moveToFirst())
+		{
+			this.id = -1;
+		}
+		else
+			this.id = cur.getInt(0);
+		
+		cur.close();
 		return this.id;
 	}
 	
@@ -122,13 +129,20 @@ public class Account
 		return true;
 	}
 	
-	private double calculateBalance(String clause)
+	private Double calculateBalance(String clause)
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();
-		String[] columns = {"sum(amount)"};
 		String[] sArgs = {Integer.toString(this.id)};
-		Cursor cur = lootDB.query("transactions", columns, clause, sArgs, null, null, null);
-		return cur.getDouble(0);
+		Cursor cur = lootDB.rawQuery("select sum(amount) from transactions where " + clause, sArgs);
+		
+		Double bal = null;
+		if (cur.moveToFirst())
+		{
+			bal = cur.getDouble(0);
+		}
+		cur.close();
+		
+		return bal;
 	}
 	
 	public double getActualBalance()
@@ -136,10 +150,12 @@ public class Account
 		return this.actual_balance;
 	}
 	
-	public double calculateActualBalance()
+	public Double calculateActualBalance()
 	{
-		this.actual_balance = calculateBalance("account = ? and purged = 0 and budget = 0");
-		return this.actual_balance;
+		Double bal = calculateBalance("account = ? and purged = 0 and budget = 0");
+		if (bal != null)
+			this.actual_balance = bal;
+		return bal;
 	}
 	
 	public double getPostedBalance()
@@ -147,10 +163,12 @@ public class Account
 		return this.posted_balance;
 	}
 	
-	public double calculatePostedBalance()
+	public Double calculatePostedBalance()
 	{
-		this.posted_balance = calculateBalance("account = ? and posted = 1 and purged = 0");
-		return this.posted_balance;
+		Double bal = calculateBalance("account = ? and posted = 1 and purged = 0");
+		if (bal != null)
+			this.posted_balance = bal;
+		return bal;
 	}
 	
 	public double getBudgetBalance()
@@ -158,10 +176,12 @@ public class Account
 		return this.budget_balance;
 	}
 	
-	public double calculateBudgetBalance()
+	public Double calculateBudgetBalance()
 	{
-		this.budget_balance = calculateBalance("account = ? and purged = 0");
-		return this.budget_balance;
+		Double bal = calculateBalance("account = ? and purged = 0");
+		if (bal != null)
+			this.budget_balance = bal;
+		return bal;
 	}
 	
 	public static Account getLastUsedAccount()
@@ -186,10 +206,17 @@ public class Account
 		String[] columns = {"id", "name", "balance"};
 		String[] sArgs = {Integer.toString(id)};
 		Cursor cur = lootDB.query("accounts", columns, "id = ? and purged = 0", sArgs,
-				null, null, null, "LIMIT 1");
+				null, null, null, "1");
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return false;
+		}
+		
 		this.id = cur.getInt(0);
 		this.name = cur.getString(1);
 		this.initialBalance = cur.getDouble(2);
+		cur.close();
 		
 		return true;
 	}
@@ -225,10 +252,17 @@ public class Account
 		Cursor cur = lootDB.query("accounts", columns, "purged = 0", null, null, null, null);
 		ArrayList<String> accounts = new ArrayList<String>();
 		
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
 		do
 		{
 			accounts.add(cur.getString(0));
 		} while (cur.moveToNext());
+		cur.close();
 		
 		return (String[])accounts.toArray();
 	}
@@ -287,10 +321,17 @@ public class Account
 		String[] sArgs = {name};
 		Cursor cur = lootDB.query("accounts", columns, "name = ? and purged = 0", sArgs,
 				null, null, null, "LIMIT 1");
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
 		Account acct = new Account();
 		acct.id = cur.getInt(0);
 		acct.name = cur.getString(1);
 		acct.initialBalance = cur.getDouble(2);
+		cur.close();
 		
 		return acct;
 	}
@@ -306,9 +347,16 @@ public class Account
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();
 		Cursor cur = lootDB.rawQuery("select max(check_num) from transactions where account = " + this.id, null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return -1;
+		}
+		
 		int check_num = cur.getInt(0);
 		if (check_num >= 0)
 			check_num += 1;
+		cur.close();
 		
 		return check_num;
 	}

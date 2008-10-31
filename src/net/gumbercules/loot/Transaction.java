@@ -186,6 +186,13 @@ public class Transaction
 		
 		// get the id of that row
 		Cursor cur = lootDB.rawQuery("select max(id) from transactions", null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			lootDB.endTransaction();
+			return -1;
+		}
+		
 		int id = cur.getInt(0);
 		
 		// if tag writing is not successful, rollback the changes
@@ -386,14 +393,20 @@ public class Transaction
 			return null;
 		}
 		
-		String[] columns = {"distinct name"};
-		Cursor cur = lootDB.query("tags", columns, null, null, null, "name ASC", null);
+		Cursor cur = lootDB.rawQuery("select distinct name from tags order by name asc", null);
 		ArrayList<String> tags = new ArrayList<String>();
+		
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
 		
 		do
 		{
 			tags.add(cur.getString(0));
 		} while (cur.moveToNext());
+		cur.close();
 		
 		return (String[])tags.toArray();
 	}
@@ -410,16 +423,53 @@ public class Transaction
 			return null;
 		}
 		
-		String[] columns = {"distinct party"};
-		Cursor cur = lootDB.query("transactions", columns, null, null, null, "party ASC", null);
+		Cursor cur = lootDB.rawQuery("select distinct party from transactions order by party asc", null);
 		ArrayList<String> parties = new ArrayList<String>();
+		
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
 		
 		do
 		{
 			parties.add(cur.getString(0));
 		} while (cur.moveToNext());
+		cur.close();
 		
 		return (String[])parties.toArray();
+	}
+	
+	public static int[] getAllIds()
+	{
+		SQLiteDatabase lootDB;
+		try
+		{
+			lootDB = Database.getDatabase();
+		}
+		catch (SQLException e)
+		{
+			return null;
+		}
+		
+		Cursor cur = lootDB.rawQuery("select id from transactions order by id asc", null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		int[] ids = new int[cur.getCount()];
+		int i = 0;
+		
+		do
+		{
+			ids[i++] = cur.getInt(0);
+		} while (cur.moveToNext());
+		cur.close();
+		
+		return ids;
 	}
 	
 	public void loadTags()
@@ -428,6 +478,12 @@ public class Transaction
 		String[] columns = {"name"};
 		String[] sArgs = {Integer.toString(this.id)};
 		Cursor cur = lootDB.query("tags", columns, "trans_id = ?", sArgs, null, null, null);
+		
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return;
+		}
 		
 		do
 		{
@@ -450,6 +506,12 @@ public class Transaction
 		String[] columns = {"posted", "date", "party", "amount", "check_num", "account", "budget"};
 		String[] sArgs = {Integer.toString(id)};
 		Cursor cur = lootDB.query("transactions", columns, id_query, sArgs, null, null, null);
+		
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
 		
 		double amount = cur.getDouble(3);
 		int check = cur.getInt(4);
@@ -675,6 +737,12 @@ public class Transaction
 		Cursor cur = lootDB.query("transfers", columns, selection, null, null, null, null);
 
 		int ret = -1;
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return ret;
+		}
+		
 		if (cur.getCount() > 0)
 			ret = cur.getInt(0);
 		cur.close();
