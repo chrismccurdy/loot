@@ -1,5 +1,6 @@
 package net.gumbercules.loot;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
 import android.database.*;
@@ -17,7 +18,7 @@ public class Transaction
 	public static final int COMP_AMT	= 1;
 	public static final int COMP_PARTY	= 2;
 	
-	private int comp = COMP_DATE;
+	private static int comp = COMP_DATE;
 	
 	public static final String KEY_ID	= "t_id";
 		
@@ -202,13 +203,20 @@ public class Transaction
 		}
 		
 		int id = cur.getInt(0);
+		cur.close();
+		this.id = id;
 		
 		// if tag writing is not successful, rollback the changes
 		if (writeTags())
 		{
 			lootDB.setTransactionSuccessful();
-			this.id = id;
 		}
+		else
+		{
+			this.id = -1;
+			Log.e("Transaction.newTransaction", "error writing tags");
+		}
+
 		lootDB.endTransaction();
 		
 		Account acct = new Account();
@@ -277,17 +285,32 @@ public class Transaction
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
+		
+		int sz = this.tags.size();
+		String[] used = new String[sz];
+		for (int x = 0; x < sz; ++x)
+			used[x] = "";
+		
 		try
 		{
+			int i = 0;
 			for ( String tag : this.tags )
 			{
+				// if the tag has already been used, go to the next one to avoid a sql constraint error
+				if (Arrays.binarySearch(used, tag) >= 0)
+					continue;
+				
 				bindArgs[1] = tag;
 				lootDB.execSQL(insert, bindArgs);
+				
+				used[i++] = tag;
+				Arrays.sort(used);
 			}
 			lootDB.setTransactionSuccessful();
 		}
 		catch (SQLException e)
 		{
+			Log.e("Transaction.writeTags", e.toString());
 			return false;
 		}
 		finally
@@ -498,6 +521,7 @@ public class Transaction
 		{
 			this.tags.add(cur.getString(0));
 		} while (cur.moveToNext());
+		cur.close();
 	}
 	
 	public static Transaction getTransactionById(int id)
@@ -758,10 +782,10 @@ public class Transaction
 		return ret;
 	}
 
-	public void setComparator(int comp)
+	public static void setComparator(int pcomp)
 	{
-		if (this.comp == COMP_DATE || this.comp == COMP_PARTY || this.comp == COMP_AMT)
-			this.comp = comp;
+		if (pcomp == COMP_DATE || pcomp == COMP_PARTY || pcomp == COMP_AMT)
+			comp = pcomp;
 	}
 	
 	private int compareDates(Transaction t2)
@@ -771,8 +795,10 @@ public class Transaction
 	
 	private int compareAmounts(Transaction t2)
 	{
-		double a = this.amount,
-			b = t2.amount;
+		// get the non-absolute value of the amount 
+		double a = (this.type == DEPOSIT ? this.amount : -this.amount),
+			b = (t2.type == DEPOSIT ? t2.amount : -t2.amount);
+		
 		int alb = 0, agb = 0;
 		if (a < b)
 			alb = 1;
@@ -803,7 +829,7 @@ public class Transaction
 	{
 		int ret = 0;
 		
-		if (this.comp == COMP_DATE)
+		if (comp == COMP_DATE)
 		{
 			ret = this.compareDates(t2);
 			if (ret == 0)
@@ -817,7 +843,7 @@ public class Transaction
 				}
 			}
 		}
-		else if (this.comp == COMP_AMT)
+		else if (comp == COMP_AMT)
 		{
 			ret = this.compareAmounts(t2);
 			if (ret == 0)
@@ -831,7 +857,7 @@ public class Transaction
 				}
 			}
 		}
-		else if (this.comp == COMP_PARTY)
+		else if (comp == COMP_PARTY)
 		{
 			ret = this.compareParties(t2);
 			if (ret == 0)

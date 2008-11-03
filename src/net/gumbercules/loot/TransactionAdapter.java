@@ -3,6 +3,7 @@ package net.gumbercules.loot;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -61,6 +62,35 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 	public void setResource(int row)
 	{
 		this.rowResId = row;
+	}
+	
+	public void setList(ArrayList<Transaction> trans)
+	{
+		transList = trans;
+	}
+	
+	public ArrayList<Transaction> getList()
+	{
+		return transList;
+	}
+
+	@Override
+	public void add(Transaction object)
+	{
+		transList.add(object);
+		Collections.sort(transList);
+	}
+
+	@Override
+	public void insert(Transaction object, int index)
+	{
+		transList.add(index, object);
+	}
+
+	@Override
+	public void remove(Transaction object)
+	{
+		transList.remove(object);
 	}
 
 	@Override

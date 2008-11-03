@@ -34,6 +34,7 @@ public class TransactionEdit extends Activity
 	
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
+	@SuppressWarnings("unused")
 	private RadioButton depositRadio;
 	
 	private EditText dateEdit;
@@ -46,6 +47,7 @@ public class TransactionEdit extends Activity
 	private Spinner accountSpinner;
 	private Spinner repeatSpinner;
 	
+	@SuppressWarnings("unused")
 	private RadioButton actualRadio;
 	private RadioButton budgetRadio;
 	
@@ -143,8 +145,9 @@ public class TransactionEdit extends Activity
 			public void onClick(View view)
 			{
 				mFinishIntent = RESULT_OK;
-				setResult(mFinishIntent);
-				finish();
+				//setResult(mFinishIntent);
+				//finish();
+				onPause();
 			}
 		});
 		
@@ -152,8 +155,9 @@ public class TransactionEdit extends Activity
 		{
 			public void onClick(View view)
 			{
-				setResult(mFinishIntent);
-				finish();
+				//setResult(mFinishIntent);
+				//finish();
+				onPause();
 			}
 		});
 	}
@@ -304,8 +308,7 @@ public class TransactionEdit extends Activity
 	{
 		if (mFinishIntent == RESULT_CANCELED || mFinished)
 			return;
-		
-		// TODO: save the state of the transaction
+
 		Transaction trans;
 		Account acct2 = null;
 
@@ -371,22 +374,26 @@ public class TransactionEdit extends Activity
 		else
 			id = trans.transfer(acct2);
 		
+		Log.e("TransactionEdit", "mType = " + mType);
 		Log.e("TransactionEdit", "id = " + id);
 		
+		mFinished = true;
 		if (id != -1)
 		{
 			mTransId = id;
 			Intent i = new Intent();
-			i.putExtra(Transaction.KEY_ID, mTransId);
-			i.putExtra(TransactionActivity.KEY_REQ, mRequest);
+			Bundle b = new Bundle();
+			b.putInt(Transaction.KEY_ID, mTransId);
+			b.putInt(TransactionActivity.KEY_REQ, mRequest);
+			i.putExtras(b);
 			setResult(mFinishIntent, i);
-			mFinished = true;
-			finish();
 		}
 		else
 		{
 			setResult(RESULT_CANCELED);
 		}
+
+		finish();
 	}
 
 	@Override

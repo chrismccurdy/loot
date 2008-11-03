@@ -22,6 +22,7 @@ public class TransactionActivity extends ListActivity
 	public static final String KEY_REQ		= "t_req";
 	public static final int ACTIVITY_CREATE	= 0;
 	public static final int ACTIVITY_EDIT	= 1;
+	public static final int ACTIVITY_DEL	= 2;
 	
 	public static final String KEY_TYPE		= "t_type";
 	public static final int TRANSACTION		= 0;
@@ -33,10 +34,6 @@ public class TransactionActivity extends ListActivity
 	public static final int GOTO_ID			= Menu.FIRST + 3;
 	public static final int PURGE_ID		= Menu.FIRST + 4;
 	public static final int SETTINGS_ID		= Menu.FIRST + 5;
-	
-	public static final int NEW_ID			= Menu.FIRST;
-	public static final int EDIT_ID			= Menu.FIRST + 1;
-	public static final int DEL_ID			= Menu.FIRST + 2;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_COPY	= Menu.FIRST + 1;
@@ -149,7 +146,6 @@ public class TransactionActivity extends ListActivity
     
     private void fillList()
     {
-    	// TODO: fix this method to add new items
 		int[] transIds = Transaction.getAllIds();
 		ArrayList<Transaction> transList = mTransList;
 		transList.clear();
@@ -162,29 +158,28 @@ public class TransactionActivity extends ListActivity
     
     private void updateList(int trans_id, int request)
     {
-    	ArrayList<Transaction> transList = mTransList;
+    	// TODO: fix this method to add new items
+    	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
     	Transaction trans;
     	int pos;
     	
     	switch (request)
     	{
-    	case EDIT_ID:
+    	case ACTIVITY_EDIT:
     		// don't break, the transaction needs to be added back to the list
     		pos = ((TransactionAdapter)getListAdapter()).findItemById(trans_id);
-    		transList.remove(pos);
+    		ta.remove(ta.getItem(pos));
 
-    	case NEW_ID:
+    	case ACTIVITY_CREATE:
     		trans = Transaction.getTransactionById(trans_id);
-    		transList.add(trans);
+    		ta.add(trans);
     		break;
     		
-    	case DEL_ID:
+    	case ACTIVITY_DEL:
     		pos = ((TransactionAdapter)getListAdapter()).findItemById(trans_id);
-    		transList.remove(pos);
+    		ta.remove(ta.getItem(pos));
     		break;
     	}
-    	
-    	Collections.sort(transList);
     }
 
 	@Override
@@ -231,7 +226,7 @@ public class TransactionActivity extends ListActivity
 					{
 						int id = trans.id();
 						trans.erase();
-						updateList(id, DEL_ID);
+						updateList(id, ACTIVITY_DEL);
 					}
 				})
 				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()

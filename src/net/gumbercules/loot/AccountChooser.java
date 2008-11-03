@@ -108,7 +108,7 @@ public class AccountChooser extends ListActivity
 		if (acctIds != null)
 			for ( int id : acctIds )
 				accountList.add(Account.getAccountById(id));
-			
+
 		AccountAdapter accounts = new AccountAdapter(this, R.layout.account_row, accountList);
 		setListAdapter(accounts);
 	}
