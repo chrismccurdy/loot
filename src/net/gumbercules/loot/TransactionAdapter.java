@@ -44,7 +44,18 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 	@Override
 	public long getItemId(int position)
 	{
-		return transList.get(position).getID();
+		return transList.get(position).id();
+	}
+	
+	public int findItemById(int id)
+	{
+		for (int i = 0; i < transList.size(); ++i)
+		{
+			if (transList.get(i).id() == id)
+				return i;
+		}
+		
+		return -1;
 	}
 
 	public void setResource(int row)
@@ -85,11 +96,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 		String amountStr = nf.format(Math.abs(trans.amount));
 		
 		// if we're in a portrait view, add the date below the party
-		if (rowResId == R.layout.trans_row_narrow)
-			partyStr += "\n" + dateStr;
+		//if (rowResId == R.layout.trans_row_narrow)
+		//	partyStr += "\n" + dateStr;
 
 		if (idText != null)
-			idText.setText(Integer.toString(trans.getID()));
+			idText.setText(Integer.toString(trans.id()));
 		if (postedCheck != null)
 			postedCheck.setChecked(trans.isPosted());
 		if (dateText != null)

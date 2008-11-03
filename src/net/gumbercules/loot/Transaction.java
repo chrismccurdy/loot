@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import android.database.*;
 import android.database.sqlite.*;
+import android.util.Log;
 
 public class Transaction
 	implements Comparable<Transaction>
@@ -17,6 +18,8 @@ public class Transaction
 	public static final int COMP_PARTY	= 2;
 	
 	private int comp = COMP_DATE;
+	
+	public static final String KEY_ID	= "t_id";
 		
 	private int id;
 	int account;
@@ -140,13 +143,14 @@ public class Transaction
 		return tags.split(" ");
 	}
 	
-	public int getID()
+	public int id()
 	{
 		return this.id;
 	}
 	
 	public int write( int account_num )
 	{
+		this.account = account_num;
 		if (this.id == -1)
 			return newTransaction();
 		else
@@ -155,10 +159,6 @@ public class Transaction
 	
 	private int newTransaction()
 	{
-		// insert the new row into the database
-		String insert = "insert into transactions (account,date,party,amount,check_num,budget,timestamp) " +
-						"values (?,?,?,?,?,?,strftime('%s','now')";
-		
 		// invert the amount if it removed money from the account
 		double amount = this.amount;
 		int check = 0;
@@ -170,17 +170,24 @@ public class Transaction
 			check = this.check_num;
 		}
 		
-		Object[] bindArgs = {new Integer(this.account), new Long(this.date.getTime()), this.party,
-				new Double(amount), new Integer(check), new Boolean(this.budget)};
+		// insert the new row into the database
+		String insert = "insert into transactions (account,date,party,amount,check_num,budget,timestamp) " +
+						"values (?,?,?,?,?,?,strftime('%s','now'))";
+		Object[] bindArgs = {new Long(this.account), new Long(this.date.getTime()), this.party,
+				new Double(amount), new Long(check), new Long(Database.setBoolean(this.budget))};
+
 		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
 		try
 		{
-			lootDB.beginTransaction();
 			lootDB.execSQL(insert, bindArgs);
+			//lootDB.execSQL(insert);
 		}
 		catch (SQLException e)
 		{
 			lootDB.endTransaction();
+			Log.e("Transaction.newTransaction", "error inserting row");
+			Log.e("Transaction.newTransaction", insert);
 			return -1;
 		}
 		
@@ -190,6 +197,7 @@ public class Transaction
 		{
 			cur.close();
 			lootDB.endTransaction();
+			Log.e("Transaction.newTransaction", "error selecting max(id)");
 			return -1;
 		}
 		
@@ -229,8 +237,9 @@ public class Transaction
 		int acct_id = this.account;
 		if ( this.account == -1 )
 			acct_id = Account.getCurrentAccountNum();
-		Object[] bindArgs = {new Integer(acct_id), new Long(this.date.getTime()), this.party,
-				new Double(amount), new Integer(check), new Boolean(this.budget), this.id};
+		Object[] bindArgs = {new Long(acct_id), new Long(this.date.getTime()), this.party,
+				new Double(amount), new Long(check), new Long(Database.setBoolean(this.budget)),
+				new Long(this.id)};
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
@@ -264,7 +273,7 @@ public class Transaction
 	{
 		String insert = "insert into tags (trans_id,name) values (?,?)";
 		Object[] bindArgs = new Object[2];
-		bindArgs[0] = new Integer(this.id);
+		bindArgs[0] = new Long(this.id);
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
@@ -292,7 +301,7 @@ public class Transaction
 	private boolean eraseTags()
 	{
 		String del = "delete from tags where trans_id = ?";
-		Object[] bindArgs = {new Integer(this.id)};
+		Object[] bindArgs = {new Long(this.id)};
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
@@ -317,7 +326,7 @@ public class Transaction
 	{
 		String post = "update transactions set posted = ?, timestamp = strftime('%s','now'), " +
 					  "budget = 0 where id = ?";
-		Object[] bindArgs = {new Boolean(p), new Integer(this.id)};
+		Object[] bindArgs = {new Long(Database.setBoolean(p)), new Long(this.id)};
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
@@ -351,7 +360,7 @@ public class Transaction
 	public boolean erase()
 	{
 		String del = "delete from transactions where id = ?";
-		Object[] bindArgs = {new Integer(this.id)};
+		Object[] bindArgs = {new Long(this.id)};
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
@@ -679,7 +688,7 @@ public class Transaction
 		}
 				
 		String transfer = "insert into transfers (trans_id1, trans_id2) values (?,?)";
-		Object[] bindArgs = {new Integer(id1), new Integer(id2)};
+		Object[] bindArgs = {new Long(id1), new Long(id2)};
 
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
@@ -704,9 +713,9 @@ public class Transaction
 	public boolean removeTransfer(Transaction trans)
 	{
 		String del = "delete from transfers where trans_id1 in (?,?) or trans_id2 in (?,?)";
-		Integer id1, id2;
-		id1 = new Integer(this.id);
-		id2 = new Integer(trans.id);
+		Long id1, id2;
+		id1 = new Long(this.id);
+		id2 = new Long(trans.id);
 		Object[] bindArgs = {id1, id2, id1, id2};
 		
 		SQLiteDatabase lootDB = Database.getDatabase();

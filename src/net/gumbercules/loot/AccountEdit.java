@@ -1,9 +1,7 @@
 package net.gumbercules.loot;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,16 +38,6 @@ public class AccountEdit extends Activity
 		{
 			public void onClick(View view)
 			{
-				Account acct;
-
-				if (mRowId != 0)
-					acct = Account.getAccountById(mRowId);
-				else
-					acct = new Account();
-
-				acct.name = mNameEdit.getText().toString();
-				acct.initialBalance = new Double(mBalanceEdit.getText().toString());
-				
 				mFinishIntent = RESULT_OK;
 				setResult(mFinishIntent);
 				finish();

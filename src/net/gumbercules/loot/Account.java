@@ -11,7 +11,7 @@ public class Account
 {
 	public static final String KEY_NAME	= "name";
 	public static final String KEY_BAL	= "balance";
-	public static final String KEY_ID	= "id";
+	public static final String KEY_ID	= "a_id";
 	
 	private int id;
 	String name;
@@ -264,7 +264,11 @@ public class Account
 		} while (cur.moveToNext());
 		cur.close();
 		
-		return (String[])accounts.toArray();
+		String[] ret = new String[accounts.size()];
+		for (int i = 0; i < ret.length; ++i)
+			ret[i] = accounts.get(i);
+		
+		return ret;
 	}
 	
 	public static int[] getAccountIds()
@@ -320,7 +324,7 @@ public class Account
 		String[] columns = {"id", "name", "balance"};
 		String[] sArgs = {name};
 		Cursor cur = lootDB.query("accounts", columns, "name = ? and purged = 0", sArgs,
-				null, null, null, "LIMIT 1");
+				null, null, null, "1");
 		if (!cur.moveToFirst())
 		{
 			cur.close();

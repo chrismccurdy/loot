@@ -1,79 +1,410 @@
 package net.gumbercules.loot;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TableRow;
 
 public class TransactionEdit extends Activity
 {
-	private Transaction trans;
+	private Transaction mTrans;
+	private int mTransId;
+	private int mFinishIntent;
+	private int mRequest;
+	private int mType;
+	private int mAccountId;
+	private boolean mFinished;
+	
+	private RadioButton checkRadio;
+	private RadioButton withdrawRadio;
+	private RadioButton depositRadio;
+	
+	private EditText dateEdit;
+	private ImageButton dateButton;
+	private EditText partyEdit;
+	private EditText amountEdit;
+	private EditText checkEdit;
+	private EditText tagsEdit;
+	
+	private Spinner accountSpinner;
+	private Spinner repeatSpinner;
+	
+	private RadioButton actualRadio;
+	private RadioButton budgetRadio;
+	
+	private Button saveButton;
+	private Button cancelButton;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.trans);
-
-		// get the request code so we know whether to show a transaction or a transfer window
-		Bundle extras = getIntent().getExtras();
-		int request = extras.getInt("REQUEST");
 		
-		// if we're showing a transfer window, hide the check button, check field, and party field
-		if (request == TransactionActivity.ACTIVITY_TRANSFER_CREATE)
+		mFinishIntent = RESULT_CANCELED;
+		mFinished = false;
+
+		// get the type code so we know whether to show a transaction or a transfer window
+		if (savedInstanceState != null)
 		{
-			RadioButton checkButton = (RadioButton)findViewById(R.id.checkRadio);
-			checkButton.setVisibility(RadioButton.GONE);
-			
-			TableRow row = (TableRow)findViewById(R.id.partyRow);
-			row.setVisibility(TableRow.GONE);
-			row = (TableRow)findViewById(R.id.checkRow);
-			row.setVisibility(TableRow.GONE);
-			row = (TableRow)findViewById(R.id.accountRow);
-			row.setVisibility(TableRow.VISIBLE);
+			mRequest = savedInstanceState.getInt(TransactionActivity.KEY_REQ);
+			mType = savedInstanceState.getInt(TransactionActivity.KEY_TYPE);
+			mTransId = savedInstanceState.getInt(Transaction.KEY_ID);
+			mAccountId = savedInstanceState.getInt(Account.KEY_ID);
 		}
 		else
 		{
-			// set the check radio to enable/disable and automatically populate the check entry field
-			RadioButton checkButton = (RadioButton)findViewById(R.id.checkRadio);
-			checkButton.setOnCheckedChangeListener( new RadioButton.OnCheckedChangeListener()
-			{
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-				{
-					EditText checkEdit = (EditText)findViewById(R.id.checkEdit);
-					if (isChecked)
-					{
-						if (checkEdit.getText().toString() == "")
-						{
-							// TODO: autopopulate the edit with the next check number
-						}
-					}
-					checkEdit.setEnabled(isChecked);
-				}
-			});
+			Bundle extras = getIntent().getExtras();
+			mRequest = extras.getInt(TransactionActivity.KEY_REQ);
+			mType = extras.getInt(TransactionActivity.KEY_TYPE);
+			mTransId = extras.getInt(Transaction.KEY_ID);
+			mAccountId = extras.getInt(Account.KEY_ID);
 		}
-		
-		// get the transaction id and load it if it is present
-		int trans_id = extras.getInt("trans_id");
 
-		if (trans_id == 0)
+		populateFields();
+	}
+	
+	private void populateFields()
+	{
+		depositRadio = (RadioButton)findViewById(R.id.depositRadio);
+		withdrawRadio = (RadioButton)findViewById(R.id.withdrawRadio);
+		checkRadio = (RadioButton)findViewById(R.id.checkRadio);
+		
+		dateEdit = (EditText)findViewById(R.id.dateEdit);
+		dateButton = (ImageButton)findViewById(R.id.datePickerButton);
+		
+		amountEdit = (EditText)findViewById(R.id.amountEdit);
+		tagsEdit = (EditText)findViewById(R.id.tagsEdit);
+		
+		// create the repeat spinner and populate the values
+		// TODO: set a listener to show a dialog when "Custom..." is selected
+		repeatSpinner = (Spinner)findViewById(R.id.repeatSpinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this, R.array.repeat, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        repeatSpinner.setAdapter(adapter);
+
+		actualRadio = (RadioButton)findViewById(R.id.ActualRadio);
+		budgetRadio = (RadioButton)findViewById(R.id.BudgetRadio);
+		
+		saveButton = (Button)findViewById(R.id.saveButton);
+		cancelButton = (Button)findViewById(R.id.cancelButton);
+		
+        dateButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                showDialog(0);
+            }
+        });
+
+		// load the transaction if mTransId > 0
+		if (mTransId == 0)
 		{
-			trans = new Transaction();
+			mTrans = new Transaction();
 			
 			// set the date edittext to the current date by default
-			Calendar cal = Calendar.getInstance();
-			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-			EditText dateEdit = (EditText)findViewById(R.id.dateEdit);
-			dateEdit.setText(df.format(cal.getTime()));
+			setDateEdit(null);
 		}
 		else
 		{
-			trans = Transaction.getTransactionById(trans_id);
+			mTrans = Transaction.getTransactionById(mTransId);
+			// TODO: fill in the values
 		}
+
+		if (mType == TransactionActivity.TRANSFER)
+		{
+			showTransferFields();
+		}
+		else
+		{
+			showTransactionFields();
+		}
+		
+		saveButton.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View view)
+			{
+				mFinishIntent = RESULT_OK;
+				setResult(mFinishIntent);
+				finish();
+			}
+		});
+		
+		cancelButton.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View view)
+			{
+				setResult(mFinishIntent);
+				finish();
+			}
+		});
+	}
+
+	private void setDateEdit(Date date)
+	{
+		Calendar cal = Calendar.getInstance();
+		if (date != null)
+			cal.setTime(date);
+		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		dateEdit.setText(df.format(cal.getTime()));
+	}
+	
+	private Date parseDateEdit()
+	{
+		Date date;
+		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		
+		try
+		{
+			date = df.parse(dateEdit.getText().toString());
+		}
+		catch (ParseException e)
+		{
+			// set the date to today if there's a parsing error
+			date = new Date();
+		}
+		date.setHours(0);
+		date.setMinutes(0);
+		date.setSeconds(0);
+		
+		return date;
+	}
+	
+	private int[] dateEditToYMD()
+	{
+		int[] ymd = new int[3];
+		Date date = parseDateEdit();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		ymd[0] = cal.get(Calendar.YEAR);
+		ymd[1] = cal.get(Calendar.MONTH);
+		ymd[2] = cal.get(Calendar.DAY_OF_MONTH);
+		
+		return ymd;
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id)
+	{
+		int[] ymd = dateEditToYMD();
+		return new DatePickerDialog(this, mDateSetListener, ymd[0], ymd[1], ymd[2]);
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog)
+	{
+		int[] ymd = dateEditToYMD();
+		((DatePickerDialog)dialog).updateDate(ymd[0], ymd[1], ymd[2]);
+	}
+
+	private DatePickerDialog.OnDateSetListener mDateSetListener =
+        new DatePickerDialog.OnDateSetListener()
+		{
+            public void onDateSet(DatePicker view, int year, int month,  int day)
+            {
+            	Calendar cal = Calendar.getInstance();
+            	cal.set(Calendar.YEAR, year);
+            	cal.set(Calendar.MONTH, month);
+            	cal.set(Calendar.DAY_OF_MONTH, day);
+            	setDateEdit(cal.getTime());
+            }
+        };
+
+	private void showTransactionFields()
+	{
+		// set the check radio to enable/disable and automatically populate the check entry field
+		checkRadio.setOnCheckedChangeListener( new RadioButton.OnCheckedChangeListener()
+		{
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				checkEdit = (EditText)findViewById(R.id.checkEdit);
+				if (isChecked)
+				{
+					if (checkEdit.getText().toString() == "")
+					{
+						// autopopulate the edit with the next check number
+						Account acct = Account.getAccountById(mAccountId);
+						int check_num = acct.getNextCheckNum();
+						checkEdit.setText(check_num + "");
+					}
+				}
+				checkEdit.setEnabled(isChecked);
+			}
+		});
+		
+		partyEdit = (EditText)findViewById(R.id.partyEdit);
+		checkEdit = (EditText)findViewById(R.id.checkEdit);
+	}
+	
+	private void showTransferFields()
+	{
+		// if we're showing a transfer window, hide the check button, check field, and party field
+		checkRadio.setVisibility(RadioButton.GONE);
+		
+		TableRow row = (TableRow)findViewById(R.id.partyRow);
+		row.setVisibility(TableRow.GONE);
+		row = (TableRow)findViewById(R.id.checkRow);
+		row.setVisibility(TableRow.GONE);
+		row = (TableRow)findViewById(R.id.accountRow);
+		row.setVisibility(TableRow.VISIBLE);
+		
+		accountSpinner = (Spinner)findViewById(R.id.accountSpinner);
+		String[] names = Account.getAccountNames();
+		
+		// if there is only one account in the database, tell the user they can't transfer and cancel
+		Log.e(TransactionEdit.class.toString(), "names.length = " + names.length);
+		if (names.length == 1)
+		{
+			// TODO: display message box
+			setResult(mFinishIntent);
+			finish();
+			return;
+		}
+		
+		String[] acctNames = new String[names.length - 1];
+		
+		Account acct = Account.getAccountById(mAccountId);
+		int i = 0;
+		for ( String name : names )
+			if (name != acct.name)
+				acctNames[i++] = name;
+		
+		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
+				android.R.layout.simple_spinner_item, acctNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        accountSpinner.setAdapter(adapter);	
+	}
+
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		saveState();
+	}
+
+	private void saveState()
+	{
+		if (mFinishIntent == RESULT_CANCELED || mFinished)
+			return;
+		
+		// TODO: save the state of the transaction
+		Transaction trans;
+		Account acct2 = null;
+
+		if (mTransId != 0)
+			trans = mTrans;
+		else
+		{
+			trans = new Transaction();
+		}
+
+		if (mType == TransactionActivity.TRANSACTION)
+			trans.party = partyEdit.getText().toString();
+		else
+			acct2 = Account.getAccountByName((String)accountSpinner.getSelectedItem());
+		
+		trans.addTags(tagsEdit.getText().toString());
+		
+		// get the date of the transaction and set time values to 0
+		trans.date = parseDateEdit();
+		
+		// get the amount of the transaction
+		try
+		{
+			trans.amount = new Double(amountEdit.getText().toString());
+		}
+		catch (NumberFormatException e)
+		{
+			trans.amount = 0.0;
+		}
+
+		// get the type of transaction
+		if (checkRadio.isChecked())
+		{
+			trans.type = Transaction.CHECK;
+
+			try
+			{
+				trans.check_num = new Integer(checkEdit.getText().toString());
+			}
+			catch (NumberFormatException e)
+			{
+				trans.type = Transaction.WITHDRAW;
+				trans.check_num = 0;
+			}
+		}
+		else if (withdrawRadio.isChecked())
+		{
+			trans.type = Transaction.WITHDRAW;
+		}
+		else
+		{
+			trans.type = Transaction.DEPOSIT;
+		}
+		
+		// get if it's a budget transaction
+		trans.budget = budgetRadio.isChecked();
+		
+		// TODO: set repeat values
+
+		int id = -1;
+		if (mType == TransactionActivity.TRANSACTION)
+			id = trans.write(mAccountId);
+		else
+			id = trans.transfer(acct2);
+		
+		Log.e("TransactionEdit", "id = " + id);
+		
+		if (id != -1)
+		{
+			mTransId = id;
+			Intent i = new Intent();
+			i.putExtra(Transaction.KEY_ID, mTransId);
+			i.putExtra(TransactionActivity.KEY_REQ, mRequest);
+			setResult(mFinishIntent, i);
+			mFinished = true;
+			finish();
+		}
+		else
+		{
+			setResult(RESULT_CANCELED);
+		}
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		populateFields();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putInt(TransactionActivity.KEY_REQ, mRequest);
+		outState.putInt(TransactionActivity.KEY_TYPE, mType);
+		if (mAccountId > 0)
+			outState.putInt(Account.KEY_ID, mAccountId);
+		if (mTransId > 0)
+			outState.putInt(Transaction.KEY_ID, mTransId);
 	}
 }

@@ -230,7 +230,7 @@ public class Database
 
 		String[] columns = {"value"};
 		String[] sArgs = {option};
-		Cursor cur = lootDB.query("options", columns, "option = ?", sArgs, null, null, null, "LIMIT 1");
+		Cursor cur = lootDB.query("options", columns, "option = ?", sArgs, null, null, null, "1");
 		if (!cur.moveToFirst())
 		{
 			cur.close();
@@ -271,5 +271,12 @@ public class Database
 		if (b == 0)
 			return false;
 		return true;
+	}
+	
+	public static int setBoolean(boolean b)
+	{
+		if (!b)
+			return 0;
+		return 1;
 	}
 }

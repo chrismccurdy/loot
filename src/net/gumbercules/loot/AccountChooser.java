@@ -52,6 +52,8 @@ public class AccountChooser extends ListActivity
 		Intent in = new Intent(this, TransactionActivity.class);
 		in.putExtra(Account.KEY_ID, acct.id());
 		this.startActivity(in);
+		
+		// TODO: update account balance when transaction activity ends
 	}
 
 	@Override
@@ -177,7 +179,7 @@ public class AccountChooser extends ListActivity
 		
 		menu.setHeaderTitle(acct.name);
 		
-		menu.add(0, CONTEXT_EDIT, 0, R.string.account_edit);
-		menu.add(0, CONTEXT_DEL, 0, R.string.account_del);
+		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
+		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 	}
 }

@@ -17,11 +17,12 @@
 <string name="acct_bal">Initial Balance:</string>
 <string name="save">Save</string>
 <string name="cancel">Cancel</string>
-<string name="account_edit">Edit</string>
-<string name="account_del">Delete</string>
+<string name="edit">Edit</string>
+<string name="del">Delete</string>
 <string name="yes">Yes</string>
 <string name="no">No</string>
 <string name="account_del_box">Delete Account</string>
 
 <string name="about">About</string>
+<string name="copy">Copy</string>
 </resources>
