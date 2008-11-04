@@ -25,4 +25,7 @@
 
 <string name="about">About</string>
 <string name="copy">Copy</string>
+<string name="trans_posted">Posted</string>
+<string name="trans_budget">Budget</string>
+<string name="trans_balance">Balance</string>
 </resources>

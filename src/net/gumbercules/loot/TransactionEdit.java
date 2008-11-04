@@ -274,7 +274,6 @@ public class TransactionEdit extends Activity
 		String[] names = Account.getAccountNames();
 		
 		// if there is only one account in the database, tell the user they can't transfer and cancel
-		Log.e(TransactionEdit.class.toString(), "names.length = " + names.length);
 		if (names.length == 1)
 		{
 			// TODO: display message box

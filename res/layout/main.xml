@@ -10,9 +10,15 @@
 
 
 <ListView android:layout_height="wrap_content" android:id="@android:id/list" android:layout_width="fill_parent" android:layout_weight="100" android:paddingRight="5px"></ListView><LinearLayout android:layout_height="wrap_content" android:id="@+id/BalanceLayout" android:layout_width="fill_parent">
-<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText1" android:singleLine="false" android:text="Posted: $0.00" android:lines="2" android:gravity="top|left"></TextView><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText2" android:singleLine="false" android:lines="2" android:text="Balance: $0.00" android:gravity="top|center_horizontal"></TextView>
-<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText3" android:singleLine="false" android:lines="2" android:text="Budget: $0.00" android:gravity="top|right"></TextView>
+
+
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="fill_parent" android:orientation="vertical" android:layout_marginLeft="3px"><TextView android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText1" android:gravity="top|left" android:lines="1" android:text="@string/trans_posted" android:layout_width="fill_parent"></TextView>
+<TextView android:layout_height="wrap_content" android:gravity="top|left" android:lines="1" android:text="$0.00" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/postedValue"></TextView>
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="top|center_horizontal"><TextView android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText2" android:gravity="top|center_horizontal" android:lines="1" android:text="@string/trans_balance" android:layout_width="fill_parent"></TextView><TextView android:layout_height="wrap_content" android:text="$0.00" android:layout_width="fill_parent" android:gravity="top|center_horizontal" android:layout_weight="1" android:id="@+id/balanceValue"></TextView>
 </LinearLayout>
+<LinearLayout android:id="@+id/LinearLayout03" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="fill_parent" android:orientation="vertical" android:gravity="top|right" android:layout_marginRight="3px"><TextView android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText3" android:gravity="top|right" android:lines="1" android:text="@string/trans_budget" android:layout_width="fill_parent"></TextView><TextView android:layout_height="wrap_content" android:text="$0.00" android:gravity="top|right" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/budgetValue"></TextView>
+</LinearLayout></LinearLayout>
+
 
 
 

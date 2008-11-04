@@ -1,5 +1,6 @@
 package net.gumbercules.loot;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class TransactionActivity extends ListActivity
@@ -42,6 +44,10 @@ public class TransactionActivity extends ListActivity
 	private ArrayList<Transaction> mTransList;
 	private Account mAcct;
 	
+	private TextView budgetValue;
+	private TextView balanceValue;
+	private TextView postedValue;
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -50,28 +56,17 @@ public class TransactionActivity extends ListActivity
         
     	Bundle bun = getIntent().getExtras();
     	mAcct = Account.getAccountById(bun.getInt(Account.KEY_ID));
-    	setTitle("loot - " + mAcct.name);
+    	setTitle("loot :: " + mAcct.name);
+    	
+    	budgetValue = (TextView)findViewById(R.id.budgetValue);
+    	balanceValue = (TextView)findViewById(R.id.balanceValue);
+    	postedValue = (TextView)findViewById(R.id.postedValue);
     	
     	// TODO: find current orientation and send proper layout to constructor
     	mTransList = new ArrayList<Transaction>();
 	    TransactionAdapter ta = new TransactionAdapter(this, R.layout.trans_row_narrow, mTransList);
         setListAdapter(ta);
         fillList();
-    	
-        /************* TESTING ****************
-    	Transaction t;
-        java.util.Date date = new java.util.Date();
-        for (int i=0; i<10;++i)
-        {
-	        t = new Transaction(false, false, date, Transaction.CHECK, "Test 1", -5.25, 1001);
-	        mTransList.add(t);
-	        t = new Transaction(false, false, date, Transaction.DEPOSIT, "Test 2", 25.20, 1001);
-	        mTransList.add(t);
-	        t = new Transaction(true, false, date, Transaction.WITHDRAW, "Test 3", -15.00, 1001);
-	        mTransList.add(t);
-        }
-        Collections.sort(mTransList);
-        /************ END TESTING *************/
     }
     
     @Override
@@ -144,6 +139,35 @@ public class TransactionActivity extends ListActivity
     	startActivityForResult(i, ACTIVITY_EDIT);
     }
     
+    public void setBalances()
+    {
+    	Double posted = mAcct.calculatePostedBalance();
+    	Double balance = mAcct.calculateActualBalance();
+    	Double budget = mAcct.calculateBudgetBalance();
+    	
+		// change the numbers to the locale currency format
+		NumberFormat nf = NumberFormat.getCurrencyInstance();
+		String str;
+		
+		if (posted != null)
+			str = nf.format(posted);
+		else
+			str = "Error";
+		postedValue.setText(str);
+		
+		if (balance != null)
+			str = nf.format(balance);
+		else
+			str = "Error";
+		balanceValue.setText(nf.format(balance));
+		
+		if (budget != null)
+			str = nf.format(budget);
+		else
+			str = "Error";
+		budgetValue.setText(nf.format(budget));
+    }
+    
     private void fillList()
     {
 		int[] transIds = Transaction.getAllIds();
@@ -154,11 +178,12 @@ public class TransactionActivity extends ListActivity
 			for ( int id : transIds )
 				transList.add(Transaction.getTransactionById(id));
 		Collections.sort(transList);
+		
+		setBalances();
     }
     
     private void updateList(int trans_id, int request)
     {
-    	// TODO: fix this method to add new items
     	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
     	Transaction trans;
     	int pos;
@@ -180,6 +205,8 @@ public class TransactionActivity extends ListActivity
     		ta.remove(ta.getItem(pos));
     		break;
     	}
+
+		setBalances();
     }
 
 	@Override

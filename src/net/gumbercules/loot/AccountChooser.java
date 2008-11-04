@@ -51,7 +51,7 @@ public class AccountChooser extends ListActivity
 		
 		Intent in = new Intent(this, TransactionActivity.class);
 		in.putExtra(Account.KEY_ID, acct.id());
-		this.startActivity(in);
+		startActivityForResult(in, 0);
 		
 		// TODO: update account balance when transaction activity ends
 	}
@@ -96,7 +96,7 @@ public class AccountChooser extends ListActivity
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 	
-		if (resultCode == RESULT_OK)
+		//if (resultCode == RESULT_OK)
 			fillList();
 	}
 	

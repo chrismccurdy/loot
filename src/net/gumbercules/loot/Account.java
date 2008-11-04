@@ -154,7 +154,10 @@ public class Account
 	{
 		Double bal = calculateBalance("account = ? and purged = 0 and budget = 0");
 		if (bal != null)
-			this.actual_balance = bal;
+		{
+			this.actual_balance = bal + this.initialBalance;
+			return this.actual_balance;
+		}
 		return bal;
 	}
 	
@@ -167,7 +170,10 @@ public class Account
 	{
 		Double bal = calculateBalance("account = ? and posted = 1 and purged = 0");
 		if (bal != null)
-			this.posted_balance = bal;
+		{
+			this.posted_balance = bal + this.initialBalance;
+			return this.posted_balance;
+		}
 		return bal;
 	}
 	
@@ -180,7 +186,10 @@ public class Account
 	{
 		Double bal = calculateBalance("account = ? and purged = 0");
 		if (bal != null)
-			this.budget_balance = bal;
+		{
+			this.budget_balance = bal + this.initialBalance;
+			return this.budget_balance;
+		}
 		return bal;
 	}
 	

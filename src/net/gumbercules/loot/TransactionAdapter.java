@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 public class TransactionAdapter extends ArrayAdapter<Transaction>
@@ -79,36 +80,52 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 	{
 		transList.add(object);
 		Collections.sort(transList);
+		notifyDataSetChanged();
 	}
 
 	@Override
 	public void insert(Transaction object, int index)
 	{
 		transList.add(index, object);
+		notifyDataSetChanged();
 	}
 
 	@Override
 	public void remove(Transaction object)
 	{
 		transList.remove(object);
+		notifyDataSetChanged();
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		Transaction trans = transList.get(position);
+		final Transaction trans = transList.get(position);
 		View v = createViewFromResource(convertView, parent, rowResId);
 
 		// find and retrieve the widgets
 		TextView idText = (TextView)v.findViewById(R.id.IdText);
-		CheckBox postedCheck = (CheckBox)v.findViewById(R.id.PostedCheckBox);
+		final CheckBox postedCheck = (CheckBox)v.findViewById(R.id.PostedCheckBox);
 		TextView dateText = (TextView)v.findViewById(R.id.DateText);
 		TextView partyText = (TextView)v.findViewById(R.id.PartyText);
 		TextView amountText = (TextView)v.findViewById(R.id.AmountText);
 		TextView balanceText = (TextView)v.findViewById(R.id.BalanceText);
+		
+		// TODO: set listener on postedCheck to post when activated
+		postedCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+		{
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				trans.post(isChecked);
+				TransactionActivity ta = (TransactionActivity) postedCheck.getContext();
+				ta.setBalances();
+			}
+		});
 
 		// populate the widgets with data
 		String partyStr = "";
+		if (trans.budget)
+			partyStr += "B:";
 		if (trans.type == Transaction.CHECK)
 			partyStr += trans.check_num;
 		else if (trans.type == Transaction.WITHDRAW)
