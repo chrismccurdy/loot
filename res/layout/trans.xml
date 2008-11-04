@@ -18,7 +18,7 @@
 "fill_parent"><TableRow android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/dateRow"><TextView android:layout_width="wrap_content" android:text="Date:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/dateLabel"></TextView>
 
 <LinearLayout android:id="@+id/LinearLayout02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2"><EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:editable="false" android:layout_weight="1" android:id="@+id/dateEdit" android:enabled="false"></EditText>
-<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/datePickerButton"></ImageButton>
+<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/datePickerButton" android:scaleType="matrix" android:src="@drawable/ic_menu_today"></ImageButton>
 </LinearLayout>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/amountRow"><TextView android:layout_width="wrap_content" android:text="Amount:" android:layout_weight="1" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/amountLabel"></TextView>

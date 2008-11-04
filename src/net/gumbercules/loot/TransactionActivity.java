@@ -8,11 +8,13 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.OrientationListener;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
@@ -33,7 +35,7 @@ public class TransactionActivity extends ListActivity
 	public static final int NEW_TRANSACT_ID	= Menu.FIRST;
 	public static final int NEW_TRANSFER_ID	= Menu.FIRST + 1;
 	public static final int SORT_ID			= Menu.FIRST + 2;
-	public static final int GOTO_ID			= Menu.FIRST + 3;
+	public static final int SEARCH_ID			= Menu.FIRST + 3;
 	public static final int PURGE_ID		= Menu.FIRST + 4;
 	public static final int SETTINGS_ID		= Menu.FIRST + 5;
 	
@@ -62,23 +64,46 @@ public class TransactionActivity extends ListActivity
     	balanceValue = (TextView)findViewById(R.id.balanceValue);
     	postedValue = (TextView)findViewById(R.id.postedValue);
     	
-    	// TODO: find current orientation and send proper layout to constructor
+    	// find current orientation and send proper layout to constructor
+    	int layoutResId = R.layout.trans_row_narrow;
+    	if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+    		layoutResId = R.layout.trans_row_wide;
+    	
     	mTransList = new ArrayList<Transaction>();
-	    TransactionAdapter ta = new TransactionAdapter(this, R.layout.trans_row_narrow, mTransList);
+	    final TransactionAdapter ta = new TransactionAdapter(this, layoutResId, mTransList);
         setListAdapter(ta);
         fillList();
+
+    	@SuppressWarnings("unused")
+		OrientationListener orient = new OrientationListener(this)
+    	{
+			@Override
+			public void onOrientationChanged(int orientation)
+			{
+				if (orientation >= 270 && orientation < 360)
+					ta.setResource(R.layout.trans_row_wide);
+				else
+					ta.setResource(R.layout.trans_row_narrow);
+			}
+    	};
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
     	boolean result = super.onCreateOptionsMenu(menu);
-    	menu.add(0, NEW_TRANSACT_ID, 0, R.string.new_trans);
-    	menu.add(0, NEW_TRANSFER_ID, 0, R.string.transfer);
-    	menu.add(0, SORT_ID, 0, R.string.sort);
-    	menu.add(0, GOTO_ID, 0, R.string.goto_);
-    	menu.add(0, PURGE_ID, 0, R.string.purge);
-    	menu.add(0, SETTINGS_ID, 0, R.string.settings);
+    	menu.add(0, NEW_TRANSACT_ID, 0, R.string.new_trans)
+    		.setIcon(android.R.drawable.ic_menu_add);
+    	menu.add(0, NEW_TRANSFER_ID, 0, R.string.transfer)
+    		.setIcon(android.R.drawable.ic_menu_send);
+    	menu.add(0, SORT_ID, 0, R.string.sort)
+    		.setIcon(android.R.drawable.ic_menu_sort_by_size);
+    	menu.add(0, SEARCH_ID, 0, R.string.search)
+    		.setIcon(android.R.drawable.ic_menu_search);
+    	menu.add(0, PURGE_ID, 0, R.string.purge)
+    		.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+    	menu.add(0, SETTINGS_ID, 0, R.string.settings)
+    		.setIcon(android.R.drawable.ic_menu_preferences);
     	
     	return result;
     }
@@ -99,7 +124,7 @@ public class TransactionActivity extends ListActivity
     	case SORT_ID:
     		return true;
     		
-    	case GOTO_ID:
+    	case SEARCH_ID:
     		return true;
     		
     	case PURGE_ID:

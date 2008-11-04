@@ -10,7 +10,7 @@
 <string name="transfer">New Transfer</string>
 <string name="sort">Sort</string>
 
-<string name="goto_">Go To</string>
+<string name="search">Search</string>
 <string name="purge">Purge</string>
 <string name="new_account">New Account</string>
 <string name="acct_name">Account Name:</string>
@@ -23,7 +23,7 @@
 <string name="no">No</string>
 <string name="account_del_box">Delete Account</string>
 
-<string name="about">About</string>
+
 <string name="copy">Copy</string>
 <string name="trans_posted">Posted</string>
 <string name="trans_budget">Budget</string>

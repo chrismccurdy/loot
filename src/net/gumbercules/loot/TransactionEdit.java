@@ -145,8 +145,6 @@ public class TransactionEdit extends Activity
 			public void onClick(View view)
 			{
 				mFinishIntent = RESULT_OK;
-				//setResult(mFinishIntent);
-				//finish();
 				onPause();
 			}
 		});
@@ -155,9 +153,8 @@ public class TransactionEdit extends Activity
 		{
 			public void onClick(View view)
 			{
-				//setResult(mFinishIntent);
-				//finish();
-				onPause();
+				setResult(mFinishIntent);
+				finish();
 			}
 		});
 	}

@@ -1,6 +1,7 @@
 package net.gumbercules.loot;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -23,7 +24,7 @@ public class AccountChooser extends ListActivity
 	public static final int ACTIVITY_EDIT	= 1;
 	
 	public static final int NEW_ACCT_ID		= Menu.FIRST;
-	public static final int ABOUT_ID		= Menu.FIRST + 1;
+	public static final int SETTINGS_ID		= Menu.FIRST + 1;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST + 2;
 	public static final int CONTEXT_DEL		= Menu.FIRST + 3;
@@ -52,16 +53,16 @@ public class AccountChooser extends ListActivity
 		Intent in = new Intent(this, TransactionActivity.class);
 		in.putExtra(Account.KEY_ID, acct.id());
 		startActivityForResult(in, 0);
-		
-		// TODO: update account balance when transaction activity ends
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		boolean result = super.onCreateOptionsMenu(menu);
-		menu.add(0, NEW_ACCT_ID, 0, R.string.new_account);
-		menu.add(0, ABOUT_ID, 0, R.string.about);
+		menu.add(0, NEW_ACCT_ID, 0, R.string.new_account)
+			.setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, SETTINGS_ID, 0, R.string.settings)
+			.setIcon(android.R.drawable.ic_menu_preferences);
 		return result;
 	}
 
@@ -95,9 +96,7 @@ public class AccountChooser extends ListActivity
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		super.onActivityResult(requestCode, resultCode, data);
-	
-		//if (resultCode == RESULT_OK)
-			fillList();
+		fillList();
 	}
 	
 	private void fillList()

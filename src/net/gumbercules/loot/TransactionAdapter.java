@@ -111,7 +111,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 		TextView amountText = (TextView)v.findViewById(R.id.AmountText);
 		TextView balanceText = (TextView)v.findViewById(R.id.BalanceText);
 		
-		// TODO: set listener on postedCheck to post when activated
 		postedCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
@@ -142,10 +141,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 		NumberFormat nf = NumberFormat.getCurrencyInstance();
 		String amountStr = nf.format(Math.abs(trans.amount));
 		
-		// if we're in a portrait view, add the date below the party
-		//if (rowResId == R.layout.trans_row_narrow)
-		//	partyStr += "\n" + dateStr;
-
 		if (idText != null)
 			idText.setText(Integer.toString(trans.id()));
 		if (postedCheck != null)
