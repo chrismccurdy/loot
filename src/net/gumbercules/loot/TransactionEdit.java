@@ -34,8 +34,6 @@ public class TransactionEdit extends Activity
 	
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
-	@SuppressWarnings("unused")
-	private RadioButton depositRadio;
 	
 	private EditText dateEdit;
 	private ImageButton dateButton;
@@ -47,8 +45,6 @@ public class TransactionEdit extends Activity
 	private Spinner accountSpinner;
 	private Spinner repeatSpinner;
 	
-	@SuppressWarnings("unused")
-	private RadioButton actualRadio;
 	private RadioButton budgetRadio;
 	
 	private Button saveButton;
@@ -85,7 +81,6 @@ public class TransactionEdit extends Activity
 	
 	private void populateFields()
 	{
-		depositRadio = (RadioButton)findViewById(R.id.depositRadio);
 		withdrawRadio = (RadioButton)findViewById(R.id.withdrawRadio);
 		checkRadio = (RadioButton)findViewById(R.id.checkRadio);
 		
@@ -103,7 +98,6 @@ public class TransactionEdit extends Activity
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         repeatSpinner.setAdapter(adapter);
 
-		actualRadio = (RadioButton)findViewById(R.id.ActualRadio);
 		budgetRadio = (RadioButton)findViewById(R.id.BudgetRadio);
 		
 		saveButton = (Button)findViewById(R.id.saveButton);
@@ -244,7 +238,7 @@ public class TransactionEdit extends Activity
 						// autopopulate the edit with the next check number
 						Account acct = Account.getAccountById(mAccountId);
 						int check_num = acct.getNextCheckNum();
-						checkEdit.setText(check_num + "");
+						checkEdit.setText(new Integer(check_num).toString());
 					}
 				}
 				checkEdit.setEnabled(isChecked);

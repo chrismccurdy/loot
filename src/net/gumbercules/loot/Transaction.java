@@ -182,7 +182,6 @@ public class Transaction
 		try
 		{
 			lootDB.execSQL(insert, bindArgs);
-			//lootDB.execSQL(insert);
 		}
 		catch (SQLException e)
 		{
@@ -221,7 +220,7 @@ public class Transaction
 		lootDB.endTransaction();
 		
 		Account acct = new Account();
-		acct.loadById(Account.getCurrentAccountNum());
+		acct.loadById(this.account);
 		acct.setLastTransactionDate(this.date);
 		
 		return this.id;
@@ -272,7 +271,7 @@ public class Transaction
 		lootDB.endTransaction();
 		
 		Account acct = new Account();
-		acct.loadById(Account.getCurrentAccountNum());
+		acct.loadById(this.account);
 		acct.setLastTransactionDate(this.date);
 
 		return ret;
@@ -280,6 +279,11 @@ public class Transaction
 	
 	private boolean writeTags()
 	{
+		// no tags, nothing to write, it's a success
+		int sz = this.tags.size();
+		if (sz == 0)
+			return true;
+		
 		String insert = "insert into tags (trans_id,name) values (?,?)";
 		Object[] bindArgs = new Object[2];
 		bindArgs[0] = new Long(this.id);
@@ -287,7 +291,6 @@ public class Transaction
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
 		
-		int sz = this.tags.size();
 		String[] used = new String[sz];
 		for (int x = 0; x < sz; ++x)
 			used[x] = "";
@@ -588,7 +591,7 @@ public class Transaction
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
-
+		
 		// write this transaction to the database
 		this.party = "Transfer " + detail1 + acct2.name;
 		int ret = this.write(acct1.id());
