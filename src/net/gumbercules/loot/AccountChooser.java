@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
@@ -38,6 +39,8 @@ public class AccountChooser extends ListActivity
 		getListView().setOnCreateContextMenuListener(this);
 		
 		accountList = new ArrayList<Account>();
+		AccountAdapter accounts = new AccountAdapter(this, R.layout.account_row, accountList);
+		setListAdapter(accounts);
 		fillList();
 	}
 
@@ -97,6 +100,7 @@ public class AccountChooser extends ListActivity
 		fillList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void fillList()
 	{
 		int[] acctIds = Account.getAccountIds();
@@ -105,9 +109,7 @@ public class AccountChooser extends ListActivity
 		if (acctIds != null)
 			for ( int id : acctIds )
 				accountList.add(Account.getAccountById(id));
-
-		AccountAdapter accounts = new AccountAdapter(this, R.layout.account_row, accountList);
-		setListAdapter(accounts);
+		((ArrayAdapter<Account>)getListAdapter()).notifyDataSetChanged();
 	}
 
 	@Override

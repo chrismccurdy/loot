@@ -284,13 +284,13 @@ public class TransactionEdit extends Activity
 		Account acct = Account.getAccountById(mAccountId);
 		int i = 0;
 		for ( String name : names )
-			if (name != acct.name)
+			if (!name.equalsIgnoreCase(acct.name))
 				acctNames[i++] = name;
 		
 		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
 				android.R.layout.simple_spinner_item, acctNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        accountSpinner.setAdapter(adapter);	
+        accountSpinner.setAdapter(adapter);
 	}
 
 	@Override

@@ -54,7 +54,7 @@ public class Database
 	
 	private boolean createDB()
 	{
-		String[] createSQL = new String[14];
+		String[] createSQL = new String[15];
 		
 		createSQL[0] = "create table accounts(\n" + 
 					"	id integer primary key autoincrement,\n" +
@@ -118,7 +118,9 @@ public class Database
 		createSQL[11] = "insert into options values ('auto_purge_days','-1')";
 		createSQL[12] = "insert into options values ('del_transfer_warn','1')";
 		createSQL[13] = "insert into options values ('post_repeats_early','2')";
-
+		
+		createSQL[14] = "create index idx_trans_id on transactions ( id asc )";
+		
 		try
 		{
 			lootDB.beginTransaction();

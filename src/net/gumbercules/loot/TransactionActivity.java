@@ -74,8 +74,12 @@ public class TransactionActivity extends ListActivity
 	    final TransactionAdapter ta = new TransactionAdapter(this, layoutResId, mTransList);
         setListAdapter(ta);
         fillList();
+        
+        //ListView view = getListView();
+        //view.setFocusable(true);
+        //view.setItemsCanFocus(true);
 
-    	@SuppressWarnings("unused")
+    	/*@SuppressWarnings("unused")
 		OrientationListener orient = new OrientationListener(this)
     	{
 			@Override
@@ -86,7 +90,7 @@ public class TransactionActivity extends ListActivity
 				else
 					ta.setResource(R.layout.trans_row_narrow);
 			}
-    	};
+    	};*/
     }
     
     @Override
@@ -209,7 +213,7 @@ public class TransactionActivity extends ListActivity
     
     private void fillList()
     {
-		int[] transIds = Transaction.getAllIds();
+		int[] transIds = mAcct.getTransactionIds();
 		ArrayList<Transaction> transList = mTransList;
 		transList.clear();
 		

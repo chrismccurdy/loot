@@ -382,4 +382,36 @@ public class Account
 	{
 		return Database.getOptionInt("last_trans_" + this.id);
 	}
+	
+	public int[] getTransactionIds()
+	{
+		SQLiteDatabase lootDB;
+		try
+		{
+			lootDB = Database.getDatabase();
+		}
+		catch (SQLException e)
+		{
+			return null;
+		}
+		
+		Cursor cur = lootDB.rawQuery("select id from transactions where account = " + this.id + 
+				" order by id asc", null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		int[] ids = new int[cur.getCount()];
+		int i = 0;
+		
+		do
+		{
+			ids[i++] = cur.getInt(0);
+		} while (cur.moveToNext());
+		cur.close();
+		
+		return ids;
+	}
 }

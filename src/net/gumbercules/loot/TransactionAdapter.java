@@ -8,6 +8,7 @@ import java.util.Collections;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -103,38 +104,27 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		final Transaction trans = transList.get(position);
+		if (trans == null)
+			return null;
+		
 		View v = createViewFromResource(convertView, parent, rowResId);
 
 		// find and retrieve the widgets
-		TextView idText = (TextView)v.findViewById(R.id.IdText);
 		CheckBox postedCheck = (CheckBox)v.findViewById(R.id.PostedCheckBox);
 		TextView dateText = (TextView)v.findViewById(R.id.DateText);
 		TextView partyText = (TextView)v.findViewById(R.id.PartyText);
 		TextView amountText = (TextView)v.findViewById(R.id.AmountText);
-		TextView balanceText = (TextView)v.findViewById(R.id.BalanceText);
-		
-		final int pos = position;
-		v.setFocusable(true);
-		v.setFocusableInTouchMode(true);
-		v.setOnClickListener(new View.OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				ListView parent = (ListView)v.getParent();
-				Log.d("ON_CLICK_LISTENER", "" + parent.requestFocus());
-				TransactionActivity ta = (TransactionActivity)v.getContext();
-				ta.setSelection(pos);
-				Log.d("ON_CLICK_LISTENER", "" + ta.getSelectedItemId());
-			}	
-		});
 		
 		postedCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
-				trans.post(isChecked);
-				TransactionActivity ta = (TransactionActivity) buttonView.getContext();
-				ta.setBalances();
+				if (trans.isPosted() != isChecked)
+				{
+					trans.post(isChecked);
+					TransactionActivity ta = (TransactionActivity) buttonView.getContext();
+					ta.setBalances();
+				}
 			}
 		});
 
@@ -158,8 +148,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 		NumberFormat nf = NumberFormat.getCurrencyInstance();
 		String amountStr = nf.format(Math.abs(trans.amount));
 		
-		if (idText != null)
-			idText.setText(Integer.toString(trans.id()));
 		if (postedCheck != null)
 			postedCheck.setChecked(trans.isPosted());
 		if (dateText != null)
@@ -168,11 +156,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 			partyText.setText(partyStr);
 		if (amountText != null)
 			amountText.setText(amountStr);
-		/* TODO: set balance text
-		if (balanceText != null)
-			balanceText.setText("");
-		*/
-
+		
 		return v;
 	}
 

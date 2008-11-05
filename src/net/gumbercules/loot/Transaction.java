@@ -210,6 +210,7 @@ public class Transaction
 		if (writeTags())
 		{
 			lootDB.setTransactionSuccessful();
+			Log.e("NEW_TRANSACTION", "YAY TAGS");
 		}
 		else
 		{
@@ -473,37 +474,6 @@ public class Transaction
 		return (String[])parties.toArray();
 	}
 	
-	public static int[] getAllIds()
-	{
-		SQLiteDatabase lootDB;
-		try
-		{
-			lootDB = Database.getDatabase();
-		}
-		catch (SQLException e)
-		{
-			return null;
-		}
-		
-		Cursor cur = lootDB.rawQuery("select id from transactions order by id asc", null);
-		if (!cur.moveToFirst())
-		{
-			cur.close();
-			return null;
-		}
-		
-		int[] ids = new int[cur.getCount()];
-		int i = 0;
-		
-		do
-		{
-			ids[i++] = cur.getInt(0);
-		} while (cur.moveToNext());
-		cur.close();
-		
-		return ids;
-	}
-	
 	public void loadTags()
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();
@@ -625,35 +595,22 @@ public class Transaction
 		
 		trans2.party = "Transfer " + detail2 + acct1.name;
 		int transfer_id = trans2.write(acct2.id());
-		
-		// update the initialBalance of the secondary account if the transaction was purged
-		if (update && purged)
+
+		if (ret == -1 || transfer_id == -1)
 		{
-			double a, b;
-			if (trans2.type == Transaction.WITHDRAW)
-			{
-				a = old_trans.amount;
-				b = trans2.amount;
-			}
-			else
-			{
-				a = trans2.amount;
-				b = old_trans.amount;
-			}
-			
-			acct2.initialBalance += a - b;
-			acct2.write();
-			
-			if (ret > -1 && transfer_id > -1)
-			{
-				lootDB.setTransactionSuccessful();
-			}
+			lootDB.endTransaction();
+			return -1;
 		}
-		else
+		
+		Log.d("TRANSACTION_TRANSFER", ret + " :: " + transfer_id );
+		
+		if (!update)
 		{
 			// make sure both transfers succeeded and link them together
-			if (( ret > -1 && transfer_id > -1 ) && linkTransfer(ret, transfer_id))
+			if (linkTransfer(ret, transfer_id))
 			{
+				Log.d("TRANSACTION_TRANSFER", "TRANSACTION SUCCESSFUL");
+				Log.d("TRANSACTION_TRANSFER", lootDB.isDbLockedByOtherThreads() + " locked");
 				lootDB.setTransactionSuccessful();
 			}
 			else
@@ -661,8 +618,42 @@ public class Transaction
 				ret = -1;
 			}
 		}
-			
+		else
+		{
+			if (!purged)
+			{
+				lootDB.setTransactionSuccessful();
+			}
+			else
+			{
+				// update the initialBalance of the secondary account if the transaction was purged
+				double a, b;
+				if (trans2.type == Transaction.WITHDRAW)
+				{
+					a = old_trans.amount;
+					b = trans2.amount;
+				}
+				else
+				{
+					a = trans2.amount;
+					b = old_trans.amount;
+				}
+				
+				acct2.initialBalance += a - b;
+				if (acct2.write() != -1)
+				{
+					lootDB.setTransactionSuccessful();
+				}
+				else
+				{
+					ret = -1;
+				}
+			}
+		}
+		
+		Log.d("TRANSACTION_TRANSFER", ""+(Transaction.getTransactionById(ret) == null));
 		lootDB.endTransaction();
+		Log.d("TRANSACTION_TRANSFER", ""+(Transaction.getTransactionById(ret) == null));
 		
 		return ret;
 	}
@@ -706,7 +697,7 @@ public class Transaction
 	
 	protected boolean linkTransfer(int id1, int id2)
 	{
-		if (!removeTransfer(Transaction.getTransactionById(id2)))
+		if (!removeTransfer(Transaction.getTransactionById(id2)) || id1 == -1 || id2 == -1)
 		{
 			return false;
 		}
