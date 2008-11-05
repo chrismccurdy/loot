@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class TransactionAdapter extends ArrayAdapter<Transaction>
@@ -105,18 +107,33 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 
 		// find and retrieve the widgets
 		TextView idText = (TextView)v.findViewById(R.id.IdText);
-		final CheckBox postedCheck = (CheckBox)v.findViewById(R.id.PostedCheckBox);
+		CheckBox postedCheck = (CheckBox)v.findViewById(R.id.PostedCheckBox);
 		TextView dateText = (TextView)v.findViewById(R.id.DateText);
 		TextView partyText = (TextView)v.findViewById(R.id.PartyText);
 		TextView amountText = (TextView)v.findViewById(R.id.AmountText);
 		TextView balanceText = (TextView)v.findViewById(R.id.BalanceText);
+		
+		final int pos = position;
+		v.setFocusable(true);
+		v.setFocusableInTouchMode(true);
+		v.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				ListView parent = (ListView)v.getParent();
+				Log.d("ON_CLICK_LISTENER", "" + parent.requestFocus());
+				TransactionActivity ta = (TransactionActivity)v.getContext();
+				ta.setSelection(pos);
+				Log.d("ON_CLICK_LISTENER", "" + ta.getSelectedItemId());
+			}	
+		});
 		
 		postedCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
 				trans.post(isChecked);
-				TransactionActivity ta = (TransactionActivity) postedCheck.getContext();
+				TransactionActivity ta = (TransactionActivity) buttonView.getContext();
 				ta.setBalances();
 			}
 		});

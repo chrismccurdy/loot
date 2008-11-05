@@ -1,8 +1,6 @@
 package net.gumbercules.loot;
 
 import java.util.ArrayList;
-import java.util.Set;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
@@ -46,7 +44,7 @@ public class AccountChooser extends ListActivity
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id)
 	{
-		Account acct = Account.getAccountById((int)getListAdapter().getItemId(position));
+		Account acct = Account.getAccountById((int)id);
 		if (acct == null)
 			return;
 		

@@ -239,7 +239,7 @@ public class TransactionEdit extends Activity
 				checkEdit = (EditText)findViewById(R.id.checkEdit);
 				if (isChecked)
 				{
-					if (checkEdit.getText().toString() == "")
+					if (checkEdit.getText().toString().equals(""))
 					{
 						// autopopulate the edit with the next check number
 						Account acct = Account.getAccountById(mAccountId);

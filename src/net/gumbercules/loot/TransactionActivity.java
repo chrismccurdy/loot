@@ -18,6 +18,7 @@ import android.view.OrientationListener;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
@@ -137,7 +138,20 @@ public class TransactionActivity extends ListActivity
     	return super.onOptionsItemSelected(item);
     }
     
-    public void createTransaction()
+    @Override
+	protected void onListItemClick(ListView l, View v, int position, long id)
+    {
+    	Log.d("ON_LIST_ITEM_CLICK", "FUCK YOU!!!");
+		Transaction trans = Transaction.getTransactionById((int)id);
+		if (trans == null)
+			return;
+		
+		Intent in = new Intent(this, TransactionEdit.class);
+		in.putExtra(Transaction.KEY_ID, trans.id());
+		startActivityForResult(in, 0);
+	}
+
+	public void createTransaction()
     {
     	Intent i = new Intent(this, TransactionEdit.class);
     	int request = ACTIVITY_CREATE;
