@@ -588,46 +588,39 @@ public class Transaction
 			detail2 = "from ";
 			trans2.type = Transaction.DEPOSIT;
 		}
-		
-		SQLiteDatabase lootDB = Database.getDatabase();
-		lootDB.beginTransaction();
+
+		// sqlite craps out if we wrap all this in a transaction block
+		// so we have to assume that if there is an error, the erasures 
+		// always run successfully
 		
 		// write this transaction to the database
 		this.party = "Transfer " + detail1 + acct2.name;
 		int ret = this.write(acct1.id());
+		if (ret == -1)
+			return -1;
 		
 		trans2.party = "Transfer " + detail2 + acct1.name;
 		int transfer_id = trans2.write(acct2.id());
 
-		if (ret == -1 || transfer_id == -1)
+		if (transfer_id == -1)
 		{
-			lootDB.endTransaction();
+			this.erase();
 			return -1;
 		}
-		
-		Log.d("TRANSACTION_TRANSFER", ret + " :: " + transfer_id );
 		
 		if (!update)
 		{
 			// make sure both transfers succeeded and link them together
-			if (linkTransfer(ret, transfer_id))
+			if (!linkTransfer(ret, transfer_id))
 			{
-				Log.d("TRANSACTION_TRANSFER", "TRANSACTION SUCCESSFUL");
-				Log.d("TRANSACTION_TRANSFER", lootDB.isDbLockedByOtherThreads() + " locked");
-				lootDB.setTransactionSuccessful();
-			}
-			else
-			{
+				this.erase();
+				trans2.erase();
 				ret = -1;
 			}
 		}
 		else
 		{
-			if (!purged)
-			{
-				lootDB.setTransactionSuccessful();
-			}
-			else
+			if (purged)
 			{
 				// update the initialBalance of the secondary account if the transaction was purged
 				double a, b;
@@ -643,20 +636,16 @@ public class Transaction
 				}
 				
 				acct2.initialBalance += a - b;
-				if (acct2.write() != -1)
+				if (acct2.write() == -1)
 				{
-					lootDB.setTransactionSuccessful();
-				}
-				else
-				{
+					this.eraseTransfer();
+					this.erase();
+					trans2.erase();
 					ret = -1;
 				}
 			}
 		}
 		
-		Log.d("TRANSACTION_TRANSFER", ""+(Transaction.getTransactionById(ret) == null));
-		lootDB.endTransaction();
-		Log.d("TRANSACTION_TRANSFER", ""+(Transaction.getTransactionById(ret) == null));
 		
 		return ret;
 	}

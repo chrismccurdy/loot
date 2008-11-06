@@ -362,7 +362,10 @@ public class TransactionEdit extends Activity
 		if (mType == TransactionActivity.TRANSACTION)
 			id = trans.write(mAccountId);
 		else
+		{
+			trans.account = mAccountId;
 			id = trans.transfer(acct2);
+		}
 		
 		Log.e("TransactionEdit", "mType = " + mType);
 		Log.e("TransactionEdit", "id = " + id);
