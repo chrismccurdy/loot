@@ -1,8 +1,10 @@
 package net.gumbercules.loot;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
 
 import android.app.Activity;
@@ -91,6 +93,7 @@ public class TransactionEdit extends Activity
 		dateButton = (ImageButton)findViewById(R.id.datePickerButton);
 		
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
+		amountEdit.setKeyListener(new CurrencyKeyListener());
 		tagsEdit = (EditText)findViewById(R.id.tagsEdit);
 		
 		// create the repeat spinner and populate the values
@@ -116,6 +119,7 @@ public class TransactionEdit extends Activity
         });
 
 		// load the transaction if mTransId > 0
+        Transaction trans = null;
 		if (mTransId == 0)
 		{
 			mTrans = new Transaction();
@@ -126,43 +130,45 @@ public class TransactionEdit extends Activity
 		else
 		{
 			mTrans = Transaction.getTransactionById(mTransId);
-			Transaction trans = mTrans;
+			trans = mTrans;
 			
+			if (trans == null)
+			{
+				Log.e(TransactionEdit.class.toString(), "trans is null in populateFields()");
+				return;
+			}
+
+			// figure out if this is a normal transaction or a transfer
 			if (mTrans.getTransferId() != -1)
-			{
 				mType = TransactionActivity.TRANSFER;
-			}
 			else
-			{
 				mType = TransactionActivity.TRANSACTION;
-				partyEdit.setText(trans.party);
-			}
 			
-			if (trans.type == Transaction.CHECK)
+			if (trans.type == Transaction.WITHDRAW)
 			{
-				checkEdit.setText(new Integer(trans.check_num).toString());
-				checkRadio.setSelected(true);
+				withdrawRadio.setChecked(true);
 			}
-			else if (trans.type == Transaction.WITHDRAW)
+			else if (trans.type == Transaction.DEPOSIT)
 			{
-				withdrawRadio.setSelected(true);
-			}
-			else
-			{
-				depositRadio.setSelected(true);
+				depositRadio.setChecked(true);
 			}
 			
 			if (trans.budget && !trans.isPosted())
 			{
-				budgetRadio.setSelected(true);
+				budgetRadio.setChecked(true);
 			}
 			else
 			{
-				actualRadio.setSelected(true);
+				actualRadio.setChecked(true);
 			}
 			
 			setDateEdit(trans.date);
+			NumberFormat nf = NumberFormat.getCurrencyInstance();
+			Currency cur = nf.getCurrency();
+			amountEdit.setText(nf.format(trans.amount).replace(cur.getSymbol(), ""));
+			tagsEdit.setText(trans.tagListToString());
 			
+			// TODO: set repeat spinner to correct value
 		}
         
 		if (mType == TransactionActivity.TRANSFER)
@@ -178,6 +184,16 @@ public class TransactionEdit extends Activity
 		else
 		{
 			showTransactionFields();
+			if (trans != null)
+			{
+				partyEdit.setText(trans.party);
+
+				if (trans.type == Transaction.CHECK)
+				{
+					checkEdit.setText(new Integer(trans.check_num).toString());
+					checkRadio.setChecked(true);
+				}
+			}
 		}
 
 		saveButton.setOnClickListener(new View.OnClickListener()

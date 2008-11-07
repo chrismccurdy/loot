@@ -98,8 +98,12 @@ public class TransactionActivity extends ListActivity
     	boolean result = super.onCreateOptionsMenu(menu);
     	menu.add(0, NEW_TRANSACT_ID, 0, R.string.new_trans)
     		.setIcon(android.R.drawable.ic_menu_add);
-    	menu.add(0, NEW_TRANSFER_ID, 0, R.string.transfer)
-    		.setIcon(android.R.drawable.ic_menu_send);
+    	
+    	// only show transfers if there is more than one account
+    	if (Account.getAccountIds().length > 1)
+    		menu.add(0, NEW_TRANSFER_ID, 0, R.string.transfer)
+    			.setIcon(android.R.drawable.ic_menu_send);
+    	
     	menu.add(0, SORT_ID, 0, R.string.sort)
     		.setIcon(android.R.drawable.ic_menu_sort_by_size);
     	menu.add(0, SEARCH_ID, 0, R.string.search)
@@ -274,6 +278,9 @@ public class TransactionActivity extends ListActivity
 		case CONTEXT_COPY:
 			Transaction tr = Transaction.getTransactionById(id);
 			tr.setId(-1);
+			if (tr.type == Transaction.CHECK)
+				tr.check_num = mAcct.getNextCheckNum();
+			tr.post(false);
 			id = tr.write(mAcct.id());
 			updateList(id, ACTIVITY_CREATE);
 			return true;

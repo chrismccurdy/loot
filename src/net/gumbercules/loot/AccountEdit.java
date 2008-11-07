@@ -24,6 +24,7 @@ public class AccountEdit extends Activity
 		
 		mNameEdit = (EditText)findViewById(R.id.NameEdit);
 		mBalanceEdit = (EditText)findViewById(R.id.BalanceEdit);
+		mBalanceEdit.setKeyListener(new CurrencyKeyListener());
 		Button SaveButton = (Button)findViewById(R.id.SaveButton);
 		Button CancelButton = (Button)findViewById(R.id.CancelButton);
 		
