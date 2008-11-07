@@ -75,10 +75,9 @@ public class TransactionActivity extends ListActivity
         setListAdapter(ta);
         fillList();
         
-        //ListView view = getListView();
-        //view.setFocusable(true);
-        //view.setItemsCanFocus(true);
-
+        ListView view = getListView();
+        registerForContextMenu(view);
+        
     	/*@SuppressWarnings("unused")
 		OrientationListener orient = new OrientationListener(this)
     	{
@@ -141,19 +140,6 @@ public class TransactionActivity extends ListActivity
     	
     	return super.onOptionsItemSelected(item);
     }
-    
-    @Override
-	protected void onListItemClick(ListView l, View v, int position, long id)
-    {
-    	Log.d("ON_LIST_ITEM_CLICK", "FUCK YOU!!!");
-		Transaction trans = Transaction.getTransactionById((int)id);
-		if (trans == null)
-			return;
-		
-		Intent in = new Intent(this, TransactionEdit.class);
-		in.putExtra(Transaction.KEY_ID, trans.id());
-		startActivityForResult(in, 0);
-	}
 
 	public void createTransaction()
     {
@@ -285,6 +271,13 @@ public class TransactionActivity extends ListActivity
 			editTransaction(id);
 			return true;
 			
+		case CONTEXT_COPY:
+			Transaction tr = Transaction.getTransactionById(id);
+			tr.setId(-1);
+			id = tr.write(mAcct.id());
+			updateList(id, ACTIVITY_CREATE);
+			return true;
+			
 		case CONTEXT_DEL:
 			final Transaction trans = Transaction.getTransactionById(id);
 			AlertDialog dialog = new AlertDialog.Builder(this)
@@ -325,6 +318,12 @@ public class TransactionActivity extends ListActivity
 			return;
 		}
 		
+		if (info == null)
+		{
+			Log.e(TransactionActivity.class.toString(), "info == null");
+			return;
+		}
+
 		Transaction trans = (Transaction)getListAdapter().getItem(info.position);
 		if (trans == null)
 			return;

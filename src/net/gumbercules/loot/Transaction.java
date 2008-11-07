@@ -144,6 +144,11 @@ public class Transaction
 		return tags.split(" ");
 	}
 	
+	public void setId(int id)
+	{
+		this.id = id;
+	}
+	
 	public int id()
 	{
 		return this.id;

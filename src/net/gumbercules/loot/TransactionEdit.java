@@ -31,9 +31,10 @@ public class TransactionEdit extends Activity
 	private int mType;
 	private int mAccountId;
 	private boolean mFinished;
-	
+
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
+	private RadioButton depositRadio;
 	
 	private EditText dateEdit;
 	private ImageButton dateButton;
@@ -46,6 +47,7 @@ public class TransactionEdit extends Activity
 	private Spinner repeatSpinner;
 	
 	private RadioButton budgetRadio;
+	private RadioButton actualRadio;
 	
 	private Button saveButton;
 	private Button cancelButton;
@@ -81,6 +83,7 @@ public class TransactionEdit extends Activity
 	
 	private void populateFields()
 	{
+		depositRadio = (RadioButton)findViewById(R.id.depositRadio);
 		withdrawRadio = (RadioButton)findViewById(R.id.withdrawRadio);
 		checkRadio = (RadioButton)findViewById(R.id.checkRadio);
 		
@@ -98,6 +101,7 @@ public class TransactionEdit extends Activity
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         repeatSpinner.setAdapter(adapter);
 
+        actualRadio = (RadioButton)findViewById(R.id.ActualRadio);
 		budgetRadio = (RadioButton)findViewById(R.id.BudgetRadio);
 		
 		saveButton = (Button)findViewById(R.id.saveButton);
@@ -122,18 +126,60 @@ public class TransactionEdit extends Activity
 		else
 		{
 			mTrans = Transaction.getTransactionById(mTransId);
-			// TODO: fill in the values
+			Transaction trans = mTrans;
+			
+			if (mTrans.getTransferId() != -1)
+			{
+				mType = TransactionActivity.TRANSFER;
+			}
+			else
+			{
+				mType = TransactionActivity.TRANSACTION;
+				partyEdit.setText(trans.party);
+			}
+			
+			if (trans.type == Transaction.CHECK)
+			{
+				checkEdit.setText(new Integer(trans.check_num).toString());
+				checkRadio.setSelected(true);
+			}
+			else if (trans.type == Transaction.WITHDRAW)
+			{
+				withdrawRadio.setSelected(true);
+			}
+			else
+			{
+				depositRadio.setSelected(true);
+			}
+			
+			if (trans.budget && !trans.isPosted())
+			{
+				budgetRadio.setSelected(true);
+			}
+			else
+			{
+				actualRadio.setSelected(true);
+			}
+			
+			setDateEdit(trans.date);
+			
 		}
-
+        
 		if (mType == TransactionActivity.TRANSFER)
 		{
-			showTransferFields();
+	        ArrayAdapter<CharSequence> accountAdapter = showTransferFields();
+	        if (mTransId != 0 && accountAdapter != null)
+	        {
+	        	Account acct = Account.getAccountById(mAccountId);
+	        	int pos = accountAdapter.getPosition(acct.name);
+	        	accountSpinner.setSelection(pos);
+	        }
 		}
 		else
 		{
 			showTransactionFields();
 		}
-		
+
 		saveButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View view)
@@ -249,7 +295,7 @@ public class TransactionEdit extends Activity
 		checkEdit = (EditText)findViewById(R.id.checkEdit);
 	}
 	
-	private void showTransferFields()
+	private ArrayAdapter<CharSequence> showTransferFields()
 	{
 		// if we're showing a transfer window, hide the check button, check field, and party field
 		checkRadio.setVisibility(RadioButton.GONE);
@@ -270,7 +316,7 @@ public class TransactionEdit extends Activity
 			// TODO: display message box
 			setResult(mFinishIntent);
 			finish();
-			return;
+			return null;
 		}
 		
 		String[] acctNames = new String[names.length - 1];
@@ -285,6 +331,8 @@ public class TransactionEdit extends Activity
 				android.R.layout.simple_spinner_item, acctNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accountSpinner.setAdapter(adapter);
+        
+        return adapter;
 	}
 
 	@Override
