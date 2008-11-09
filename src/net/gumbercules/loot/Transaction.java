@@ -18,7 +18,7 @@ public class Transaction
 	public static final int COMP_AMT	= 1;
 	public static final int COMP_PARTY	= 2;
 	
-	private static int comp = COMP_DATE;
+	private static int comp = (int)Database.getOptionInt("sort_column");
 	
 	public static final String KEY_ID	= "t_id";
 		
@@ -774,8 +774,14 @@ public class Transaction
 	{
 		if (pcomp == COMP_DATE || pcomp == COMP_PARTY || pcomp == COMP_AMT)
 			comp = pcomp;
+		Database.setOption("sort_column", comp);
 	}
-	
+
+	public static int getComparator()
+	{
+		return comp;
+	}
+
 	private int compareDates(Transaction t2)
 	{
 		return this.date.compareTo(t2.date);

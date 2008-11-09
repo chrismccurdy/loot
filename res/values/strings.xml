@@ -28,4 +28,5 @@
 <string name="trans_posted">Posted</string>
 <string name="trans_budget">Budget</string>
 <string name="trans_balance">Balance</string>
+<string name="sort_column">Sort Column</string>
 </resources>

@@ -6,10 +6,8 @@ import java.util.Currency;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.method.NumberKeyListener;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
 
 public class CurrencyKeyListener extends NumberKeyListener
 {

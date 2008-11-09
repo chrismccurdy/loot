@@ -74,6 +74,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 	{
 		return transList;
 	}
+	
+	public void sort()
+	{
+		Collections.sort(transList);
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public void add(Transaction object)

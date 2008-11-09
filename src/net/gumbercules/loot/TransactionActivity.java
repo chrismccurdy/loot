@@ -10,6 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -18,6 +20,9 @@ import android.view.OrientationListener;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -47,6 +52,8 @@ public class TransactionActivity extends ListActivity
 	private ArrayList<Transaction> mTransList;
 	private Account mAcct;
 	
+	private EditText searchEdit;
+	
 	private TextView budgetValue;
 	private TextView balanceValue;
 	private TextView postedValue;
@@ -64,6 +71,34 @@ public class TransactionActivity extends ListActivity
     	budgetValue = (TextView)findViewById(R.id.budgetValue);
     	balanceValue = (TextView)findViewById(R.id.balanceValue);
     	postedValue = (TextView)findViewById(R.id.postedValue);
+    	
+    	// add a listener to filter the list whenever the text changes
+    	searchEdit = (EditText)findViewById(R.id.SearchEdit);
+    	searchEdit.addTextChangedListener(new TextWatcher()
+    	{
+    		// we only care what the end result is
+			public void afterTextChanged(Editable s)
+			{
+				String str = s.toString();
+				TransactionAdapter ta = (TransactionAdapter)getListAdapter();
+				//ta.setFilter(str);
+				// TODO: set a filter on the transaction adapter
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+			public void onTextChanged(CharSequence s, int start, int before, int count) { }
+    	});
+    	
+    	// add a listener to clear searchEdit when pressed
+    	ImageButton clearButton = (ImageButton)findViewById(R.id.ClearButton);
+    	clearButton.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			public void onClick(View v)
+			{
+				searchEdit.setText("");
+			}
+    	});
     	
     	// find current orientation and send proper layout to constructor
     	int layoutResId = R.layout.trans_row_narrow;
@@ -130,9 +165,19 @@ public class TransactionActivity extends ListActivity
     		return true;
     		
     	case SORT_ID:
+    		sortDialog();
     		return true;
     		
     	case SEARCH_ID:
+    		LinearLayout searchLayout = (LinearLayout)findViewById(R.id.SearchLayout);
+    		int new_vis = LinearLayout.VISIBLE;
+    		int cur_vis = searchLayout.getVisibility();
+    		if (new_vis == cur_vis)
+    		{
+    			new_vis = LinearLayout.GONE;
+    			searchEdit.setText("");
+    		}
+    		searchLayout.setVisibility(new_vis);
     		return true;
     		
     	case PURGE_ID:
@@ -144,8 +189,28 @@ public class TransactionActivity extends ListActivity
     	
     	return super.onOptionsItemSelected(item);
     }
+    
+    private void sortDialog()
+    {
+    	new AlertDialog.Builder(this)
+    		.setTitle(R.string.sort_column)
+    		.setItems(R.array.sort, new DialogInterface.OnClickListener()
+    		{
+    			public void onClick(DialogInterface dialog, int which)
+    			{ 
+    				if (which == 0)			// Date
+    					Transaction.setComparator(Transaction.COMP_DATE);
+    				else if (which == 1)	// Party
+    					Transaction.setComparator(Transaction.COMP_PARTY);
+    				else if (which == 2)	// Amount
+    					Transaction.setComparator(Transaction.COMP_AMT);
+    		    	((TransactionAdapter)getListAdapter()).sort();
+    			}
+    		})
+    		.show();
+    }
 
-	public void createTransaction()
+	private void createTransaction()
     {
     	Intent i = new Intent(this, TransactionEdit.class);
     	int request = ACTIVITY_CREATE;
@@ -155,7 +220,7 @@ public class TransactionActivity extends ListActivity
     	startActivityForResult(i, request);    	
     }
     
-    public void createTransfer()
+    private void createTransfer()
     {
     	Intent i = new Intent(this, TransactionEdit.class);
     	int request = ACTIVITY_CREATE;
@@ -165,7 +230,7 @@ public class TransactionActivity extends ListActivity
     	startActivityForResult(i, request);
     }
     
-    public void editTransaction(int id)
+    private void editTransaction(int id)
     {
     	Intent i = new Intent(this, TransactionEdit.class);
     	i.putExtra(Transaction.KEY_ID, id);

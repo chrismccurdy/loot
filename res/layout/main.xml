@@ -9,7 +9,9 @@
 
 
 
-<ListView android:layout_height="wrap_content" android:id="@android:id/list" android:layout_width="fill_parent" android:layout_weight="100" android:paddingRight="5px"></ListView><LinearLayout android:layout_height="wrap_content" android:id="@+id/BalanceLayout" android:layout_width="fill_parent">
+<LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:visibility="gone" android:id="@+id/SearchLayout"><EditText android:layout_width="wrap_content" android:layout_weight="1" android:id="@+id/SearchEdit" android:layout_height="fill_parent" android:hint="Search"></EditText>
+<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/ClearButton" android:src="@android:drawable/ic_input_delete"></ImageButton>
+</LinearLayout><ListView android:layout_height="wrap_content" android:id="@android:id/list" android:layout_width="fill_parent" android:layout_weight="100" android:paddingRight="5px"></ListView><LinearLayout android:layout_height="wrap_content" android:id="@+id/BalanceLayout" android:layout_width="fill_parent">
 
 
 <LinearLayout android:id="@+id/LinearLayout01" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="fill_parent" android:orientation="vertical" android:layout_marginLeft="3px"><TextView android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText1" android:gravity="top|left" android:lines="1" android:text="@string/trans_posted" android:layout_width="fill_parent"></TextView>
@@ -18,6 +20,7 @@
 </LinearLayout>
 <LinearLayout android:id="@+id/LinearLayout03" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="fill_parent" android:orientation="vertical" android:gravity="top|right" android:layout_marginRight="3px"><TextView android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/BalText3" android:gravity="top|right" android:lines="1" android:text="@string/trans_budget" android:layout_width="fill_parent"></TextView><TextView android:layout_height="wrap_content" android:text="$0.00" android:gravity="top|right" android:layout_width="fill_parent" android:layout_weight="1" android:id="@+id/budgetValue"></TextView>
 </LinearLayout></LinearLayout>
+
 
 
 
