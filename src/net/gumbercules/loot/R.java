@@ -109,7 +109,7 @@ public final class R {
         public static final int search_text=0x7f050001;
         public static final int settings=0x7f050003;
         public static final int sort=0x7f050005;
-        public static final int sort_order=0x7f050016;
+        public static final int sort_column=0x7f050016;
         public static final int trans_balance=0x7f050015;
         public static final int trans_budget=0x7f050014;
         public static final int trans_posted=0x7f050013;

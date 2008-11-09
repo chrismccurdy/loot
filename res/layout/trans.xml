@@ -25,7 +25,7 @@
 <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/amountEdit"></EditText>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/partyRow"><TextView android:layout_width="wrap_content" android:text="Party:" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/partyLabel" android:minWidth="65px"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/partyEdit"></EditText>
+<AutoCompleteTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/partyEdit"></AutoCompleteTextView>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" android:id="@+id/accountRow"><TextView android:layout_width="wrap_content" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/accountLabel" android:text="Account:" android:minWidth="65px"></TextView><Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/accountSpinner"></Spinner>
 </TableRow><TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/checkRow"><TextView android:layout_width="wrap_content" android:text="Check #:" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/checkLabel" android:minWidth="65px"></TextView>

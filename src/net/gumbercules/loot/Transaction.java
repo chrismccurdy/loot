@@ -435,21 +435,23 @@ public class Transaction
 		}
 		
 		Cursor cur = lootDB.rawQuery("select distinct name from tags order by name asc", null);
-		ArrayList<String> tags = new ArrayList<String>();
 		
 		if (!cur.moveToFirst())
 		{
 			cur.close();
 			return null;
 		}
+
+		String[] tags = new String[cur.getCount()];
+		int i = 0;
 		
 		do
 		{
-			tags.add(cur.getString(0));
+			tags[i++] = cur.getString(0);
 		} while (cur.moveToNext());
 		cur.close();
 		
-		return (String[])tags.toArray();
+		return tags;
 	}
 	
 	public static String[] getAllParties()
@@ -465,7 +467,6 @@ public class Transaction
 		}
 		
 		Cursor cur = lootDB.rawQuery("select distinct party from transactions order by party asc", null);
-		ArrayList<String> parties = new ArrayList<String>();
 		
 		if (!cur.moveToFirst())
 		{
@@ -473,13 +474,16 @@ public class Transaction
 			return null;
 		}
 		
+		String[] parties = new String[cur.getCount()];
+		int i = 0;
+		
 		do
 		{
-			parties.add(cur.getString(0));
+			parties[i++] = cur.getString(0);
 		} while (cur.moveToNext());
 		cur.close();
 		
-		return (String[])parties.toArray();
+		return parties;
 	}
 	
 	public void loadTags()

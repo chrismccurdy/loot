@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -40,7 +41,7 @@ public class TransactionEdit extends Activity
 	
 	private EditText dateEdit;
 	private ImageButton dateButton;
-	private EditText partyEdit;
+	private AutoCompleteTextView partyEdit;
 	private EditText amountEdit;
 	private EditText checkEdit;
 	private EditText tagsEdit;
@@ -307,8 +308,14 @@ public class TransactionEdit extends Activity
 			}
 		});
 		
-		partyEdit = (EditText)findViewById(R.id.partyEdit);
+		partyEdit = (AutoCompleteTextView)findViewById(R.id.partyEdit);
 		checkEdit = (EditText)findViewById(R.id.checkEdit);
+		
+		// set the autocompletion values for partyEdit
+		String[] parties = Transaction.getAllParties();
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_dropdown_item_1line, parties);
+		partyEdit.setAdapter(adapter);
 	}
 	
 	private ArrayAdapter<CharSequence> showTransferFields()
