@@ -54,7 +54,7 @@ public class Database
 	
 	private boolean createDB()
 	{
-		String[] createSQL = new String[15];
+		String[] createSQL = new String[14];
 		
 		createSQL[0] = "create table accounts(\n" + 
 					"	id integer primary key autoincrement,\n" +
@@ -112,12 +112,11 @@ public class Database
 					"	primary key (trans_id, repeat_id))";
 
 		createSQL[7] = "insert into options values ('last_used','-1')";
-		createSQL[8] = "insert into options values ('bal_visible','0')";
-		createSQL[9] = "insert into options values ('sort_column','3')";
-		createSQL[10] = "insert into options values ('sort_order','0')";
-		createSQL[11] = "insert into options values ('auto_purge_days','-1')";
-		createSQL[12] = "insert into options values ('del_transfer_warn','1')";
-		createSQL[13] = "insert into options values ('post_repeats_early','2')";
+		createSQL[8] = "insert into options values ('sort_column','0')";
+		createSQL[9] = "insert into options values ('sort_order','0')";
+		createSQL[10] = "insert into options values ('auto_purge_days','-1')";
+		createSQL[11] = "insert into options values ('del_transfer_warn','1')";
+		createSQL[12] = "insert into options values ('post_repeats_early','2')";
 
 		createSQL[14] = "create index idx_trans_id on transactions ( id asc )";
 		
@@ -176,9 +175,9 @@ public class Database
 		Object dummy = getOptionString( (String)option );
 		String sql;
 		if ( dummy == null )
-			sql = "insert into options (value,option) values (?,?)";
+			sql = "insert into options (option,value) values ('" + option + "','" + value +"')";
 		else
-			sql = "update options set value = ? where option = ?";
+			sql = "update options set value = '" + value + "' where option = '" + option + "'";
 
 		try
 		{
@@ -192,8 +191,7 @@ public class Database
 		lootDB.beginTransaction();
 		try
 		{
-			Object[] bindArgs = { option, value };
-			lootDB.execSQL(sql, bindArgs);
+			lootDB.execSQL(sql);
 			lootDB.setTransactionSuccessful();
 		}
 		catch ( SQLException e )
@@ -215,7 +213,7 @@ public class Database
 	
 	public static boolean setOption( String option, long value )
 	{
-		return privSetOption(option, value);
+		return privSetOption(option, new Long(value));
 	}
 	
 	@SuppressWarnings("unused")

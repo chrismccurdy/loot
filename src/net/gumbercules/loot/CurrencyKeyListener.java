@@ -43,7 +43,7 @@ public class CurrencyKeyListener extends NumberKeyListener
 		int start = Math.min(a, b);
 		
 		// return successfully if we're adding another digit before the dot
-		if (start < dot ||
+		if (start <= dot ||
 		// return successfully if we're adding a digit after the dot and we haven't
 		// yet reached the decimal limit for this currency
 				(start > dot && (textStr.length() - dot <= decimals)))

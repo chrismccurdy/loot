@@ -18,7 +18,7 @@ public class Transaction
 	public static final int COMP_AMT	= 1;
 	public static final int COMP_PARTY	= 2;
 	
-	private static int comp = (int)Database.getOptionInt("sort_column");
+	private static int comp = -1;
 	
 	public static final String KEY_ID	= "t_id";
 		
@@ -249,7 +249,10 @@ public class Transaction
 		
 		int acct_id = this.account;
 		if ( this.account == -1 )
+		{
 			acct_id = Account.getCurrentAccountNum();
+			Log.e("UPDATE_TRANSACTION", "got current account num");
+		}
 		Object[] bindArgs = {new Long(acct_id), new Long(this.date.getTime()), this.party,
 				new Double(amount), new Long(check), new Long(Database.setBoolean(this.budget)),
 				new Long(this.id)};
@@ -466,7 +469,8 @@ public class Transaction
 			return null;
 		}
 		
-		Cursor cur = lootDB.rawQuery("select distinct party from transactions order by party asc", null);
+		Cursor cur = lootDB.rawQuery("select party, count(*) as cnt from transactions " +
+				"group by party order by cnt desc", null);
 		
 		if (!cur.moveToFirst())
 		{
@@ -777,12 +781,22 @@ public class Transaction
 	public static void setComparator(int pcomp)
 	{
 		if (pcomp == COMP_DATE || pcomp == COMP_PARTY || pcomp == COMP_AMT)
+		{
+			Log.e("TRANSACTION.SETCOMPARATOR", "comp = " + pcomp);
 			comp = pcomp;
-		Database.setOption("sort_column", comp);
+			Database.setOption("sort_column", comp);
+		}
 	}
 
 	public static int getComparator()
 	{
+		// if comp hasn't been initialized, get the value from the database
+		if (comp < 0 || comp > 2)
+		{
+			comp = (int)Database.getOptionInt("sort_column");
+			if (comp < 0 || comp > 2)
+				comp = COMP_DATE;
+		}
 		return comp;
 	}
 
@@ -807,7 +821,7 @@ public class Transaction
 	
 	private int compareParties(Transaction t2)
 	{
-		return this.party.compareTo(t2.party);
+		return this.party.toLowerCase().compareTo(t2.party.toLowerCase());
 	}
 	
 	private int compareIds(Transaction t2)
@@ -825,6 +839,14 @@ public class Transaction
 
 	public int compareTo(Transaction t2)
 	{
+		// if comp hasn't been initialized, get the value from the database
+		if (comp < 0 || comp > 2)
+		{
+			comp = (int)Database.getOptionInt("sort_column");
+			if (comp < 0 || comp > 2)
+				comp = COMP_DATE;
+		}
+		
 		int ret = 0;
 		
 		if (comp == COMP_DATE)

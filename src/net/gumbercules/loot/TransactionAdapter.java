@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 	public void add(Transaction object)
 	{
 		transList.add(object);
-		Collections.sort(transList);
 		notifyDataSetChanged();
 	}
 
@@ -107,8 +107,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		final Transaction trans = transList.get(position);
-		if (trans == null)
-			return null;
+		if (trans == null || trans.account == 0)
+			return new View(context);
 		
 		View v = createViewFromResource(convertView, parent, rowResId);
 
@@ -117,6 +117,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction>
 		TextView dateText = (TextView)v.findViewById(R.id.DateText);
 		TextView partyText = (TextView)v.findViewById(R.id.PartyText);
 		TextView amountText = (TextView)v.findViewById(R.id.AmountText);
+		
+		if (postedCheck == null)
+			return new View(context);
 		
 		postedCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{

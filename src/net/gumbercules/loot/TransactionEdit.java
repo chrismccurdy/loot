@@ -336,7 +336,6 @@ public class TransactionEdit extends Activity
 		// if there is only one account in the database, tell the user they can't transfer and cancel
 		if (names.length == 1)
 		{
-			// TODO: display message box
 			setResult(mFinishIntent);
 			finish();
 			return null;
@@ -439,6 +438,7 @@ public class TransactionEdit extends Activity
 		}
 		
 		Log.e("TransactionEdit", "mType = " + mType);
+		Log.e("TransactionEdit", "mRequest = " + mRequest);
 		Log.e("TransactionEdit", "id = " + id);
 		
 		mFinished = true;

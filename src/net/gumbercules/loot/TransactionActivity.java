@@ -233,8 +233,11 @@ public class TransactionActivity extends ListActivity
     private void editTransaction(int id)
     {
     	Intent i = new Intent(this, TransactionEdit.class);
+    	int request = ACTIVITY_EDIT;
     	i.putExtra(Transaction.KEY_ID, id);
-    	startActivityForResult(i, ACTIVITY_EDIT);
+    	i.putExtra(Account.KEY_ID, mAcct.id());
+    	i.putExtra(TransactionActivity.KEY_REQ, request);
+    	startActivityForResult(i, request);
     }
     
     public void setBalances()
@@ -296,6 +299,7 @@ public class TransactionActivity extends ListActivity
     	case ACTIVITY_CREATE:
     		trans = Transaction.getTransactionById(trans_id);
     		ta.add(trans);
+    		ta.sort();
     		break;
     		
     	case ACTIVITY_DEL:
