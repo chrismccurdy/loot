@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -196,6 +197,20 @@ public class TransactionEdit extends Activity
 				}
 			}
 		}
+		
+		repeatSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener()
+		{
+			public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
+			{
+				if (pos == 6)
+				{
+			    	Intent i = new Intent(view.getContext(), RepeatActivity.class);
+			    	startActivityForResult(i, 0);
+				}
+			}
+
+			public void onNothingSelected(AdapterView<?> adapter) { }
+		});
 
 		saveButton.setOnClickListener(new View.OnClickListener()
 		{
