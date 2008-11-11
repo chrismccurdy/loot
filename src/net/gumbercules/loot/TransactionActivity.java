@@ -181,29 +181,7 @@ public class TransactionActivity extends ListActivity
     		return true;
     		
     	case SEARCH_ID:
-    		LinearLayout searchLayout = (LinearLayout)findViewById(R.id.SearchLayout);
-    		int new_vis = LinearLayout.VISIBLE;
-    		int cur_vis = searchLayout.getVisibility();
-    		
-    		// if it is currently visible, set it to gone
-    		if (new_vis == cur_vis)
-    		{
-    			new_vis = LinearLayout.GONE;
-    			searchEdit.setText("");
-    		}
-    		else
-    		{
-    			searchEdit.requestFocus();
-    			
-    			// set the adapter each time to get new data for the autocomplete
-    			String[] strings = Transaction.getAllStrings();
-    			Log.e("SEARCH_ID", ""+strings.length);
-    			ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(this,
-    	    			android.R.layout.simple_dropdown_item_1line, strings);
-    			searchEdit.setAdapter(searchAdapter);
-    			searchEdit.setTokenizer(new SpaceTokenizer());
-    		}
-    		searchLayout.setVisibility(new_vis);
+    		toggleSearch();
     		return true;
     		
     	case PURGE_ID:
@@ -214,6 +192,34 @@ public class TransactionActivity extends ListActivity
     	}
     	
     	return super.onOptionsItemSelected(item);
+    }
+    
+    private void toggleSearch()
+    {
+		LinearLayout searchLayout = (LinearLayout)findViewById(R.id.SearchLayout);
+		int new_vis = LinearLayout.VISIBLE;
+		int cur_vis = searchLayout.getVisibility();
+		
+		// if it is currently visible, set it to gone
+		if (new_vis == cur_vis)
+		{
+			new_vis = LinearLayout.GONE;
+			searchEdit.setText("");
+		}
+		else
+		{
+			searchEdit.requestFocus();
+			
+			// set the adapter each time to get new data for the autocomplete
+			String[] strings = Transaction.getAllStrings();
+			if (strings == null)
+				strings = new String[0];
+			ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(this,
+	    			android.R.layout.simple_dropdown_item_1line, strings);
+			searchEdit.setAdapter(searchAdapter);
+			searchEdit.setTokenizer(new SpaceTokenizer());
+		}
+		searchLayout.setVisibility(new_vis);
     }
     
     private void sortDialog()

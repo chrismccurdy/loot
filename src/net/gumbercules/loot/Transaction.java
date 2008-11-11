@@ -332,7 +332,6 @@ public class Transaction
 	
 	private boolean eraseTags()
 	{
-		// TODO: are the tags actually being erased?
 		String del = "delete from tags where trans_id = ?";
 		Object[] bindArgs = {new Long(this.id)};
 		

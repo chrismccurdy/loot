@@ -99,6 +99,8 @@ public class TransactionEdit extends Activity
 		amountEdit.setKeyListener(new CurrencyKeyListener());
 		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
 		String[] tags = Transaction.getAllTags();
+		if (tags == null)
+			tags = new String[0];
 		ArrayAdapter<String> tagsAdapter = new ArrayAdapter<String>(this, 
 				android.R.layout.simple_dropdown_item_1line, tags);
 		tagsEdit.setAdapter(tagsAdapter);
@@ -334,6 +336,8 @@ public class TransactionEdit extends Activity
 		
 		// set the autocompletion values for partyEdit
 		String[] parties = Transaction.getAllParties();
+		if (parties == null)
+			parties = new String[0];
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_dropdown_item_1line, parties);
 		partyEdit.setAdapter(adapter);
@@ -405,6 +409,8 @@ public class TransactionEdit extends Activity
 		else
 			acct2 = Account.getAccountByName((String)accountSpinner.getSelectedItem());
 		
+		// clear the list so we don't write tags leftover from loading the transaction
+		trans.tags.clear();
 		trans.addTags(tagsEdit.getText().toString());
 		
 		// get the date of the transaction and set time values to 0
