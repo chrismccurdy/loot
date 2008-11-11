@@ -125,7 +125,7 @@ public class Transaction
 		
 		String tag_str = new String();
 		for ( String tag : tags )
-			tag_str += tag;
+			tag_str += " " + tag;
 		
 		return tag_str;
 	}
@@ -249,10 +249,7 @@ public class Transaction
 		
 		int acct_id = this.account;
 		if ( this.account == -1 )
-		{
 			acct_id = Account.getCurrentAccountNum();
-			Log.e("UPDATE_TRANSACTION", "got current account num");
-		}
 		Object[] bindArgs = {new Long(acct_id), new Long(this.date.getTime()), this.party,
 				new Double(amount), new Long(check), new Long(Database.setBoolean(this.budget)),
 				new Long(this.id)};
@@ -335,6 +332,7 @@ public class Transaction
 	
 	private boolean eraseTags()
 	{
+		// TODO: are the tags actually being erased?
 		String del = "delete from tags where trans_id = ?";
 		Object[] bindArgs = {new Long(this.id)};
 		
@@ -425,7 +423,7 @@ public class Transaction
 		return true;
 	}
 	
-	public static String[] getAllTags()
+	private static String[] privGetStrings(String sql)
 	{
 		SQLiteDatabase lootDB;
 		try
@@ -437,7 +435,7 @@ public class Transaction
 			return null;
 		}
 		
-		Cursor cur = lootDB.rawQuery("select distinct name from tags order by name asc", null);
+		Cursor cur = lootDB.rawQuery(sql, null);
 		
 		if (!cur.moveToFirst())
 		{
@@ -445,49 +443,34 @@ public class Transaction
 			return null;
 		}
 
-		String[] tags = new String[cur.getCount()];
+		String[] result = new String[cur.getCount()];
 		int i = 0;
 		
 		do
 		{
-			tags[i++] = cur.getString(0);
+			result[i++] = cur.getString(0);
 		} while (cur.moveToNext());
 		cur.close();
 		
-		return tags;
+		return result;
+	}
+	
+	public static String[] getAllStrings()
+	{
+		return privGetStrings("select name, count(*) as cnt from tags group by name union all " +
+				"select party, count(*) as cnt from transactions group by party order by cnt desc");
+	}
+	
+	public static String[] getAllTags()
+	{
+		return privGetStrings("select name, count(*) as cnt from tags " +
+				"group by name order by cnt desc");
 	}
 	
 	public static String[] getAllParties()
 	{
-		SQLiteDatabase lootDB;
-		try
-		{
-			lootDB = Database.getDatabase();
-		}
-		catch (SQLException e)
-		{
-			return null;
-		}
-		
-		Cursor cur = lootDB.rawQuery("select party, count(*) as cnt from transactions " +
-				"group by party order by cnt desc", null);
-		
-		if (!cur.moveToFirst())
-		{
-			cur.close();
-			return null;
-		}
-		
-		String[] parties = new String[cur.getCount()];
-		int i = 0;
-		
-		do
-		{
-			parties[i++] = cur.getString(0);
-		} while (cur.moveToNext());
-		cur.close();
-		
-		return parties;
+		return privGetStrings("select party, count(*) as cnt from transactions " +
+				"group by party order by cnt desc");
 	}
 	
 	public void loadTags()

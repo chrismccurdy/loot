@@ -32,7 +32,7 @@
 <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/checkEdit" android:enabled="false" android:cursorVisible="true"></EditText>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/tagsRow"><TextView android:layout_width="wrap_content" android:text="Tags:" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/tagsLabel" android:minWidth="65px"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/tagsEdit"></EditText>
+<MultiAutoCompleteTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/tagsEdit"></MultiAutoCompleteTextView>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/repeatRow"><TextView android:layout_width="wrap_content" android:text="Repeat:" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/repeatLabel" android:minWidth="65px"></TextView>
 <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/repeatSpinner"></Spinner>

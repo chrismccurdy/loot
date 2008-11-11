@@ -3,6 +3,7 @@ package net.gumbercules.loot;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -11,6 +12,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -20,12 +24,14 @@ import android.view.OrientationListener;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.MultiAutoCompleteTextView.Tokenizer;
 
 public class TransactionActivity extends ListActivity
 {
@@ -41,7 +47,7 @@ public class TransactionActivity extends ListActivity
 	public static final int NEW_TRANSACT_ID	= Menu.FIRST;
 	public static final int NEW_TRANSFER_ID	= Menu.FIRST + 1;
 	public static final int SORT_ID			= Menu.FIRST + 2;
-	public static final int SEARCH_ID			= Menu.FIRST + 3;
+	public static final int SEARCH_ID		= Menu.FIRST + 3;
 	public static final int PURGE_ID		= Menu.FIRST + 4;
 	public static final int SETTINGS_ID		= Menu.FIRST + 5;
 	
@@ -52,7 +58,7 @@ public class TransactionActivity extends ListActivity
 	private ArrayList<Transaction> mTransList;
 	private Account mAcct;
 	
-	private EditText searchEdit;
+	private MultiAutoCompleteTextView searchEdit;
 	
 	private TextView budgetValue;
 	private TextView balanceValue;
@@ -73,22 +79,7 @@ public class TransactionActivity extends ListActivity
     	postedValue = (TextView)findViewById(R.id.postedValue);
     	
     	// add a listener to filter the list whenever the text changes
-    	searchEdit = (EditText)findViewById(R.id.SearchEdit);
-    	searchEdit.addTextChangedListener(new TextWatcher()
-    	{
-    		// we only care what the end result is
-			public void afterTextChanged(Editable s)
-			{
-				String str = s.toString();
-				TransactionAdapter ta = (TransactionAdapter)getListAdapter();
-				//ta.setFilter(str);
-				// TODO: set a filter on the transaction adapter
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-			public void onTextChanged(CharSequence s, int start, int before, int count) { }
-    	});
+    	searchEdit = (MultiAutoCompleteTextView)findViewById(R.id.SearchEdit);
     	
     	// add a listener to clear searchEdit when pressed
     	ImageButton clearButton = (ImageButton)findViewById(R.id.ClearButton);
@@ -110,7 +101,28 @@ public class TransactionActivity extends ListActivity
         setListAdapter(ta);
         fillList();
         
-        ListView view = getListView();
+    	searchEdit.addTextChangedListener(new TextWatcher()
+    	{
+    		// we only care what the end result is
+			public void afterTextChanged(Editable s)
+			{
+				ListView lv = ((ListActivity)ta.getContext()).getListView();
+				lv.setTextFilterEnabled(true);
+				lv.setFilterText(s.toString());
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count, int after)
+			{
+				if (after == 0)
+				{
+					((ListActivity)ta.getContext()).getListView().clearTextFilter();
+				}
+			}
+
+			public void onTextChanged(CharSequence s, int start, int before, int count) { }
+    	});
+
+    	ListView view = getListView();
         registerForContextMenu(view);
         
     	/*@SuppressWarnings("unused")
@@ -172,10 +184,24 @@ public class TransactionActivity extends ListActivity
     		LinearLayout searchLayout = (LinearLayout)findViewById(R.id.SearchLayout);
     		int new_vis = LinearLayout.VISIBLE;
     		int cur_vis = searchLayout.getVisibility();
+    		
+    		// if it is currently visible, set it to gone
     		if (new_vis == cur_vis)
     		{
     			new_vis = LinearLayout.GONE;
     			searchEdit.setText("");
+    		}
+    		else
+    		{
+    			searchEdit.requestFocus();
+    			
+    			// set the adapter each time to get new data for the autocomplete
+    			String[] strings = Transaction.getAllStrings();
+    			Log.e("SEARCH_ID", ""+strings.length);
+    			ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(this,
+    	    			android.R.layout.simple_dropdown_item_1line, strings);
+    			searchEdit.setAdapter(searchAdapter);
+    			searchEdit.setTokenizer(new SpaceTokenizer());
     		}
     		searchLayout.setVisibility(new_vis);
     		return true;
@@ -292,9 +318,9 @@ public class TransactionActivity extends ListActivity
     	switch (request)
     	{
     	case ACTIVITY_EDIT:
-    		// don't break, the transaction needs to be added back to the list
     		pos = ((TransactionAdapter)getListAdapter()).findItemById(trans_id);
     		ta.remove(ta.getItem(pos));
+    		// don't break, the transaction needs to be added back to the list
 
     	case ACTIVITY_CREATE:
     		trans = Transaction.getTransactionById(trans_id);
@@ -409,5 +435,56 @@ public class TransactionActivity extends ListActivity
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_COPY, 0, R.string.copy);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
+	}
+	
+	public static class SpaceTokenizer implements Tokenizer
+	{
+		public int findTokenEnd(CharSequence text, int cursor)
+		{
+			int i = cursor;
+			int len = text.length();
+			
+			while (i < len)
+				if (text.charAt(i) == ' ')
+					return i;
+				else
+					++i;
+			
+			return len;
+		}
+
+		public int findTokenStart(CharSequence text, int cursor)
+		{
+			int i = cursor;
+			
+			while (i > 0 && text.charAt(i - 1) != ' ')
+				--i;
+			while (i < cursor && text.charAt(i) == ' ')
+				++i;
+			
+			return i;
+		}
+
+		public CharSequence terminateToken(CharSequence text)
+		{
+			int i = text.length();
+			
+			while (i > 0 && text.charAt(i -1) == ' ')
+				--i;
+			
+			if (i > 0 && text.charAt(i - 1) == ' ')
+				return text;
+			else
+			{
+				if (text instanceof Spanned)
+				{
+					SpannableString sp = new SpannableString(text + " ");
+					TextUtils.copySpansFrom((Spanned)text, 0, text.length(), Object.class, sp, 0);
+					return sp;
+				}
+				else
+					return text + " ";
+			}
+		}
 	}
 }

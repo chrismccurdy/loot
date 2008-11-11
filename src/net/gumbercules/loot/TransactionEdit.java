@@ -22,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TableRow;
@@ -45,7 +46,7 @@ public class TransactionEdit extends Activity
 	private AutoCompleteTextView partyEdit;
 	private EditText amountEdit;
 	private EditText checkEdit;
-	private EditText tagsEdit;
+	private MultiAutoCompleteTextView tagsEdit;
 	
 	private Spinner accountSpinner;
 	private Spinner repeatSpinner;
@@ -96,15 +97,20 @@ public class TransactionEdit extends Activity
 		
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
 		amountEdit.setKeyListener(new CurrencyKeyListener());
-		tagsEdit = (EditText)findViewById(R.id.tagsEdit);
+		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
+		String[] tags = Transaction.getAllTags();
+		ArrayAdapter<String> tagsAdapter = new ArrayAdapter<String>(this, 
+				android.R.layout.simple_dropdown_item_1line, tags);
+		tagsEdit.setAdapter(tagsAdapter);
+		tagsEdit.setTokenizer(new TransactionActivity.SpaceTokenizer());
 		
 		// create the repeat spinner and populate the values
 		// TODO: set a listener to show a dialog when "Custom..." is selected
 		repeatSpinner = (Spinner)findViewById(R.id.repeatSpinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+        ArrayAdapter<CharSequence> repeatAdapter = ArrayAdapter.createFromResource(
                 this, R.array.repeat, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        repeatSpinner.setAdapter(adapter);
+        repeatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        repeatSpinner.setAdapter(repeatAdapter);
 
         actualRadio = (RadioButton)findViewById(R.id.ActualRadio);
 		budgetRadio = (RadioButton)findViewById(R.id.BudgetRadio);
