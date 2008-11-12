@@ -5,6 +5,7 @@ import java.util.Date;
 
 import android.database.*;
 import android.database.sqlite.*;
+import android.util.Log;
 
 public class Account
 {
@@ -478,14 +479,18 @@ public class Account
 		return ids;
 	}
 	
-	private int[] getPurgedTransactions(Date through)
+	private int[] getPurgedTransactions(Date through, boolean gte)
 	{
 		long time = through.getTime();
 		SQLiteDatabase lootDB = Database.getDatabase();
 		
+		String op = " <= ";
+		if (gte)
+			op = " >= ";
+		
 		// get the ids of all the purged transactions after 'through'
 		Cursor cur = lootDB.rawQuery("select id from transactions where purged = 1 and " +
-				"date >= " + time + " and account = " + this.id, null);
+				"date" + op + time + " and account = " + this.id, null);
 		if (!cur.moveToFirst())
 		{
 			cur.close();
@@ -507,7 +512,7 @@ public class Account
 	
 	public boolean deletePurgedTransactions(Date through)
 	{
-		int[] ids = getPurgedTransactions(through);
+		int[] ids = getPurgedTransactions(through, false);
 		if (ids == null)
 			return false;
 		
@@ -533,7 +538,7 @@ public class Account
 	
 	public int[] restorePurgedTransactions(Date through)
 	{
-		int[] ids = getPurgedTransactions(through);
+		int[] ids = getPurgedTransactions(through, true);
 		if (ids == null)
 			return null;
 		

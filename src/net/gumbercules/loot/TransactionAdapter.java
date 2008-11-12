@@ -96,11 +96,23 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		mOriginalList.add(object);
 		notifyDataSetChanged();
 	}
+	
+	public void add(int[] ids)
+	{
+		Transaction trans;
+		for (int id : ids)
+		{
+			trans = Transaction.getTransactionById(id);
+			if (trans != null)
+				mOriginalList.add(trans);
+		}
+		notifyDataSetChanged();
+	}
 
 	@Override
 	public void insert(Transaction object, int index)
 	{
-		mOriginalList.add(object);
+		mOriginalList.add(index, object);
 		notifyDataSetChanged();
 	}
 
@@ -108,6 +120,14 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public void remove(Transaction object)
 	{
 		mOriginalList.remove(object);
+		new TransactionFilter().filter(mConstraint);
+		notifyDataSetChanged();
+	}
+	
+	public void remove(int[] ids)
+	{
+		for (int id : ids)
+			mOriginalList.remove(getItem(findItemById(id)));
 		new TransactionFilter().filter(mConstraint);
 		notifyDataSetChanged();
 	}

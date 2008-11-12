@@ -766,7 +766,6 @@ public class Transaction
 	{
 		if (pcomp == COMP_DATE || pcomp == COMP_PARTY || pcomp == COMP_AMT)
 		{
-			Log.e("TRANSACTION.SETCOMPARATOR", "comp = " + pcomp);
 			comp = pcomp;
 			Database.setOption("sort_column", comp);
 		}

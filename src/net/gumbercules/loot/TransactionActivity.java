@@ -278,25 +278,18 @@ public class TransactionActivity extends ListActivity
 				            	case 0:	// purge
 				            		int[] purged = mAcct.purgeTransactions(date);
 				            		if (purged != null)
-				            		{
-				            			for (int id : purged)
-				            				updateList(id, ACTIVITY_DEL);
-				            		}
+			            				updateList(purged, ACTIVITY_DEL);
 				            		break;
 				            		
 				            	case 1:	// restore
 				            		int[] restored = mAcct.restorePurgedTransactions(date);
 				            		if (restored != null)
-				            		{
-				            			for (int id : restored)
-				            				updateList(id, ACTIVITY_CREATE);
-				            		}
+			            				updateList(restored, ACTIVITY_CREATE);
 				            		break;
 				            		
 				            	case 2:	// clear
 				            		// TODO: this doesn't seem to work
 				            		if (!mAcct.deletePurgedTransactions(date))
-				            			Log.e("PURGE_DIALOG", "deleting purged transactions failed");
 				            		break;
 				            	}
 				            }
@@ -421,6 +414,25 @@ public class TransactionActivity extends ListActivity
     	case ACTIVITY_DEL:
     		pos = ((TransactionAdapter)getListAdapter()).findItemById(trans_id);
     		ta.remove(ta.getItem(pos));
+    		break;
+    	}
+
+		setBalances();
+    }
+    
+    private void updateList(int[] ids, int request)
+    {
+    	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
+    	
+    	switch (request)
+    	{
+    	case ACTIVITY_CREATE:
+    		ta.add(ids);
+    		ta.sort();
+    		break;
+    		
+    	case ACTIVITY_DEL:
+    		ta.remove(ids);
     		break;
     	}
 
