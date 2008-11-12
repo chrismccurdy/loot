@@ -396,7 +396,7 @@ public class Account
 		}
 		
 		Cursor cur = lootDB.rawQuery("select id from transactions where account = " + this.id + 
-				" order by id asc", null);
+				" and purged = 0 order by id asc", null);
 		if (!cur.moveToFirst())
 		{
 			cur.close();
@@ -415,19 +415,37 @@ public class Account
 		return ids;
 	}
 	
-	public boolean purgeTransactions(Date through)
+	public int[] purgeTransactions(Date through)
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();
 		long time = through.getTime();
 		
+		// find the ids of the transactions
+		Cursor cur = lootDB.rawQuery("select id from transactions where posted = 1 " +
+				"and date <= " + time + " and account = " + this.id, null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		int[] ids = new int[cur.getCount()];
+		int i = 0;
+		
+		do
+		{
+			ids[i++] = cur.getInt(0);
+		} while (cur.moveToNext());
+		cur.close();
+		
 		// find the sum of the soon-to-be purged transactions
-		Cursor cur = lootDB.rawQuery("select sum(amount) from transactions " +
+		cur = lootDB.rawQuery("select sum(amount) from transactions " +
 				"where posted = 1 and date <= " + time + 
 				" and account = " + this.id + " and purged = 0", null);
 		if (!cur.moveToFirst())
 		{
 			cur.close();
-			return false;
+			return null;
 		}
 		
 		// update the initial account balance to reflect these changes
@@ -438,7 +456,7 @@ public class Account
 		if (write() == -1)
 		{
 			lootDB.endTransaction();
-			return false;
+			return null;
 		}
 		
 		// purge the posted transactions
@@ -450,14 +468,14 @@ public class Account
 		}
 		catch (SQLException e)
 		{
-			return false;
+			return null;
 		}
 		finally
 		{
 			lootDB.endTransaction();
 		}
 		
-		return true;
+		return ids;
 	}
 	
 	private int[] getPurgedTransactions(Date through)

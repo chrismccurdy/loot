@@ -402,12 +402,14 @@ public class Transaction
 		}
 		catch (SQLException e)
 		{
+			Log.e("Transaction.erase", "erasing failed");
 			lootDB.endTransaction();
 			return false;
 		}
 		
 		if (!eraseTags())
 		{
+			Log.e("Transaction.erase", "tag erasing failed");
 			lootDB.endTransaction();
 			return false;
 		}

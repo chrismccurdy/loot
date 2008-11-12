@@ -2,11 +2,15 @@ package net.gumbercules.loot;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -25,6 +29,7 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -185,6 +190,7 @@ public class TransactionActivity extends ListActivity
     		return true;
     		
     	case PURGE_ID:
+    		purgeDialog();
     		return true;
     		
     	case SETTINGS_ID:
@@ -242,6 +248,79 @@ public class TransactionActivity extends ListActivity
     		.show();
     }
 
+    private void purgeDialog()
+    {
+    	final Context context = (Context)this;
+		AlertDialog dialog = new AlertDialog.Builder(this)
+			.setTitle(R.string.account_del_box)
+			.setItems(new CharSequence[]{"Purge Transactions", "Restore Purged Transactions",
+					"Clear Purged Transactions"}, new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					final int item = which;
+					DatePickerDialog.OnDateSetListener dateSetListener =
+				        new DatePickerDialog.OnDateSetListener()
+						{
+				            public void onDateSet(DatePicker view, int year, int month,  int day)
+				            {
+								Calendar cal = Calendar.getInstance();
+								cal.set(Calendar.HOUR, 23);
+								cal.set(Calendar.MINUTE, 59);
+								cal.set(Calendar.SECOND, 59);
+				            	cal.set(Calendar.YEAR, year);
+				            	cal.set(Calendar.MONTH, month);
+				            	cal.set(Calendar.DAY_OF_MONTH, day);
+				            	Date date = cal.getTime();
+				            	
+				            	switch (item)
+				            	{
+				            	case 0:	// purge
+				            		int[] purged = mAcct.purgeTransactions(date);
+				            		if (purged != null)
+				            		{
+				            			for (int id : purged)
+				            				updateList(id, ACTIVITY_DEL);
+				            		}
+				            		break;
+				            		
+				            	case 1:	// restore
+				            		int[] restored = mAcct.restorePurgedTransactions(date);
+				            		if (restored != null)
+				            		{
+				            			for (int id : restored)
+				            				updateList(id, ACTIVITY_CREATE);
+				            		}
+				            		break;
+				            		
+				            	case 2:	// clear
+				            		// TODO: this doesn't seem to work
+				            		if (!mAcct.deletePurgedTransactions(date))
+				            			Log.e("PURGE_DIALOG", "deleting purged transactions failed");
+				            		break;
+				            	}
+				            }
+				        };
+				        
+				    String title = "";
+				    if (item == 0)
+				    	title = "Purge Through";
+				    else if (item == 1)
+				    	title = "Restore Through";
+				    else if (item == 2)
+				    	title = "Clear Through";
+				    
+				    Calendar cal = Calendar.getInstance();
+				    DatePickerDialog pickerDialog = new DatePickerDialog(context, dateSetListener,
+				    		cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+				    pickerDialog.setTitle(title);
+				    pickerDialog.show();
+				}
+			})
+			.create();
+		dialog.show();
+    }
+    
 	private void createTransaction()
     {
     	Intent i = new Intent(this, TransactionEdit.class);
@@ -305,11 +384,16 @@ public class TransactionActivity extends ListActivity
     {
 		int[] transIds = mAcct.getTransactionIds();
 		ArrayList<Transaction> transList = mTransList;
+		Transaction trans;
 		transList.clear();
 		
 		if (transIds != null)
 			for ( int id : transIds )
-				transList.add(Transaction.getTransactionById(id));
+			{
+				trans = Transaction.getTransactionById(id);
+				if (trans != null)
+					transList.add(trans);
+			}
 		Collections.sort(transList);
 		
 		setBalances();
