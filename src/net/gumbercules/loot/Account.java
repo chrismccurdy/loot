@@ -414,4 +414,149 @@ public class Account
 		
 		return ids;
 	}
+	
+	public boolean purgeTransactions(Date through)
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		long time = through.getTime();
+		
+		// find the sum of the soon-to-be purged transactions
+		Cursor cur = lootDB.rawQuery("select sum(amount) from transactions " +
+				"where posted = 1 and date <= " + time + 
+				" and account = " + this.id + " and purged = 0", null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return false;
+		}
+		
+		// update the initial account balance to reflect these changes
+		this.initialBalance += cur.getDouble(0);
+		cur.close();
+		
+		lootDB.beginTransaction();
+		if (write() == -1)
+		{
+			lootDB.endTransaction();
+			return false;
+		}
+		
+		// purge the posted transactions
+		try
+		{
+			lootDB.execSQL("update transactions set purged = 1, timestamp = strftime('%s','now')" +
+					" where posted = 1 and date <= " + time + " and account = " + this.id);
+			lootDB.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		finally
+		{
+			lootDB.endTransaction();
+		}
+		
+		return true;
+	}
+	
+	private int[] getPurgedTransactions(Date through)
+	{
+		long time = through.getTime();
+		SQLiteDatabase lootDB = Database.getDatabase();
+		
+		// get the ids of all the purged transactions after 'through'
+		Cursor cur = lootDB.rawQuery("select id from transactions where purged = 1 and " +
+				"date >= " + time + " and account = " + this.id, null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		int[] ids = new int[cur.getCount()];
+		int i = 0;
+		
+		do
+		{
+			ids[i++] = cur.getInt(0);
+		} while (cur.moveToNext());
+		
+		cur.close();
+
+		return ids;
+	}
+	
+	public boolean deletePurgedTransactions(Date through)
+	{
+		int[] ids = getPurgedTransactions(through);
+		if (ids == null)
+			return false;
+		
+		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
+		
+		Transaction trans;
+		for (int id : ids)
+		{
+			trans = Transaction.getTransactionById(id, true);
+			if (trans == null || !trans.erase())
+			{
+				lootDB.endTransaction();
+				return false;
+			}
+		}
+		
+		lootDB.setTransactionSuccessful();
+		lootDB.endTransaction();
+		
+		return true;
+	}
+	
+	public int[] restorePurgedTransactions(Date through)
+	{
+		int[] ids = getPurgedTransactions(through);
+		if (ids == null)
+			return null;
+		
+		long time = through.getTime();
+		SQLiteDatabase lootDB = Database.getDatabase();
+		
+		Cursor cur = lootDB.rawQuery("select sum(amount) from transactions where purged = 1 and " +
+				"date >= " + time + " and account = " + this.id, null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		this.initialBalance -= cur.getDouble(0);
+		cur.close();
+		
+		lootDB.beginTransaction();
+		
+		// update the initial account balance to remove the sum of these transactions
+		if (write() == -1)
+		{
+			lootDB.endTransaction();
+			return null;
+		}
+		
+		try
+		{
+			lootDB.execSQL("update transactions set purged = 0, timestamp = strftime('%s','now')" +
+					" where purged = 1 and date >= " + time + " and account = " + this.id);
+			lootDB.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			return null;
+		}
+		finally
+		{
+			lootDB.endTransaction();
+		}
+
+		return ids;
+	}
 }
