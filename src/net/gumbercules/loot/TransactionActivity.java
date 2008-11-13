@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ListActivity;
@@ -194,13 +192,20 @@ public class TransactionActivity extends ListActivity
     		return true;
     		
     	case SETTINGS_ID:
+    		showSettings();
     		return true;
     	}
     	
     	return super.onOptionsItemSelected(item);
     }
     
-    private void toggleSearch()
+	private void showSettings()
+	{
+		Intent i = new Intent(this, SettingsActivity.class);
+		startActivityForResult(i, 0);
+	}
+
+	private void toggleSearch()
     {
 		LinearLayout searchLayout = (LinearLayout)findViewById(R.id.SearchLayout);
 		int new_vis = LinearLayout.VISIBLE;
@@ -253,8 +258,7 @@ public class TransactionActivity extends ListActivity
     	final Context context = (Context)this;
 		AlertDialog dialog = new AlertDialog.Builder(this)
 			.setTitle(R.string.account_del_box)
-			.setItems(new CharSequence[]{"Purge Transactions", "Restore Purged Transactions",
-					"Clear Purged Transactions"}, new DialogInterface.OnClickListener()
+			.setItems(R.array.purge, new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int which)
 				{
@@ -288,7 +292,6 @@ public class TransactionActivity extends ListActivity
 				            		break;
 				            		
 				            	case 2:	// clear
-				            		// TODO: this doesn't seem to work
 				            		if (!mAcct.deletePurgedTransactions(date))
 				            		break;
 				            	}

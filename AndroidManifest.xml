@@ -24,7 +24,11 @@
 
 
 </intent-filter></activity>
-<activity android:name="RepeatActivity"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+<activity android:name=".RepeatActivity"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+
+
+</intent-filter></activity>
+<activity android:name=".SettingsActivity"><intent-filter><action android:name="android.intent.action.MAIN"></action>
 
 
 </intent-filter></activity>

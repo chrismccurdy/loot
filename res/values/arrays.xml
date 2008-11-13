@@ -14,5 +14,10 @@
         <item>Party</item>
         <item>Amount</item>
     </string-array>
+    <string-array name="purge">
+        <item>Purge Posted Transactions</item>
+        <item>Restore Purged Transactions</item>
+        <item>Clear Purged Transactions</item>
+    </string-array>
 </resources>
   

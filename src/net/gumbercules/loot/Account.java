@@ -5,7 +5,6 @@ import java.util.Date;
 
 import android.database.*;
 import android.database.sqlite.*;
-import android.util.Log;
 
 public class Account
 {
@@ -111,10 +110,62 @@ public class Account
 		String del = "update accounts set purged = 1, timestamp = strftime('%s','now') where id = ?";
 		Object[] bindArgs = {new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
+		
 		try
 		{
-			lootDB.beginTransaction();
 			lootDB.execSQL(del, bindArgs);
+			if (!removeLinks())
+				throw new SQLException();
+			lootDB.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		finally
+		{
+			lootDB.endTransaction();
+		}
+		
+		return true;
+	}
+	
+	private boolean removeLinks()
+	{
+		// remove any transfer links with transactions associated with this account
+		SQLiteDatabase lootDB = Database.getDatabase();
+		Cursor cur = lootDB.rawQuery("select id from transactions, transfers where id = trans_id1 " +
+				" or id = trans_id2 order by id", null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return false;
+		}
+		
+		int[] ids = new int[cur.getCount()];
+		int i = 0;
+		
+		do
+		{
+			ids[i++] = cur.getInt(0);
+		} while (cur.moveToNext());
+		cur.close();
+		
+		if (ids.length == 0)
+			return true;
+		
+		String id_list = "(";
+		for (int id : ids)
+			id_list += id + ",";
+		id_list += "0)";	// no transfer will have 0 as a trans_id
+		
+		lootDB.beginTransaction();
+		
+		try
+		{
+			lootDB.execSQL("delete from transfers where trans_id1 in " + id_list + 
+					" or trans_id2 in " + id_list);
 			lootDB.setTransactionSuccessful();
 		}
 		catch (SQLException e)

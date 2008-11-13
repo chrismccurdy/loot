@@ -75,6 +75,10 @@ public class AccountChooser extends ListActivity
     	case NEW_ACCT_ID:
     		createAccount();
     		return true;
+    		
+    	case SETTINGS_ID:
+    		showSettings();
+    		return true;
     	}
     	
 		return super.onOptionsItemSelected(item);
@@ -91,6 +95,12 @@ public class AccountChooser extends ListActivity
 		Intent i = new Intent(this, AccountEdit.class);
 		i.putExtra(Account.KEY_ID, id);
 		startActivityForResult(i, ACTIVITY_EDIT);
+	}
+	
+	private void showSettings()
+	{
+		Intent i = new Intent(this, SettingsActivity.class);
+		startActivityForResult(i, 0);
 	}
 
 	@Override
