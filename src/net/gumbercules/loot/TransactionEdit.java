@@ -107,11 +107,10 @@ public class TransactionEdit extends Activity
 		tagsEdit.setTokenizer(new TransactionActivity.SpaceTokenizer());
 		
 		// create the repeat spinner and populate the values
-		// TODO: set a listener to show a dialog when "Custom..." is selected
 		repeatSpinner = (Spinner)findViewById(R.id.repeatSpinner);
         ArrayAdapter<CharSequence> repeatAdapter = ArrayAdapter.createFromResource(
                 this, R.array.repeat, android.R.layout.simple_spinner_item);
-        repeatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        repeatAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         repeatSpinner.setAdapter(repeatAdapter);
 
         actualRadio = (RadioButton)findViewById(R.id.ActualRadio);
@@ -179,6 +178,7 @@ public class TransactionEdit extends Activity
 			tagsEdit.setText(trans.tagListToString());
 			
 			// TODO: set repeat spinner to correct value
+			
 		}
         
 		if (mType == TransactionActivity.TRANSFER)
@@ -454,7 +454,11 @@ public class TransactionEdit extends Activity
 		trans.budget = budgetRadio.isChecked();
 		
 		// TODO: set repeat values
-
+		switch (repeatSpinner.getSelectedItemPosition())
+		{
+			
+		}
+		
 		int id = -1;
 		if (mType == TransactionActivity.TRANSACTION)
 			id = trans.write(mAccountId);
