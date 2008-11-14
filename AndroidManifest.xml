@@ -31,8 +31,11 @@
 <activity android:name=".SettingsActivity"><intent-filter><action android:name="android.intent.action.MAIN"></action>
 
 
+
 </intent-filter></activity>
 </application>
 
+
+<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 
 </manifest> 

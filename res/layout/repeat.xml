@@ -9,7 +9,7 @@
 <LinearLayout android:id="@+id/repeat_daily" android:layout_height="fill_parent" android:layout_width="fill_parent" android:orientation="vertical">
 <LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent">
 <TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Every:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/dayEdit" android:maxWidth="150px"></EditText>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/dayEdit" android:maxWidth="150px" android:text="1"></EditText>
 
 <TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:paddingLeft="5px" android:text="Day(s)"></TextView>
 </LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="End On:" android:layout_gravity="center_vertical"></TextView>
@@ -19,7 +19,7 @@
 <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/dayCancelButton" android:layout_weight="1" android:text="@string/cancel" android:layout_gravity="bottom"></Button>
 </LinearLayout></LinearLayout><LinearLayout android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/repeat_weekly" android:orientation="vertical"><LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent">
 <TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Every:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/weekEdit" android:maxWidth="150px"></EditText>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/weekEdit" android:maxWidth="150px" android:text="1"></EditText>
 
 <TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:paddingLeft="5px" android:text="Week(s)"></TextView>
 </LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="End On:" android:layout_gravity="center_vertical"></TextView>
@@ -27,14 +27,15 @@
 
 </LinearLayout><LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView05" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Repeat On:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
 <LinearLayout android:id="@+id/LinearLayout04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical">
-<LinearLayout android:id="@+id/LinearLayout05" android:layout_height="wrap_content" android:layout_width="fill_parent"><Button android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
-<Button android:id="@+id/Button02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
-<Button android:id="@+id/Button03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
+<LinearLayout android:id="@+id/LinearLayout05" android:layout_height="wrap_content" android:layout_width="fill_parent">
+<ToggleButton android:id="@+id/ToggleButton01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
 </LinearLayout>
-<LinearLayout android:id="@+id/LinearLayout06" android:layout_height="wrap_content" android:layout_width="fill_parent"><Button android:id="@+id/Button04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
-<Button android:id="@+id/Button05" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
-<Button android:id="@+id/Button06" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
-<Button android:id="@+id/Button07" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
+<LinearLayout android:id="@+id/LinearLayout06" android:layout_height="wrap_content" android:layout_width="fill_parent"><ToggleButton android:id="@+id/ToggleButton04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton05" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton06" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton07" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
 </LinearLayout>
 </LinearLayout>
 </LinearLayout>
@@ -44,7 +45,7 @@
 
 <LinearLayout android:id="@+id/repeat_monthly" android:layout_height="fill_parent" android:layout_width="fill_parent" android:orientation="vertical"><LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent">
 <TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Every:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/monthEdit" android:maxWidth="150px"></EditText>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/monthEdit" android:maxWidth="150px" android:text="1"></EditText>
 
 <TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:text="Month(s)" android:paddingLeft="5px"></TextView>
 </LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="End On:" android:layout_gravity="center_vertical"></TextView>
@@ -52,13 +53,13 @@
 
 </LinearLayout><LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView05" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:layout_gravity="center_vertical" android:text="Repeat By:"></TextView>
 
-<Spinner android:id="@+id/Spinner02" android:layout_width="wrap_content" android:layout_height="wrap_content"></Spinner>
+<Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/repeatBySpinner"></Spinner>
 </LinearLayout><LinearLayout android:id="@+id/LinearLayout07" android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/monthSaveButton" android:layout_weight="1" android:text="@string/save" android:layout_gravity="bottom"></Button>
 <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/monthCancelButton" android:layout_weight="1" android:text="@string/cancel" android:layout_gravity="bottom"></Button>
 </LinearLayout></LinearLayout>
 <LinearLayout android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/repeat_yearly" android:orientation="vertical"><LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent">
 <TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Every:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/yearEdit" android:maxWidth="150px"></EditText>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/yearEdit" android:maxWidth="150px" android:text="1"></EditText>
 
 <TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:paddingLeft="5px" android:text="Year(s)"></TextView>
 </LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="End On:" android:layout_gravity="center_vertical"></TextView>

@@ -11,6 +11,7 @@ public final class R {
     public static final class array {
         public static final int purge=0x7f050002;
         public static final int repeat=0x7f050000;
+        public static final int repeat_month=0x7f050003;
         public static final int sort=0x7f050001;
     }
     public static final class attr {
@@ -32,13 +33,6 @@ public final class R {
         public static final int BalanceLayout=0x7f07000f;
         public static final int BalanceRow=0x7f070004;
         public static final int BudgetRadio=0x7f07005f;
-        public static final int Button01=0x7f07002c;
-        public static final int Button02=0x7f07002d;
-        public static final int Button03=0x7f07002e;
-        public static final int Button04=0x7f070030;
-        public static final int Button05=0x7f070031;
-        public static final int Button06=0x7f070032;
-        public static final int Button07=0x7f070033;
         public static final int CancelButton=0x7f070009;
         public static final int ClearButton=0x7f07000e;
         public static final int DateText=0x7f070064;
@@ -61,13 +55,19 @@ public final class R {
         public static final int ScrollView01=0x7f070041;
         public static final int SearchEdit=0x7f07000d;
         public static final int SearchLayout=0x7f07000c;
-        public static final int Spinner02=0x7f070039;
         public static final int TableLayout01=0x7f070000;
         public static final int TextView01=0x7f07001a;
         public static final int TextView02=0x7f07001f;
         public static final int TextView03=0x7f070021;
         public static final int TextView04=0x7f070022;
         public static final int TextView05=0x7f070029;
+        public static final int ToggleButton01=0x7f07002c;
+        public static final int ToggleButton02=0x7f07002d;
+        public static final int ToggleButton03=0x7f07002e;
+        public static final int ToggleButton04=0x7f070030;
+        public static final int ToggleButton05=0x7f070031;
+        public static final int ToggleButton06=0x7f070032;
+        public static final int ToggleButton07=0x7f070033;
         public static final int accountLabel=0x7f070051;
         public static final int accountRow=0x7f070050;
         public static final int accountSpinner=0x7f070052;
@@ -101,6 +101,7 @@ public final class R {
         public static final int partyLabel=0x7f07004e;
         public static final int partyRow=0x7f07004d;
         public static final int postedValue=0x7f070011;
+        public static final int repeatBySpinner=0x7f070039;
         public static final int repeatLabel=0x7f07005a;
         public static final int repeatRow=0x7f070059;
         public static final int repeatSpinner=0x7f07005b;

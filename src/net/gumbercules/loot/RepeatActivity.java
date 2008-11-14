@@ -9,6 +9,7 @@ import java.util.Date;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
@@ -21,14 +22,18 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.ToggleButton;
 
 public class RepeatActivity extends TabActivity
 {
-	private EditText editText;
-	private Spinner spinner;
+	private EditText mEditText;
+	private Spinner mEndSpinner;
+	private Spinner mBySpinner;
+	private ToggleButton[] mToggleButtons;
+	private String mOldDate;
 	
 	private int mFinishIntent;
-	private int mFinished;
+	private boolean mFinished;
 	
 	private int mIter;
 	private int mFreq;
@@ -47,7 +52,28 @@ public class RepeatActivity extends TabActivity
         super.onCreate(savedInstanceState);
         
         mFinishIntent = RESULT_CANCELED;
+        mFinished = false;
+        mOldDate = null;
         
+		if (savedInstanceState != null)
+		{
+			mIter = savedInstanceState.getInt(RepeatSchedule.KEY_ITER);
+			mFreq = savedInstanceState.getInt(RepeatSchedule.KEY_FREQ);
+			mCustom = savedInstanceState.getInt(RepeatSchedule.KEY_CUSTOM);
+			mEndDate = new Date(savedInstanceState.getLong(RepeatSchedule.KEY_DATE));
+		}
+		else
+		{
+			Bundle extras = getIntent().getExtras();
+			mIter = extras.getInt(RepeatSchedule.KEY_ITER);
+			mFreq = extras.getInt(RepeatSchedule.KEY_FREQ);
+			mCustom = extras.getInt(RepeatSchedule.KEY_CUSTOM);
+			mEndDate = new Date(extras.getLong(RepeatSchedule.KEY_DATE));
+		}
+    }
+    
+    private void populateFields()
+    {
         TabHost tabHost = getTabHost();
         
         LayoutInflater.from(this).inflate(R.layout.repeat, tabHost.getTabContentView(), true);
@@ -79,6 +105,8 @@ public class RepeatActivity extends TabActivity
 				setup(tabId);
 			}
         });
+        
+        setup("Never");
     }
 
     private void setup(String tabId)
@@ -90,8 +118,137 @@ public class RepeatActivity extends TabActivity
     		freq = 2,
     		end = 3,
     		id = 4;
-    	int[] resources = new int[5];
+    	int[] resources = getResources(tabId);
 
+    	saveButton = (Button)findViewById(resources[save]);
+    	if (saveButton != null)
+    	{
+    		final int tab_id = resources[id];
+    		saveButton.setOnClickListener(new Button.OnClickListener()
+    		{
+    			public void onClick(View v)
+    			{
+    				mFinishIntent = RESULT_OK;
+    				saveState(tab_id);
+    			}
+    		});
+    	}
+
+    	cancelButton = (Button)findViewById(resources[cancel]);
+    	if (cancelButton != null)
+    		cancelButton.setOnClickListener(new Button.OnClickListener()
+    		{
+    			public void onClick(View v)
+    			{
+    				setResult(mFinishIntent);
+    				finish();
+    			}
+    		});
+    	
+    	mEditText = (EditText)findViewById(resources[freq]);
+    	if (mEditText != null)
+    		mEditText.setKeyListener(new DigitsKeyListener());
+
+    	mEndSpinner = (Spinner)findViewById(resources[end]);
+    	if (mEndSpinner != null)
+    	{
+    		ArrayList<String> endDate = new ArrayList<String>();
+    		endDate.add("No End Date");
+    		
+    		if (mEndDate != null && mEndDate.getTime() > 0)
+    		{
+    			Calendar cal = Calendar.getInstance();
+   				cal.setTime(mEndDate);
+    			DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    			endDate.add(df.format(cal.getTime()));
+    		}
+    		else
+    			endDate.add("Choose...");
+    		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
+    				android.R.layout.simple_spinner_item, endDate);
+    		adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+    		mEndSpinner.setAdapter(adapter);
+    		
+    		mEndSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener()
+    		{
+				@SuppressWarnings("unchecked")
+				public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
+				{
+					ArrayAdapter<String> aa = (ArrayAdapter<String>)adapter.getAdapter();
+					if (pos == 0)
+					{
+						try
+						{
+							aa.remove(mOldDate);
+						}
+						catch (Exception e) { }
+						
+						mOldDate = null;
+					}
+					else if (pos == 1)
+					{
+						try
+						{
+							aa.remove(mOldDate);
+						}
+						catch (Exception e) { }
+						showDialog(0);
+					}
+				}
+
+				public void onNothingSelected(AdapterView<?> adapter) { }
+    		});
+    	}
+    	
+    	// if we're in the weekly repeat tab, set up the proper order of days
+    	if (resources[id] == TAB_WEEK)
+    	{
+    		Calendar cal = Calendar.getInstance();
+    		int[] toggleResources = {R.id.ToggleButton01, R.id.ToggleButton02, R.id.ToggleButton03,
+    				R.id.ToggleButton04, R.id.ToggleButton05, R.id.ToggleButton06, R.id.ToggleButton07};
+
+    		int first = cal.getFirstDayOfWeek() - 1;
+    		String[] days = {"S", "M", "T", "W", "T", "F", "S"};
+    		String[] tags = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
+    		
+    		ToggleButton button;
+    		mToggleButtons = new ToggleButton[7];
+    		int i = first;
+    		
+    		String today = tags[cal.get(Calendar.DAY_OF_WEEK) - 1].toString();
+    		for (int res : toggleResources)
+    		{
+    			button = (ToggleButton)findViewById(res);
+    			button.setTextOff(days[i]);
+    			button.setTextOn(days[i]);
+    			button.setText(days[i]);
+    			button.setTag(tags[i]);
+    			if (today.equals(tags[i]))
+    				button.setChecked(true);
+    			mToggleButtons[i] = button;
+    			i = (i + 1) % 7;
+    		}
+    	}
+    	
+    	if (resources[id] == TAB_MONTH)
+    	{
+    		mBySpinner = (Spinner)findViewById(R.id.repeatBySpinner);
+    		ArrayAdapter<CharSequence> repeatAdapter = ArrayAdapter.createFromResource(
+                    this, R.array.repeat_month, android.R.layout.simple_spinner_item);
+            repeatAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+            mBySpinner.setAdapter(repeatAdapter);
+    	}
+	}
+    
+    private int[] getResources(String tabId)
+    {
+    	int save = 0,
+			cancel = 1,
+			freq = 2,
+			end = 3,
+			id = 4;
+    	int[] resources = new int[5];
+    	
     	if (tabId.equals("Never"))
     	{
     		resources[save] = R.id.neverSaveButton;
@@ -132,77 +289,21 @@ public class RepeatActivity extends TabActivity
     		resources[end] = R.id.yearSpinner;
     		resources[id] = TAB_YEAR;
     	}
-
-    	saveButton = (Button)findViewById(resources[save]);
-    	if (saveButton != null)
-    	{
-    		final int tab_id = resources[id];
-    		saveButton.setOnClickListener(new Button.OnClickListener()
-    		{
-    			public void onClick(View v)
-    			{
-    				mFinishIntent = RESULT_OK;
-    				saveState(tab_id);
-    			}
-    		});
-    	}
-
-    	cancelButton = (Button)findViewById(resources[cancel]);
-    	if (cancelButton != null)
-    		cancelButton.setOnClickListener(new Button.OnClickListener()
-    		{
-    			public void onClick(View v)
-    			{
-    				setResult(mFinishIntent);
-    				finish();
-    			}
-    		});
     	
-    	editText = (EditText)findViewById(resources[freq]);
-    	if (editText != null)
-    		editText.setKeyListener(new DigitsKeyListener());
+    	return resources;
+    }
 
-    	spinner = (Spinner)findViewById(resources[end]);
-    	if (spinner != null)
-    	{
-    		ArrayList<String> endDate = new ArrayList<String>();
-    		endDate.add("No End Date");
-    		
-    		if (mEndDate != null)
-    		{
-    			Calendar cal = Calendar.getInstance();
-   				cal.setTime(mEndDate);
-    			DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-    			endDate.add(df.format(cal.getTime()));
-    		}
-    		else
-    			endDate.add("Choose...");
-    		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
-    				android.R.layout.simple_spinner_item, endDate);
-    		adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-    		spinner.setAdapter(adapter);
-    		
-    		spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener()
-    		{
-				public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
-				{
-					if (pos == 1)
-						showDialog(0);
-				}
-
-				public void onNothingSelected(AdapterView<?> adapter) { }
-    		});
-    	}
-	}
-
+	@SuppressWarnings("unchecked")
 	private void setEndSpinner(Date date)
 	{
 		Calendar cal = Calendar.getInstance();
 		if (date != null)
 			cal.setTime(date);
 		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-		// TODO: set the second item to the given date
-		//dateEdit.setText(df.format(cal.getTime()));
+		
+		ArrayAdapter<String> adapter = (ArrayAdapter<String>)mEndSpinner.getAdapter();
+		String str = df.format(cal.getTime());
+		adapter.add(str);
 	}
 	
 	private Date parseEndSpinner()
@@ -212,17 +313,17 @@ public class RepeatActivity extends TabActivity
 		
 		try
 		{
-			// TODO: probably not valid
-			date = df.parse(spinner.getSelectedItem().toString());
+			date = df.parse(mOldDate);
+			date.setHours(0);
+			date.setMinutes(0);
+			date.setSeconds(0);
 		}
-		catch (ParseException e)
+		catch (Exception e)
 		{
-			// set the date to today if there's a parsing error
-			date = new Date();
+			// set the date to null if there's a parsing error
+			// the choice was set to 'No End Date'
+			date = null;
 		}
-		date.setHours(0);
-		date.setMinutes(0);
-		date.setSeconds(0);
 		
 		return date;
 	}
@@ -232,7 +333,8 @@ public class RepeatActivity extends TabActivity
 		int[] ymd = new int[3];
 		Date date = parseEndSpinner();
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
+		if (date != null)
+			cal.setTime(date);
 		ymd[0] = cal.get(Calendar.YEAR);
 		ymd[1] = cal.get(Calendar.MONTH);
 		ymd[2] = cal.get(Calendar.DAY_OF_MONTH);
@@ -250,9 +352,11 @@ public class RepeatActivity extends TabActivity
             	cal.set(Calendar.MONTH, month);
             	cal.set(Calendar.DAY_OF_MONTH, day);
             	setEndSpinner(cal.getTime());
+            	mOldDate = (String)mEndSpinner.getItemAtPosition(2);
+            	mEndSpinner.setSelection(2);
             }
         };
-
+        
     @Override
 	protected Dialog onCreateDialog(int id)
 	{
@@ -270,19 +374,103 @@ public class RepeatActivity extends TabActivity
 	@Override
 	protected void onPause()
 	{
-		// TODO Auto-generated method stub
 		super.onPause();
+		saveState(getTabHost().getCurrentTab());
 	}
 	
 	private void saveState(int tabId)
 	{
+		if (mFinishIntent == RESULT_CANCELED || mFinished)
+			return;
 		
+		long end = 0;
+		if (tabId == TAB_NEVER)
+		{
+			mIter = RepeatSchedule.NO_REPEAT;
+			mFreq = -1;
+			mCustom = -1;
+			end(end);
+		}
+		else if (tabId == TAB_DAY)
+			mIter = RepeatSchedule.DAILY;
+		else if (tabId == TAB_WEEK)
+		{
+			mIter = RepeatSchedule.WEEKLY;
+			mCustom = 0;
+			for (ToggleButton button : mToggleButtons)
+			{
+				if (button.isChecked())
+				{
+					String tag = (String)button.getTag();
+					if (tag.equals("sun"))
+						mCustom |= RepeatSchedule.SUNDAY;
+					else if (tag.equals("mon"))
+						mCustom |= RepeatSchedule.MONDAY;
+					else if (tag.equals("tue"))
+						mCustom |= RepeatSchedule.TUESDAY;
+					else if (tag.equals("wed"))
+						mCustom |= RepeatSchedule.WEDNESDAY;
+					else if (tag.equals("thu"))
+						mCustom |= RepeatSchedule.THURSDAY;
+					else if (tag.equals("fri"))
+						mCustom |= RepeatSchedule.FRIDAY;
+					else if (tag.equals("sat"))
+						mCustom |= RepeatSchedule.SATURDAY;
+				}
+			}
+
+			if (mCustom == 0)
+			{
+				mIter = RepeatSchedule.NO_REPEAT;
+				mFreq = -1;
+				mCustom = -1;
+				end(end);
+			}
+		}
+		else if (tabId == TAB_MONTH)
+		{
+			mIter = RepeatSchedule.MONTHLY;
+			mCustom = mBySpinner.getSelectedItemPosition();
+		}
+		else if (tabId == TAB_YEAR)
+			mIter = RepeatSchedule.YEARLY;
+		
+		try
+		{
+			mFreq = Integer.parseInt(mEditText.getText().toString());
+		}
+		catch (NumberFormatException e)
+		{
+			// bail if there was no valid number entered
+			mIter = RepeatSchedule.NO_REPEAT;
+			mFreq = -1;
+			mCustom = -1;
+			end(end);
+		}
+		
+		mEndDate = parseEndSpinner();
+		if (mEndDate != null)
+			end = mEndDate.getTime();
+
+		end(end);
+	}
+	
+	private void end(long end_date)
+	{
+		Intent i = new Intent();
+		i.putExtra(RepeatSchedule.KEY_ITER, mIter);
+		i.putExtra(RepeatSchedule.KEY_FREQ, mFreq);
+		i.putExtra(RepeatSchedule.KEY_CUSTOM, mCustom);
+		i.putExtra(RepeatSchedule.KEY_DATE, end_date);
+		setResult(mFinishIntent, i);
+		mFinished = true;
+		finish();
 	}
 
 	@Override
 	protected void onResume()
 	{
-		// TODO Auto-generated method stub
 		super.onResume();
+		populateFields();
 	}
 }

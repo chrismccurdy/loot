@@ -3,6 +3,7 @@ package net.gumbercules.loot;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
@@ -26,16 +27,19 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TableRow;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class TransactionEdit extends Activity
 {
 	private Transaction mTrans;
+	private RepeatSchedule mRepeat;
 	private int mTransId;
 	private int mFinishIntent;
 	private int mRequest;
 	private int mType;
 	private int mAccountId;
 	private boolean mFinished;
+	private int mDefaultRepeatValue;
 
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
@@ -65,6 +69,7 @@ public class TransactionEdit extends Activity
 		
 		mFinishIntent = RESULT_CANCELED;
 		mFinished = false;
+		mDefaultRepeatValue = 0;
 
 		// get the type code so we know whether to show a transaction or a transfer window
 		if (savedInstanceState != null)
@@ -132,6 +137,7 @@ public class TransactionEdit extends Activity
 		if (mTransId == 0)
 		{
 			mTrans = new Transaction();
+			mRepeat = new RepeatSchedule();
 			
 			// set the date edittext to the current date by default
 			setDateEdit(null);
@@ -140,6 +146,12 @@ public class TransactionEdit extends Activity
 		{
 			mTrans = Transaction.getTransactionById(mTransId);
 			trans = mTrans;
+			
+			int repeat_id = RepeatSchedule.getRepeatId(mTransId);
+			if (repeat_id != -1)
+				mRepeat = RepeatSchedule.getSchedule(repeat_id);
+			else
+				mRepeat = new RepeatSchedule();
 			
 			if (trans == null)
 			{
@@ -176,9 +188,8 @@ public class TransactionEdit extends Activity
 			Currency cur = nf.getCurrency();
 			amountEdit.setText(nf.format(trans.amount).replace(cur.getSymbol(), ""));
 			tagsEdit.setText(trans.tagListToString());
-			
-			// TODO: set repeat spinner to correct value
-			
+
+			setRepeatSpinnerSelection(mRepeat);
 		}
         
 		if (mType == TransactionActivity.TRANSFER)
@@ -206,20 +217,9 @@ public class TransactionEdit extends Activity
 			}
 		}
 		
-		repeatSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener()
-		{
-			public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
-			{
-				if (pos == 6)
-				{
-			    	Intent i = new Intent(view.getContext(), RepeatActivity.class);
-			    	startActivityForResult(i, 0);
-				}
-			}
-
-			public void onNothingSelected(AdapterView<?> adapter) { }
-		});
-
+		repeatSpinner.setSelection(mDefaultRepeatValue);
+		repeatSpinner.setOnItemSelectedListener(mRepeatSpinnerListener);
+		
 		saveButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View view)
@@ -239,6 +239,25 @@ public class TransactionEdit extends Activity
 		});
 	}
 
+	private OnItemSelectedListener mRepeatSpinnerListener = new Spinner.OnItemSelectedListener()
+		{
+			public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
+			{
+				Log.e("ON_ITEM_SELECTED", "item " + pos + " selected");
+				if (pos == 6)
+				{
+			    	Intent i = new Intent(view.getContext(), RepeatActivity.class);
+			    	i.putExtra(RepeatSchedule.KEY_ITER, mRepeat.iter);
+			    	i.putExtra(RepeatSchedule.KEY_FREQ, mRepeat.freq);
+			    	i.putExtra(RepeatSchedule.KEY_CUSTOM, mRepeat.custom);
+			    	i.putExtra(RepeatSchedule.KEY_DATE, mRepeat.end);
+			    	startActivityForResult(i, 0);
+				}
+			}
+	
+			public void onNothingSelected(AdapterView<?> adapter) { }
+		};
+	
 	private void setDateEdit(Date date)
 	{
 		Calendar cal = Calendar.getInstance();
@@ -308,6 +327,58 @@ public class TransactionEdit extends Activity
             	setDateEdit(cal.getTime());
             }
         };
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if (resultCode == RESULT_OK)
+		{
+			Bundle extras = data.getExtras();
+			mRepeat.iter = extras.getInt(RepeatSchedule.KEY_ITER);
+			mRepeat.freq = extras.getInt(RepeatSchedule.KEY_FREQ);
+			mRepeat.custom = extras.getInt(RepeatSchedule.KEY_CUSTOM);
+			mRepeat.end = new Date(extras.getLong(RepeatSchedule.KEY_DATE));
+			
+			setRepeatSpinnerSelection(mRepeat);
+		}
+	}
+
+	private void setRepeatSpinnerSelection(RepeatSchedule repeat)
+	{
+		// TODO: verify that this works
+		int spinner_num = 6;
+		
+		switch (repeat.iter)
+		{
+		case RepeatSchedule.NO_REPEAT:
+			spinner_num = 0;
+			break;
+		case RepeatSchedule.DAILY:
+			if (repeat.freq == 1 && repeat.end.getTime() <= 0)
+				spinner_num = 1;
+			break;
+		case RepeatSchedule.WEEKLY:
+			if (repeat.freq == 1 && repeat.custom == -1 && repeat.end.getTime() <= 0)
+				spinner_num = 2;
+			else if (repeat.freq == 2 && repeat.custom == -1 && repeat.end.getTime() <= 0)
+				spinner_num = 3;
+			break;
+		case RepeatSchedule.MONTHLY:
+			if (repeat.freq == 1 && repeat.custom == RepeatSchedule.DATE && repeat.end.getTime() <= 0)
+				spinner_num = 4;
+			break;
+		case RepeatSchedule.YEARLY:
+			if (repeat.freq == 1 && repeat.end.getTime() <= 0)
+				spinner_num = 5;
+			break;
+		}
+		
+		mDefaultRepeatValue = spinner_num;
+		
+		// TODO: add new item to repeat spinner so it doesn't keep launching the repeat activity
+	}
 
 	private void showTransactionFields()
 	{

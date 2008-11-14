@@ -11,6 +11,11 @@ import android.database.sqlite.*;
 public class RepeatSchedule
 implements Cloneable
 {
+	public static final String KEY_ITER		= "key_iter";
+	public static final String KEY_FREQ		= "key_freq";
+	public static final String KEY_CUSTOM	= "key_custom";
+	public static final String KEY_DATE		= "key_date";
+	
 	// repetition iterator type
 	public static final int NO_REPEAT	= 0;
 	public static final int DAILY		= 1;
