@@ -22,7 +22,6 @@ implements Cloneable
 	public static final int WEEKLY		= 2;
 	public static final int MONTHLY		= 3;
 	public static final int YEARLY		= 4;
-	public static final int CUSTOM		= 5;
 	
 	// custom weekly repetition
 	public static final int SUNDAY		= 1 << 0;
@@ -92,13 +91,10 @@ implements Cloneable
 		{
 			end_time = this.end.getTime();
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		catch (Exception e) { }
 		
 		String insert = "insert into repeat_pattern (start_date,end_date,iterator,frequency," +
-						"custom,due values (" + start_time + "," + end_time + "," + this.iter +
+						"custom,due) values (" + start_time + "," + end_time + "," + this.iter +
 						"," + this.freq + "," + this.custom + "," + this.due.getTime() + ")";
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
@@ -116,6 +112,12 @@ implements Cloneable
 		
 		String[] columns = {"max(id)"};
 		Cursor cur = lootDB.query("repeat_pattern", columns, null, null, null, null, null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			lootDB.endTransaction();
+			return -1;
+		}
 		this.id = cur.getInt(0);
 		cur.close();
 		
@@ -287,7 +289,7 @@ implements Cloneable
 		Cursor cur = lootDB.query("repeat_pattern", columns, "id = " + repeat_id, null, null, null, null);
 		
 		boolean ret = false;
-		if (cur.getCount() != 0)
+		if (cur.moveToFirst())
 		{
 			double end = cur.getLong(1);
 			this.start = new Date(cur.getLong(0));
@@ -301,6 +303,7 @@ implements Cloneable
 			this.freq = cur.getInt(3);
 			this.custom = cur.getInt(4);
 			this.due = new Date(cur.getLong(5));
+			this.id = repeat_id;
 			
 			ret = true;
 		}
@@ -317,7 +320,7 @@ implements Cloneable
 		Cursor cur = lootDB.query("repeat_transactions", columns, where, wArgs, null, null, null);
 		
 		int ret = -1;
-		if (cur.getCount() != 0)
+		if (cur.moveToFirst())
 			ret = cur.getInt(0);
 
 		cur.close();
@@ -356,7 +359,7 @@ implements Cloneable
 				null, null, null, null);
 		
 		Transaction trans = null;
-		if (cur.getCount() != 0)
+		if (cur.moveToFirst())
 		{
 			int type, check_num = cur.getInt(4);
 			double amount = cur.getInt(3);
@@ -397,6 +400,11 @@ implements Cloneable
 		
 		String[] columns = {"id"};
 		Cursor cur = lootDB.query("repeat_pattern", columns, where, wArgs, null, null, null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
 		
 		int[] ids = new int[cur.getCount()];
 		int i = 0;
@@ -559,6 +567,11 @@ implements Cloneable
 		// retrieve the new id for this row
 		String[] columns = {"max(id)"};
 		Cursor cur = lootDB.query("transactions", columns, null, null, null, null, null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return -1;
+		}
 		int max = cur.getInt(0);
 		
 		// update any repeat_transactions rows that refer to this transaction as the transfer_id
@@ -599,7 +612,7 @@ implements Cloneable
 		Cursor cur = lootDB.rawQuery(query, null);
 		
 		// no rows exist with those IDs
-		if (cur.getCount() == 0)
+		if (!cur.moveToFirst())
 		{
 			cur.close();
 			return false;
@@ -671,7 +684,7 @@ implements Cloneable
 
 	public Date calculateDueDate()
 	{
-		if (this.freq == 0 || this.iter == NO_REPEAT || (this.start.after(this.end) && this.end != null))
+		if (this.freq == 0 || this.iter == NO_REPEAT || (this.end != null && this.start.after(this.end)))
 			return null;
 		
 		Calendar cal = Calendar.getInstance();

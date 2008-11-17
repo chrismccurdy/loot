@@ -4,9 +4,11 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -40,6 +42,7 @@ public class TransactionEdit extends Activity
 	private int mAccountId;
 	private boolean mFinished;
 	private int mDefaultRepeatValue;
+	private int mLastRepeatValue;
 
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
@@ -54,6 +57,7 @@ public class TransactionEdit extends Activity
 	
 	private Spinner accountSpinner;
 	private Spinner repeatSpinner;
+	private ArrayAdapter<String> mRepeatAdapter;
 	
 	private RadioButton budgetRadio;
 	private RadioButton actualRadio;
@@ -61,6 +65,7 @@ public class TransactionEdit extends Activity
 	private Button saveButton;
 	private Button cancelButton;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -69,8 +74,14 @@ public class TransactionEdit extends Activity
 		
 		mFinishIntent = RESULT_CANCELED;
 		mFinished = false;
-		mDefaultRepeatValue = 0;
+		mDefaultRepeatValue = -1;
 
+		ArrayList<String> repeat =
+			new ArrayList(Arrays.asList(getResources().getStringArray(R.array.repeat)));
+		mRepeatAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, repeat);
+        mRepeatAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        
 		// get the type code so we know whether to show a transaction or a transfer window
 		if (savedInstanceState != null)
 		{
@@ -113,10 +124,7 @@ public class TransactionEdit extends Activity
 		
 		// create the repeat spinner and populate the values
 		repeatSpinner = (Spinner)findViewById(R.id.repeatSpinner);
-        ArrayAdapter<CharSequence> repeatAdapter = ArrayAdapter.createFromResource(
-                this, R.array.repeat, android.R.layout.simple_spinner_item);
-        repeatAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        repeatSpinner.setAdapter(repeatAdapter);
+        repeatSpinner.setAdapter(mRepeatAdapter);
 
         actualRadio = (RadioButton)findViewById(R.id.ActualRadio);
 		budgetRadio = (RadioButton)findViewById(R.id.BudgetRadio);
@@ -137,7 +145,8 @@ public class TransactionEdit extends Activity
 		if (mTransId == 0)
 		{
 			mTrans = new Transaction();
-			mRepeat = new RepeatSchedule();
+			if (mRepeat == null)
+				mRepeat = new RepeatSchedule();
 			
 			// set the date edittext to the current date by default
 			setDateEdit(null);
@@ -147,11 +156,14 @@ public class TransactionEdit extends Activity
 			mTrans = Transaction.getTransactionById(mTransId);
 			trans = mTrans;
 			
-			int repeat_id = RepeatSchedule.getRepeatId(mTransId);
-			if (repeat_id != -1)
-				mRepeat = RepeatSchedule.getSchedule(repeat_id);
-			else
-				mRepeat = new RepeatSchedule();
+			if (mRepeat == null)
+			{
+				int repeat_id = RepeatSchedule.getRepeatId(mTransId);
+				if (repeat_id != -1)
+					mRepeat = RepeatSchedule.getSchedule(repeat_id);
+				else
+					mRepeat = new RepeatSchedule();
+			}
 			
 			if (trans == null)
 			{
@@ -243,16 +255,24 @@ public class TransactionEdit extends Activity
 		{
 			public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
 			{
-				Log.e("ON_ITEM_SELECTED", "item " + pos + " selected");
+				// only remove the row if the adapter has more than the 7 default items
+				// and the position isn't the row to be deleted
+				if (mRepeatAdapter.getCount() > 7 && pos != 7)
+					mRepeatAdapter.remove("Custom");
+
 				if (pos == 6)
 				{
+					mLastRepeatValue = mDefaultRepeatValue;
+					
 			    	Intent i = new Intent(view.getContext(), RepeatActivity.class);
 			    	i.putExtra(RepeatSchedule.KEY_ITER, mRepeat.iter);
 			    	i.putExtra(RepeatSchedule.KEY_FREQ, mRepeat.freq);
 			    	i.putExtra(RepeatSchedule.KEY_CUSTOM, mRepeat.custom);
-			    	i.putExtra(RepeatSchedule.KEY_DATE, mRepeat.end);
+			    	i.putExtra(RepeatSchedule.KEY_DATE, (mRepeat.end != null) ? mRepeat.end.getTime() : 0);
 			    	startActivityForResult(i, 0);
 				}
+				
+				mDefaultRepeatValue = pos;
 			}
 	
 			public void onNothingSelected(AdapterView<?> adapter) { }
@@ -343,41 +363,55 @@ public class TransactionEdit extends Activity
 			
 			setRepeatSpinnerSelection(mRepeat);
 		}
+		else
+		{
+			mDefaultRepeatValue = mLastRepeatValue;
+			if (mDefaultRepeatValue == 7)
+				setRepeatSpinnerSelection(mRepeat);
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setRepeatSpinnerSelection(RepeatSchedule repeat)
 	{
-		// TODO: verify that this works
-		int spinner_num = 6;
+		int spinner_num = 7;
 		
 		switch (repeat.iter)
 		{
 		case RepeatSchedule.NO_REPEAT:
 			spinner_num = 0;
 			break;
+		
 		case RepeatSchedule.DAILY:
 			if (repeat.freq == 1 && repeat.end.getTime() <= 0)
 				spinner_num = 1;
 			break;
+		
 		case RepeatSchedule.WEEKLY:
 			if (repeat.freq == 1 && repeat.custom == -1 && repeat.end.getTime() <= 0)
 				spinner_num = 2;
 			else if (repeat.freq == 2 && repeat.custom == -1 && repeat.end.getTime() <= 0)
 				spinner_num = 3;
 			break;
+		
 		case RepeatSchedule.MONTHLY:
 			if (repeat.freq == 1 && repeat.custom == RepeatSchedule.DATE && repeat.end.getTime() <= 0)
 				spinner_num = 4;
 			break;
+
 		case RepeatSchedule.YEARLY:
 			if (repeat.freq == 1 && repeat.end.getTime() <= 0)
 				spinner_num = 5;
 			break;
 		}
 		
-		mDefaultRepeatValue = spinner_num;
+		if (spinner_num == 7)
+		{
+			mRepeatAdapter = (ArrayAdapter<String>)repeatSpinner.getAdapter();
+			mRepeatAdapter.add("Custom");
+		}
 		
-		// TODO: add new item to repeat spinner so it doesn't keep launching the repeat activity
+		mDefaultRepeatValue = spinner_num;
 	}
 
 	private void showTransactionFields()
@@ -524,10 +558,55 @@ public class TransactionEdit extends Activity
 		// get if it's a budget transaction
 		trans.budget = budgetRadio.isChecked();
 		
-		// TODO: set repeat values
+		// set repeat values
 		switch (repeatSpinner.getSelectedItemPosition())
 		{
+		// No Repeat
+		case 0:
+			mRepeat = new RepeatSchedule();
+			break;
+		
+		// Daily
+		case 1:
+			mRepeat.iter = RepeatSchedule.DAILY;
+			mRepeat.freq = 1;
+			mRepeat.custom = 0;
+			mRepeat.end = null;
+			break;
 			
+		// Weekly
+		case 2:
+			mRepeat.iter = RepeatSchedule.WEEKLY;
+			mRepeat.freq = 1;
+			mRepeat.custom = 0;
+			mRepeat.end = null;
+			break;
+			
+		// Bi-weekly
+		case 3:
+			mRepeat.iter = RepeatSchedule.WEEKLY;
+			mRepeat.freq = 2;
+			mRepeat.custom = 0;
+			mRepeat.end = null;
+			break;
+			
+		// Monthly
+		case 4:
+			mRepeat.iter = RepeatSchedule.MONTHLY;
+			mRepeat.freq = 1;
+			mRepeat.custom = 0;
+			mRepeat.end = null;
+			break;
+			
+		// Yearly
+		case 5:
+			mRepeat.iter = RepeatSchedule.YEARLY;
+			mRepeat.freq = 1;
+			mRepeat.custom = 0;
+			mRepeat.end = null;
+			break;
+		
+		// if it's past position 5, mRepeat has already been set
 		}
 		
 		int id = -1;
@@ -539,13 +618,16 @@ public class TransactionEdit extends Activity
 			id = trans.transfer(acct2);
 		}
 		
-		Log.e("TransactionEdit", "mType = " + mType);
-		Log.e("TransactionEdit", "mRequest = " + mRequest);
-		Log.e("TransactionEdit", "id = " + id);
-		
 		mFinished = true;
 		if (id != -1)
 		{
+			// write the repeat schedule if it's not set to NO_REPEAT
+			if (mRepeat.iter != RepeatSchedule.NO_REPEAT)
+			{
+				mRepeat.start = trans.date;
+				mRepeat.write(id);
+			}
+			
 			mTransId = id;
 			Intent i = new Intent();
 			Bundle b = new Bundle();

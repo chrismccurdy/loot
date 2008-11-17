@@ -105,8 +105,12 @@ public class RepeatActivity extends TabActivity
 				setup(tabId);
 			}
         });
-        
-        setup("Never");
+
+        // setting the current tab to the first tab won't send the onTabChanged event
+        if (mIter == RepeatSchedule.NO_REPEAT)
+        	setup("Never");
+        else
+        	tabHost.setCurrentTab(mIter);
     }
 
     private void setup(String tabId)
@@ -439,7 +443,7 @@ public class RepeatActivity extends TabActivity
 		{
 			mFreq = Integer.parseInt(mEditText.getText().toString());
 		}
-		catch (NumberFormatException e)
+		catch (Exception e)
 		{
 			// bail if there was no valid number entered
 			mIter = RepeatSchedule.NO_REPEAT;
