@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.OrientationListener;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
@@ -127,6 +126,7 @@ public class TransactionActivity extends ListActivity
 
     	ListView view = getListView();
         registerForContextMenu(view);
+        view.setStackFromBottom(true);
         
     	/*@SuppressWarnings("unused")
 		OrientationListener orient = new OrientationListener(this)
@@ -379,7 +379,7 @@ public class TransactionActivity extends ListActivity
     private void fillList()
     {
 		int[] transIds = mAcct.getTransactionIds();
-		ArrayList<Transaction> transList = mTransList;
+		/*ArrayList<Transaction> transList = mTransList;
 		Transaction trans;
 		transList.clear();
 		
@@ -390,7 +390,11 @@ public class TransactionActivity extends ListActivity
 				if (trans != null)
 					transList.add(trans);
 			}
-		Collections.sort(transList);
+		Collections.sort(transList);*/
+		TransactionAdapter ta = (TransactionAdapter)getListAdapter();
+    	addRepeatedTransactions();
+		ta.add(transIds);
+		ta.sort();
 		
 		setBalances();
     }
@@ -398,6 +402,7 @@ public class TransactionActivity extends ListActivity
     private void updateList(int trans_id, int request)
     {
     	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
+    	addRepeatedTransactions();
     	Transaction trans;
     	int pos;
     	
@@ -426,6 +431,7 @@ public class TransactionActivity extends ListActivity
     private void updateList(int[] ids, int request)
     {
     	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
+    	addRepeatedTransactions();
     	
     	switch (request)
     	{
@@ -440,6 +446,13 @@ public class TransactionActivity extends ListActivity
     	}
 
 		setBalances();
+    }
+    
+    private void addRepeatedTransactions()
+    {
+    	int[] ids = RepeatSchedule.processDueRepetitions(new Date());
+    	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
+    	ta.add(ids);
     }
 
 	@Override

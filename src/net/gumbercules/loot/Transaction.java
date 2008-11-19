@@ -81,8 +81,12 @@ public class Transaction
 	
 	public int addTags( String tags )
 	{
+		String[] tagList = this.tagStringToList(tags);
+		if (tagList == null)
+			return 0;
+		
 		int i = 0;
-		for ( String tag : this.tagStringToList( tags ) )
+		for ( String tag : tagList )
 			if ( this.tags.add( tag ) )
 				++i;
 		return i;
@@ -90,6 +94,9 @@ public class Transaction
 	
 	public int addTags( String[] tags )
 	{
+		if (tags == null)
+			return 0;
+		
 		int i = 0;
 		for ( String tag : tags )
 		{
@@ -141,6 +148,9 @@ public class Transaction
 	
 	private String[] tagStringToList( String tags )
 	{
+		if (tags == null)
+			return null;
+		
 		return tags.split(" ");
 	}
 	
@@ -212,10 +222,7 @@ public class Transaction
 		
 		// if tag writing is not successful, rollback the changes
 		if (writeTags())
-		{
 			lootDB.setTransactionSuccessful();
-			Log.e("NEW_TRANSACTION", "YAY TAGS");
-		}
 		else
 		{
 			this.id = -1;
@@ -391,6 +398,7 @@ public class Transaction
 	
 	public boolean erase()
 	{
+		// TODO: properly recognize and erase transfers
 		String del = "delete from transactions where id = ?";
 		Object[] bindArgs = {new Long(this.id)};
 		

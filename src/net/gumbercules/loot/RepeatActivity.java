@@ -1,7 +1,6 @@
 package net.gumbercules.loot;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,7 +11,6 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -151,28 +149,35 @@ public class RepeatActivity extends TabActivity
     	
     	mEditText = (EditText)findViewById(resources[freq]);
     	if (mEditText != null)
+    	{
     		mEditText.setKeyListener(new DigitsKeyListener());
+    		if (mFreq > 0)
+    			mEditText.setText(Integer.toString(mFreq));
+    	}
 
     	mEndSpinner = (Spinner)findViewById(resources[end]);
     	if (mEndSpinner != null)
     	{
     		ArrayList<String> endDate = new ArrayList<String>();
     		endDate.add("No End Date");
-    		
-    		if (mEndDate != null && mEndDate.getTime() > 0)
-    		{
-    			Calendar cal = Calendar.getInstance();
-   				cal.setTime(mEndDate);
-    			DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-    			endDate.add(df.format(cal.getTime()));
-    		}
-    		else
-    			endDate.add("Choose...");
+    		endDate.add("Choose...");
+    		    		
     		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, 
     				android.R.layout.simple_spinner_item, endDate);
     		adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
     		mEndSpinner.setAdapter(adapter);
-    		
+
+    		if (mEndDate != null && mEndDate.getTime() > 0)
+    		{
+    			//Calendar cal = Calendar.getInstance();
+   				//cal.setTime(mEndDate);
+    			//DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    			//endDate.add(df.format(cal.getTime()));
+    			//mEndSpinner.setSelection(2);
+    			setEndSpinner(mEndDate);
+    			mEndSpinner.setSelection(2);
+    		}
+
     		mEndSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener()
     		{
 				@SuppressWarnings("unchecked")
@@ -213,13 +218,15 @@ public class RepeatActivity extends TabActivity
 
     		int first = cal.getFirstDayOfWeek() - 1;
     		String[] days = {"S", "M", "T", "W", "T", "F", "S"};
-    		String[] tags = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
+    		int[] tags = {RepeatSchedule.SUNDAY, RepeatSchedule.MONDAY, RepeatSchedule.TUESDAY,
+    				RepeatSchedule.WEDNESDAY, RepeatSchedule.THURSDAY, RepeatSchedule.FRIDAY,
+    				RepeatSchedule.SATURDAY};
     		
     		ToggleButton button;
     		mToggleButtons = new ToggleButton[7];
     		int i = first;
     		
-    		String today = tags[cal.get(Calendar.DAY_OF_WEEK) - 1].toString();
+    		int today = tags[cal.get(Calendar.DAY_OF_WEEK) - 1];
     		for (int res : toggleResources)
     		{
     			button = (ToggleButton)findViewById(res);
@@ -227,8 +234,7 @@ public class RepeatActivity extends TabActivity
     			button.setTextOn(days[i]);
     			button.setText(days[i]);
     			button.setTag(tags[i]);
-    			if (today.equals(tags[i]))
-    				button.setChecked(true);
+    			setDayButtonToggled(button, today, tags[i]);
     			mToggleButtons[i] = button;
     			i = (i + 1) % 7;
     		}
@@ -241,8 +247,27 @@ public class RepeatActivity extends TabActivity
                     this, R.array.repeat_month, android.R.layout.simple_spinner_item);
             repeatAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
             mBySpinner.setAdapter(repeatAdapter);
+            
+            if (mIter == RepeatSchedule.MONTHLY)
+            	mBySpinner.setSelection(mCustom);
     	}
 	}
+    
+    private void setDayButtonToggled(ToggleButton button, int today, int tag)
+    {
+    	// if there is no custom setting for the weekly schedule,
+    	// choose today as the default item selected
+    	if (mIter == RepeatSchedule.WEEKLY && mCustom != 0)
+    	{
+    		if ((mCustom & tag) != 0)
+    			button.setChecked(true);
+    	}
+    	else
+    	{
+    		if (today == tag)
+    			button.setChecked(true);
+    	}
+    }
     
     private int[] getResources(String tabId)
     {
@@ -300,13 +325,17 @@ public class RepeatActivity extends TabActivity
 	@SuppressWarnings("unchecked")
 	private void setEndSpinner(Date date)
 	{
+		ArrayAdapter<String> adapter = (ArrayAdapter<String>)mEndSpinner.getAdapter();
+		if (adapter.getCount() > 2)
+			return;
+		
 		Calendar cal = Calendar.getInstance();
 		if (date != null)
 			cal.setTime(date);
 		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
 		
-		ArrayAdapter<String> adapter = (ArrayAdapter<String>)mEndSpinner.getAdapter();
 		String str = df.format(cal.getTime());
+		mOldDate = str;
 		adapter.add(str);
 	}
 	
@@ -405,21 +434,9 @@ public class RepeatActivity extends TabActivity
 			{
 				if (button.isChecked())
 				{
-					String tag = (String)button.getTag();
-					if (tag.equals("sun"))
-						mCustom |= RepeatSchedule.SUNDAY;
-					else if (tag.equals("mon"))
-						mCustom |= RepeatSchedule.MONDAY;
-					else if (tag.equals("tue"))
-						mCustom |= RepeatSchedule.TUESDAY;
-					else if (tag.equals("wed"))
-						mCustom |= RepeatSchedule.WEDNESDAY;
-					else if (tag.equals("thu"))
-						mCustom |= RepeatSchedule.THURSDAY;
-					else if (tag.equals("fri"))
-						mCustom |= RepeatSchedule.FRIDAY;
-					else if (tag.equals("sat"))
-						mCustom |= RepeatSchedule.SATURDAY;
+					//String tag = (String)button.getTag();
+					int tag = (Integer)button.getTag();
+					mCustom |= tag;
 				}
 			}
 

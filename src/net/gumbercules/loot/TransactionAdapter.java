@@ -99,6 +99,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	
 	public void add(int[] ids)
 	{
+		if (ids == null)
+			return;
+		
 		Transaction trans;
 		for (int id : ids)
 		{

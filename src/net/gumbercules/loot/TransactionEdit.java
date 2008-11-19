@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -43,6 +41,7 @@ public class TransactionEdit extends Activity
 	private boolean mFinished;
 	private int mDefaultRepeatValue;
 	private int mLastRepeatValue;
+	private Date mDate;
 
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
@@ -75,6 +74,7 @@ public class TransactionEdit extends Activity
 		mFinishIntent = RESULT_CANCELED;
 		mFinished = false;
 		mDefaultRepeatValue = -1;
+		mDate = null;
 
 		ArrayList<String> repeat =
 			new ArrayList(Arrays.asList(getResources().getStringArray(R.array.repeat)));
@@ -149,7 +149,7 @@ public class TransactionEdit extends Activity
 				mRepeat = new RepeatSchedule();
 			
 			// set the date edittext to the current date by default
-			setDateEdit(null);
+        	setDateEdit(mDate);
 		}
 		else
 		{
@@ -195,7 +195,11 @@ public class TransactionEdit extends Activity
 				actualRadio.setChecked(true);
 			}
 			
-			setDateEdit(trans.date);
+			if (mDate == null)
+				setDateEdit(trans.date);
+			else
+				setDateEdit(mDate);
+
 			NumberFormat nf = NumberFormat.getCurrencyInstance();
 			Currency cur = nf.getCurrency();
 			amountEdit.setText(nf.format(trans.amount).replace(cur.getSymbol(), ""));
@@ -283,6 +287,8 @@ public class TransactionEdit extends Activity
 		Calendar cal = Calendar.getInstance();
 		if (date != null)
 			cal.setTime(date);
+
+		mDate = date;
 		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
 		dateEdit.setText(df.format(cal.getTime()));
 	}
@@ -408,7 +414,8 @@ public class TransactionEdit extends Activity
 		if (spinner_num == 7)
 		{
 			mRepeatAdapter = (ArrayAdapter<String>)repeatSpinner.getAdapter();
-			mRepeatAdapter.add("Custom");
+			if (mRepeatAdapter.getCount() <= 7)
+				mRepeatAdapter.add("Custom");
 		}
 		
 		mDefaultRepeatValue = spinner_num;
@@ -422,6 +429,8 @@ public class TransactionEdit extends Activity
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
 				checkEdit = (EditText)findViewById(R.id.checkEdit);
+				checkEdit.setKeyListener(new CurrencyKeyListener());
+
 				if (isChecked)
 				{
 					if (checkEdit.getText().toString().equals(""))
@@ -625,7 +634,9 @@ public class TransactionEdit extends Activity
 			if (mRepeat.iter != RepeatSchedule.NO_REPEAT)
 			{
 				mRepeat.start = trans.date;
-				mRepeat.write(id);
+				Log.e("SAVE_STATE", "WRITING REPEAT TRANSACTION");
+				if (mRepeat.write(id) == -1)
+					Log.e("SAVE_STATE", "WRITING REPEAT FAILED");
 			}
 			
 			mTransId = id;

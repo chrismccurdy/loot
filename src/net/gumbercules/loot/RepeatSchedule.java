@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import android.database.*;
 import android.database.sqlite.*;
+import android.util.Log;
 
 public class RepeatSchedule
 implements Cloneable
@@ -145,7 +146,6 @@ implements Cloneable
 				lootDB.endTransaction();
 				return -1;
 			}
-			
 		}
 
 		lootDB.setTransactionSuccessful();
@@ -167,10 +167,7 @@ implements Cloneable
 		{
 			end_time = this.end.getTime();
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		catch (Exception e) { }
 
 		Transaction trans = Transaction.getTransactionById(trans_id);
 		int trans_id2 = trans.getTransferId();
@@ -413,6 +410,7 @@ implements Cloneable
 			// get the id and increment i when done
 			ids[i++] = cur.getInt(0);
 		} while (cur.moveToNext());
+		cur.close();
 		
 		// if there are no ids, return null instead of a zero-length list
 		if (ids.length == 0)
@@ -429,7 +427,7 @@ implements Cloneable
 	public static int[] getDueRepeatIds(Date date)
 	{
 		String[] wArgs = {Double.toString(date.getTime())};
-		return getIds("due <= ", wArgs);
+		return getIds("due <= ?", wArgs);
 	}
 	
 	public static int[] processDueRepetitions(Date date)
@@ -482,7 +480,7 @@ implements Cloneable
 				// change the start date and write a new repeat pattern
 				new_repeat.start = (Date)new_repeat.due.clone();
 				new_repeat.id = -1;
-				int repeat_id = new_repeat.write(id);
+				int repeat_id = new_repeat.write(trans_id);
 
 				// if the write was successful, add it to the list of newly created ids
 				if (repeat_id != -1)
@@ -573,6 +571,7 @@ implements Cloneable
 			return -1;
 		}
 		int max = cur.getInt(0);
+		cur.close();
 		
 		// update any repeat_transactions rows that refer to this transaction as the transfer_id
 		String update = "update repeat_transactions set transfer_id = " + max +
@@ -603,6 +602,12 @@ implements Cloneable
 	public boolean writeTransactionToRepeatTable(int trans_id)
 	{
 		Transaction trans = Transaction.getTransactionById(trans_id);
+		if (trans == null)
+		{
+			Log.e("WRITE_TRANSACTION_TO_REPEAT_TABLE", "transaction " + trans_id + " is null");
+			return false;
+		}
+		
 		int transfer_id = trans.getTransferId();
 		
 		// verify that both the transaction and repeat pattern exist
@@ -619,6 +624,7 @@ implements Cloneable
 		}
 		cur.close();
 		
+		// TODO: find out why this fails on transfer repeats
 		String insert = "insert into repeat_transactions (trans_id,repeat_id,account,date,party," +
 						"amount,check_num,transfer_id) select id," + this.id + ",account,date,party," +
 						"amount,check_num," + transfer_id + " from transactions where id = " + trans_id;
@@ -684,7 +690,8 @@ implements Cloneable
 
 	public Date calculateDueDate()
 	{
-		if (this.freq == 0 || this.iter == NO_REPEAT || (this.end != null && this.start.after(this.end)))
+		if (this.freq == 0 || this.iter == NO_REPEAT ||
+				((this.end != null && this.end.getTime() > 0) && this.start.after(this.end)))
 			return null;
 		
 		Calendar cal = Calendar.getInstance();
@@ -788,6 +795,10 @@ implements Cloneable
 			cal.add(Calendar.YEAR, this.freq);
 		}
 		
-		return cal.getTime();
+		Date due = cal.getTime();
+		if (due.before(this.start) || (this.end != null && due.after(this.end)))
+			return null;
+		else
+			return due;
 	}
 }
