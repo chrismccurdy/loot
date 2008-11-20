@@ -99,7 +99,7 @@ public class TransactionActivity extends ListActivity
     		layoutResId = R.layout.trans_row_wide;
     	
     	mTransList = new ArrayList<Transaction>();
-	    final TransactionAdapter ta = new TransactionAdapter(this, layoutResId, mTransList);
+	    final TransactionAdapter ta = new TransactionAdapter(this, layoutResId, mTransList, mAcct.id());
         setListAdapter(ta);
         fillList();
         

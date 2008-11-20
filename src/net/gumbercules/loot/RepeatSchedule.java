@@ -87,6 +87,12 @@ implements Cloneable
 	
 	private int newRepeat(int trans_id)
 	{
+		// check the database to make sure that we don't get stuck in an infinite loop
+		// of constantly writing a new repeat schedule for the transfer links
+		int repeat_id = RepeatSchedule.getRepeatId(trans_id);
+		if (repeat_id != -1)
+			return repeat_id;
+		
 		long start_time = this.start.getTime(), end_time = 0;
 		try
 		{
@@ -135,6 +141,7 @@ implements Cloneable
 			try
 			{
 				RepeatSchedule repeat2 = (RepeatSchedule) this.clone();
+				repeat2.id = -1;
 				if (repeat2.write(trans_id2) == -1)
 				{
 					lootDB.endTransaction();
@@ -345,7 +352,7 @@ implements Cloneable
 	
 	public int getTransferId()
 	{
-		return -1;
+		return getId("transfer_id", "repeat_id = " + this.id, null);
 	}
 	
 	public Transaction getTransaction()
@@ -463,9 +470,11 @@ implements Cloneable
 				new_trans_ids.add(trans_id);
 				
 				int transfer_id = pattern.getTransferId();
+				Log.e("PROCESS_DUE_REPETITIONS", "transfer_id = " + transfer_id);
 				if (transfer_id != -1)
 				{
 					Transaction transfer = Transaction.getTransactionById(transfer_id);
+					Log.e("PROCESS_DUE_REPETITIONS", "getTransferId() = " + transfer.getTransferId());
 					if (transfer.getTransferId() == transfer_id)
 						transfer.linkTransfer(trans_id, transfer_id);
 				}
@@ -576,7 +585,7 @@ implements Cloneable
 		// update any repeat_transactions rows that refer to this transaction as the transfer_id
 		String update = "update repeat_transactions set transfer_id = " + max +
 						" where transfer_id = " + trans_id;
-		
+		Log.e("WRITE_TRANSACTION", update);
 		try
 		{
 			lootDB.execSQL(update);

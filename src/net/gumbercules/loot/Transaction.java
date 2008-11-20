@@ -398,12 +398,25 @@ public class Transaction
 	
 	public boolean erase()
 	{
-		// TODO: properly recognize and erase transfers
+		int transfer = this.getTransferId();
+		if (transfer != -1)
+		{
+			return this.eraseTransfer();
+		}
+		else
+		{
+			return this.eraseTransaction();
+		}
+	}
+	
+	private boolean eraseTransaction()
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
+
 		String del = "delete from transactions where id = ?";
 		Object[] bindArgs = {new Long(this.id)};
 		
-		SQLiteDatabase lootDB = Database.getDatabase();
-		lootDB.beginTransaction();
 		try
 		{
 			lootDB.execSQL(del, bindArgs);
@@ -422,6 +435,18 @@ public class Transaction
 			return false;
 		}
 		
+		// erase any repeat schedules, if available
+		int repeat = RepeatSchedule.getRepeatId(this.id);
+		if (repeat != -1)
+		{
+			RepeatSchedule rpt = RepeatSchedule.getSchedule(repeat);
+			if (!rpt.erase(false))
+			{
+				lootDB.endTransaction();
+				return false;
+			}
+		}
+				
 		lootDB.setTransactionSuccessful();
 		lootDB.endTransaction();
 		
@@ -609,7 +634,7 @@ public class Transaction
 
 		if (transfer_id == -1)
 		{
-			this.erase();
+			this.eraseTransaction();
 			return -1;
 		}
 		
@@ -618,8 +643,8 @@ public class Transaction
 			// make sure both transfers succeeded and link them together
 			if (!linkTransfer(ret, transfer_id))
 			{
-				this.erase();
-				trans2.erase();
+				this.eraseTransaction();
+				trans2.eraseTransaction();
 				ret = -1;
 			}
 		}
@@ -644,8 +669,8 @@ public class Transaction
 				if (acct2.write() == -1)
 				{
 					this.eraseTransfer();
-					this.erase();
-					trans2.erase();
+					this.eraseTransaction();
+					trans2.eraseTransaction();
 					ret = -1;
 				}
 			}
@@ -671,7 +696,7 @@ public class Transaction
 			removeTransfer(trans2);
 			return false;
 		}
-		if ( !this.erase() || !trans2.erase() )
+		if ( !this.eraseTransaction() || !trans2.eraseTransaction() )
 		{
 			return false;
 		}
@@ -687,6 +712,17 @@ public class Transaction
 			}
 			acct2.initialBalance -= amt;
 			acct2.write();
+		}
+		
+		// erase any repeat schedules, if available
+		int repeat = RepeatSchedule.getRepeatId(this.id);
+		if (repeat != -1)
+		{
+			RepeatSchedule rpt = RepeatSchedule.getSchedule(repeat);
+			if (!rpt.erase(true))
+			{
+				return false;
+			}
 		}
 		
 		return removeTransfer(trans2);
@@ -764,8 +800,10 @@ public class Transaction
 			return ret;
 		}
 		
-		if (cur.getCount() > 0)
-			ret = cur.getInt(0);
+		ret = cur.getInt(0);
+		if (ret == this.id)
+			ret = cur.getInt(1);
+		
 		cur.close();
 		return ret;
 	}

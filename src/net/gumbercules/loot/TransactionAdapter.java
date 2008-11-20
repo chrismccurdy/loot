@@ -25,14 +25,16 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private Context context;
 	private LayoutInflater mInflater;
 	private CharSequence mConstraint;
+	private int mAcctId;
 
-	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr)
+	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
 	{
 		super(con, 0);
 		this.transList = tr;
 		this.mOriginalList = tr;
 		this.rowResId = row;
 		this.context = con;
+		this.mAcctId = acct_id;
 		
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -93,8 +95,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	@Override
 	public void add(Transaction object)
 	{
-		mOriginalList.add(object);
-		notifyDataSetChanged();
+		if (object.account == mAcctId)
+		{
+			mOriginalList.add(object);
+			notifyDataSetChanged();
+		}
 	}
 	
 	public void add(int[] ids)
@@ -106,7 +111,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		for (int id : ids)
 		{
 			trans = Transaction.getTransactionById(id);
-			if (trans != null)
+			if (trans != null && trans.account == mAcctId)
 				mOriginalList.add(trans);
 		}
 		notifyDataSetChanged();
@@ -115,8 +120,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	@Override
 	public void insert(Transaction object, int index)
 	{
-		mOriginalList.add(index, object);
-		notifyDataSetChanged();
+		if (object.account == mAcctId)
+		{
+			mOriginalList.add(index, object);
+			notifyDataSetChanged();
+		}
 	}
 
 	@Override
