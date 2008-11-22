@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
 
+import android.content.ContentValues;
 import android.database.*;
 import android.database.sqlite.*;
 import android.util.Log;
@@ -583,17 +584,25 @@ implements Cloneable
 		cur.close();
 		
 		// update any repeat_transactions rows that refer to this transaction as the transfer_id
-		String update = "update repeat_transactions set transfer_id = " + max +
-						" where transfer_id = " + trans_id;
-		Log.e("WRITE_TRANSACTION", update);
+		ContentValues cv = new ContentValues();
+		cv.put("transfer_id", max);
+		
+		int updated = 0;
 		try
 		{
-			lootDB.execSQL(update);
+			updated = lootDB.update("repeat_transactions", cv, "transfer_id = " + trans_id, null);
 		}
 		catch (SQLException e)
 		{
 			lootDB.endTransaction();
 			return -1;
+		}
+		
+		// link transaction to itself if rows are updated
+		if (updated > 0)
+		{
+			Transaction tmp = Transaction.getTransactionById(max);
+			tmp.linkTransfer(max, max);
 		}
 		
 		// write the tags to the tags table for the new transaction
@@ -633,7 +642,6 @@ implements Cloneable
 		}
 		cur.close();
 		
-		// TODO: find out why this fails on transfer repeats
 		String insert = "insert into repeat_transactions (trans_id,repeat_id,account,date,party," +
 						"amount,check_num,transfer_id) select id," + this.id + ",account,date,party," +
 						"amount,check_num," + transfer_id + " from transactions where id = " + trans_id;

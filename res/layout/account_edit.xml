@@ -14,7 +14,7 @@
 
 
 <TableLayout android:id="@+id/TableLayout01" android:layout_height="wrap_content" android:layout_weight="50" android:layout_width="fill_parent"><TableRow android:layout_height="wrap_content" android:id="@+id/NameRow" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/NameLabel" android:text="@string/acct_name" android:minWidth="100px"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/NameEdit" android:layout_marginLeft="10px" android:layout_weight="2"></EditText>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/NameEdit" android:layout_marginLeft="10px" android:layout_weight="2" android:singleLine="true"></EditText>
 </TableRow>
 <TableRow android:layout_height="wrap_content" android:id="@+id/BalanceRow" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/BalanceLabel" android:text="@string/acct_bal" android:minWidth="100px"></TextView>
 <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/BalanceEdit" android:layout_marginLeft="10px" android:layout_weight="2"></EditText>
