@@ -54,7 +54,7 @@ public class Database
 	
 	private boolean createDB()
 	{
-		String[] createSQL = new String[14];
+		String[] createSQL = new String[12];
 		
 		createSQL[0] = "create table accounts(\n" + 
 					"	id integer primary key autoincrement,\n" +
@@ -111,14 +111,12 @@ public class Database
 					"	transfer_id integer,\n" +
 					"	primary key (trans_id, repeat_id))";
 
-		createSQL[7] = "insert into options values ('last_used','-1')";
-		createSQL[8] = "insert into options values ('sort_column','0')";
-		createSQL[9] = "insert into options values ('sort_order','0')";
-		createSQL[10] = "insert into options values ('auto_purge_days','-1')";
-		createSQL[11] = "insert into options values ('del_transfer_warn','1')";
-		createSQL[12] = "insert into options values ('post_repeats_early','2')";
+		createSQL[7] = "insert into options values ('sort_column','0')";
+		createSQL[8] = "insert into options values ('sort_order','0')";
+		createSQL[9] = "insert into options values ('auto_purge_days','-1')";
+		createSQL[10] = "insert into options values ('post_repeats_early','2')";
 
-		createSQL[14] = "create index idx_trans_id on transactions ( id asc )";
+		createSQL[11] = "create index idx_trans_id on transactions ( id asc )";
 		
 		try
 		{
@@ -216,6 +214,38 @@ public class Database
 		return privSetOption(option, new Long(value));
 	}
 	
+	public static boolean setOption(String option, byte[] value)
+	{
+		Object dummy = getOptionBlob( (String)option );
+		String sql;
+		if ( dummy == null )
+			sql = "insert into options (option,value) values ('" + option + "',?)";
+		else
+			sql = "update options set value = ? where option = '" + option + "'";
+
+		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
+
+		SQLiteStatement stmt = lootDB.compileStatement(sql);
+		stmt.bindBlob(1, value);
+		
+		try
+		{
+			stmt.execute();
+			lootDB.setTransactionSuccessful();
+		}
+		catch ( SQLException e )
+		{
+			return false;
+		}
+		finally
+		{
+			lootDB.endTransaction();
+		}
+		
+		return true;
+	}
+	
 	@SuppressWarnings("unused")
 	private static Cursor cursorGetOption( String option )
 	{
@@ -264,6 +294,19 @@ public class Database
 		}
 		
 		return l;
+	}
+	
+	public static byte[] getOptionBlob(String option)
+	{
+		Cursor cur = cursorGetOption(option);
+		byte[] blob = null;
+		if (cur != null)
+		{
+			blob = cur.getBlob(0);
+			cur.close();
+		}
+		
+		return blob;
 	}
 	
 	public static boolean getBoolean( int b )

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:orientation="vertical">
+
+<TextView android:id="@+id/TextView01" android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="@string/pin" android:layout_marginTop="50px" android:layout_marginBottom="35px" android:textSize="24px" android:gravity="center_horizontal"></TextView>
+<EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_marginLeft="40px" android:layout_marginRight="40px" android:id="@+id/pinEdit"></EditText>
+<TextView android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent" android:gravity="center_vertical|center_horizontal" android:id="@+id/invalidView" android:textSize="24px" android:textStyle="bold" android:textColor="#ff0000"></TextView><Button android:layout_height="wrap_content" android:text="@string/unlock" android:layout_width="wrap_content" android:textSize="24px" android:layout_gravity="center_horizontal" android:id="@+id/unlockButton"></Button>
+
+</LinearLayout>

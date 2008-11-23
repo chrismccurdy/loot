@@ -34,4 +34,7 @@
 
 
 
+<string name="unlock">Unlock</string>
+<string name="pin">Please enter the PIN to unlock the accounts.</string>
+<string name="invalid">Invalid PIN</string>
 </resources>

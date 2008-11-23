@@ -231,10 +231,6 @@ public class Transaction
 
 		lootDB.endTransaction();
 		
-		Account acct = new Account();
-		acct.loadById(this.account);
-		acct.setLastTransactionDate(this.date);
-		
 		return this.id;
 	}
 	
@@ -282,10 +278,6 @@ public class Transaction
 		}
 		lootDB.endTransaction();
 		
-		Account acct = new Account();
-		acct.loadById(this.account);
-		acct.setLastTransactionDate(this.date);
-
 		return ret;
 	}
 	
@@ -383,10 +375,6 @@ public class Transaction
 			lootDB.endTransaction();
 		}
 		
-		Account acct = new Account();
-		acct.loadById(Account.getCurrentAccountNum());
-		acct.setLastTransactionDate(this.date);
-
 		this.posted = p;
 		return true;
 	}
@@ -450,10 +438,6 @@ public class Transaction
 		lootDB.setTransactionSuccessful();
 		lootDB.endTransaction();
 		
-		Account acct = new Account();
-		acct.loadById(Account.getCurrentAccountNum());
-		acct.setLastTransactionDate(this.date);
-
 		return true;
 	}
 	

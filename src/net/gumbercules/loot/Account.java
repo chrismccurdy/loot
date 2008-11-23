@@ -140,7 +140,7 @@ public class Account
 		if (!cur.moveToFirst())
 		{
 			cur.close();
-			return false;
+			return true;
 		}
 		
 		int[] ids = new int[cur.getCount()];
@@ -244,13 +244,6 @@ public class Account
 		return bal;
 	}
 	
-	public static Account getLastUsedAccount()
-	{
-		Account acct = new Account();
-		acct.loadById( (int)Database.getOptionInt("last_used") );
-		return acct;
-	}
-	
 	public boolean loadById(int id)
 	{
 		SQLiteDatabase lootDB;
@@ -279,11 +272,6 @@ public class Account
 		cur.close();
 		
 		return true;
-	}
-	
-	public boolean setLastUsed()
-	{
-		return Database.setOption("last_used", this.id);
 	}
 	
 	public static int getCurrentAccountNum()
@@ -423,16 +411,6 @@ public class Account
 		cur.close();
 		
 		return check_num;
-	}
-	
-	public boolean setLastTransactionDate( Date d )
-	{
-		return Database.setOption("last_trans_" + this.id, d.getTime());
-	}
-	
-	public long getLastTransactionDate()
-	{
-		return Database.getOptionInt("last_trans_" + this.id);
 	}
 	
 	public int[] getTransactionIds()

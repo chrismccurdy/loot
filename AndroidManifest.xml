@@ -3,9 +3,9 @@
       android:versionCode="1"
       android:versionName="1.0.0" package="net.gumbercules.loot">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".AccountChooser" android:label="@string/app_name" android:screenOrientation="unspecified"><intent-filter><action android:name="android.intent.action.MAIN"></action>
-<category android:name="android.intent.category.LAUNCHER"></category>
-<category android:name="android.intent.category.DEFAULT"></category>
+        <activity android:name=".AccountChooser" android:label="@string/app_name" android:screenOrientation="unspecified" android:launchMode="singleTask"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+
+
 </intent-filter>
 </activity><activity android:name=".TransactionActivity" android:screenOrientation="unspecified">
             
@@ -24,7 +24,7 @@
 
 
 </intent-filter></activity>
-<activity android:name=".RepeatActivity"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+<activity android:name=".RepeatActivity" android:launchMode="singleTask"><intent-filter><action android:name="android.intent.action.MAIN"></action>
 
 
 </intent-filter></activity>
@@ -32,6 +32,10 @@
 
 
 
+</intent-filter></activity>
+<activity android:launchMode="singleTask" android:name=".PinActivity" android:label="@string/app_name"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+<category android:name="android.intent.category.LAUNCHER"></category>
+<category android:name="android.intent.category.DEFAULT"></category>
 </intent-filter></activity>
 </application>
 

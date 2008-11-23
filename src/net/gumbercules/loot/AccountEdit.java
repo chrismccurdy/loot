@@ -1,5 +1,8 @@
 package net.gumbercules.loot;
 
+import java.text.NumberFormat;
+import java.util.Currency;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -85,8 +88,11 @@ public class AccountEdit extends Activity
 			if (mNameEdit != null)
 				mNameEdit.setText(acct.name);
 			if (mBalanceEdit != null)
-				// TODO: fix to display it as a currency, without the currency symbol
-				mBalanceEdit.setText(Double.toString(acct.initialBalance));
+			{
+				NumberFormat nf = NumberFormat.getCurrencyInstance();
+				Currency cur = nf.getCurrency();
+				mBalanceEdit.setText(nf.format(acct.initialBalance).replace(cur.getSymbol(), ""));
+			}
 		}
 	}
 	

@@ -3,7 +3,6 @@ package net.gumbercules.loot;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;

@@ -1,6 +1,9 @@
 package net.gumbercules.loot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
@@ -42,6 +45,19 @@ public class AccountChooser extends ListActivity
 		AccountAdapter accounts = new AccountAdapter(this, R.layout.account_row, accountList);
 		setListAdapter(accounts);
 		fillList();
+
+		// automatically purge transactions on load if this option is set
+		int purge_days = (int)Database.getOptionInt("auto_purge_days");
+		if (purge_days != -1)
+		{
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_YEAR, -purge_days);
+			Date date = cal.getTime();
+			for (Account acct : accountList)
+			{
+				acct.purgeTransactions(date);
+			}
+		}
 	}
 
 	@Override
