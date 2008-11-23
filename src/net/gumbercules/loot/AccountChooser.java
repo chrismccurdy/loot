@@ -1,14 +1,23 @@
 package net.gumbercules.loot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -18,6 +27,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class AccountChooser extends ListActivity
@@ -32,6 +42,7 @@ public class AccountChooser extends ListActivity
 	public static final int CONTEXT_DEL		= Menu.FIRST + 3;
 
 	private ArrayList<Account> accountList;
+	private UpdateThread mUpdateThread;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -45,6 +56,11 @@ public class AccountChooser extends ListActivity
 		AccountAdapter accounts = new AccountAdapter(this, R.layout.account_row, accountList);
 		setListAdapter(accounts);
 		fillList();
+		
+		mUpdateThread = new UpdateThread(this);
+		mUpdateThread.start();
+		UpdateChecker uc = new UpdateChecker();
+		uc.start();
 
 		// automatically purge transactions on load if this option is set
 		int purge_days = (int)Database.getOptionInt("auto_purge_days");
@@ -206,5 +222,120 @@ public class AccountChooser extends ListActivity
 		
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
+	}
+	
+	private class UpdateChecker extends Thread
+	{
+		@Override
+		public void run()
+		{
+			try
+			{
+				URL url = new URL("http", "gumbercules.net", "/loot/version.html");
+				URLConnection conn = url.openConnection();
+				conn.connect();
+				InputStream is = conn.getInputStream();
+				byte[] bytes = new byte[10];
+				int len = is.read(bytes);
+				Version remote_ver = new Version(new String(bytes, 0, len).trim());
+				Version current_ver = new Version(getResources().getString(R.string.version));
+
+				if (current_ver.compareTo(remote_ver) < 0)
+				{
+					Message msg = new Message();
+					msg.what = R.string.update;
+					mUpdateThread.mHandler.sendMessage(msg);
+				}
+			}
+			catch (MalformedURLException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private class UpdateThread extends Thread
+	{
+		public Handler mHandler;
+		private Context mContext;
+
+		public UpdateThread(Context con)
+		{
+			mContext = con;
+		}
+		
+		@Override
+		public void run()
+		{
+			Looper.prepare();
+		
+			mHandler = new Handler()
+			{
+				public void handleMessage(Message msg)
+				{
+					Toast t = Toast.makeText(mContext, msg.what, Toast.LENGTH_LONG);
+					t.show();
+				}
+			};
+			
+			Looper.loop();
+		}
+	}
+	
+	private class Version implements Comparable<Version>
+	{
+		private int mMajor;
+		private int mMinor;
+		private int mMaintenance;
+		
+		public Version(String str)
+		{
+			String[] nums = str.split("\\.");
+
+			if (nums.length >= 1)
+			{
+				mMajor = Integer.parseInt(nums[0]);
+				if (nums.length >= 2)
+				{
+					mMinor = Integer.parseInt(nums[1]);
+					if (nums.length >= 3)
+					{
+						mMaintenance = Integer.parseInt(nums[2]);
+					}
+				}
+			}
+		}
+
+		public int compareTo(Version v2)
+		{
+			int ret = compareNum(this.mMajor, v2.mMajor);
+			
+			if (ret == 0)
+			{
+				ret = compareNum(this.mMinor, v2.mMinor);
+				
+				if (ret == 0)
+					ret = compareNum(this.mMaintenance, v2.mMaintenance);
+			}
+			
+			return ret;
+		}
+
+		private int compareNum(int n1, int n2)
+		{
+			int a = n1,
+				b = n2;
+			
+			int alb = 0, agb = 0;
+			if (a > b)
+				agb = 1;
+			if (a < b)
+				alb = 1;
+			return agb - alb;
+		}
 	}
 }

@@ -164,6 +164,8 @@ public final class R {
         public static final int trans_posted=0x7f060013;
         public static final int transfer=0x7f060004;
         public static final int unlock=0x7f060017;
+        public static final int update=0x7f06001a;
+        public static final int version=0x7f06001b;
         public static final int yes=0x7f06000f;
     }
     public static final class xml {
