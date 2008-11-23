@@ -200,9 +200,12 @@ public class TransactionEdit extends Activity
 			else
 				setDateEdit(mDate);
 
+			// replace comma and currency symbol with empty string
 			NumberFormat nf = NumberFormat.getCurrencyInstance();
 			Currency cur = nf.getCurrency();
-			amountEdit.setText(nf.format(trans.amount).replace(cur.getSymbol(), ""));
+			amountEdit.setText(nf.format(trans.amount).replace(cur.getSymbol(), "")
+					.replace(",", ""));
+			
 			tagsEdit.setText(trans.tagListToString());
 
 			setRepeatSpinnerSelection(mRepeat);

@@ -65,6 +65,8 @@ public class TransactionActivity extends ListActivity
 	private TextView balanceValue;
 	private TextView postedValue;
 	
+	private static boolean showSearch = false;
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -102,7 +104,7 @@ public class TransactionActivity extends ListActivity
         setListAdapter(ta);
         fillList();
         
-    	searchEdit.addTextChangedListener(new TextWatcher()
+    	TextWatcher searchChanged = new TextWatcher()
     	{
     		// we only care what the end result is
 			public void afterTextChanged(Editable s)
@@ -121,7 +123,15 @@ public class TransactionActivity extends ListActivity
 			}
 
 			public void onTextChanged(CharSequence s, int start, int before, int count) { }
-    	});
+    	};
+    	searchEdit.addTextChangedListener(searchChanged);
+
+    	// show the search if the orientation has changed and the activity has restarted
+    	if (showSearch)
+    	{
+    		toggleSearch();
+    		searchChanged.afterTextChanged(searchEdit.getText());
+    	}
 
     	ListView view = getListView();
         registerForContextMenu(view);
@@ -218,6 +228,7 @@ public class TransactionActivity extends ListActivity
 		}
 		else
 		{
+			showSearch = true;
 			searchEdit.requestFocus();
 			
 			// set the adapter each time to get new data for the autocomplete

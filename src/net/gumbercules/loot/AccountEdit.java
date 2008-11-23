@@ -91,7 +91,8 @@ public class AccountEdit extends Activity
 			{
 				NumberFormat nf = NumberFormat.getCurrencyInstance();
 				Currency cur = nf.getCurrency();
-				mBalanceEdit.setText(nf.format(acct.initialBalance).replace(cur.getSymbol(), ""));
+				mBalanceEdit.setText(nf.format(acct.initialBalance).replace(cur.getSymbol(), "")
+						.replace(",", ""));
 			}
 		}
 	}

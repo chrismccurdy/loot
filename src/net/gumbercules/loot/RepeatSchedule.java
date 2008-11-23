@@ -396,7 +396,26 @@ implements Cloneable
 	
 	public String[] getTags()
 	{
-		return null;
+		SQLiteDatabase lootDB = Database.getDatabase();
+		String[] columns = {"tags"};
+		Cursor cur = lootDB.query("repeat_transactions", columns, "repeat_id = " + this.id,
+				null, null, null, null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		String tag_str = cur.getString(0);
+		cur.close();
+		
+		String[] tags = null;
+		if (tag_str != null)
+			tags = tag_str.split(" ");
+		if (tags.length == 0)
+			return null;
+		
+		return tags;
 	}
 	
 	private static int[] getIds(String where, String[] wArgs)
@@ -606,6 +625,7 @@ implements Cloneable
 		}
 		
 		// write the tags to the tags table for the new transaction
+		// TODO: verify that the tags are written
 		trans = Transaction.getTransactionById(max);
 		trans.addTags(this.getTags());
 		
