@@ -4,6 +4,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import net.gumbercules.loot.TransactionAdapter.TransactionFilter;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ListActivity;
@@ -66,6 +68,7 @@ public class TransactionActivity extends ListActivity
 	private TextView postedValue;
 	
 	private static boolean showSearch = false;
+	private static String searchString = "";
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -109,16 +112,18 @@ public class TransactionActivity extends ListActivity
     		// we only care what the end result is
 			public void afterTextChanged(Editable s)
 			{
-				ListView lv = ((ListActivity)ta.getContext()).getListView();
-				lv.setTextFilterEnabled(true);
-				lv.setFilterText(s.toString());
+				searchString = s.toString();
+				TransactionFilter f = (TransactionFilter)ta.getFilter();
+				f.publish(searchString, f.filtering(searchString));
 			}
 
 			public void beforeTextChanged(CharSequence s, int start, int count, int after)
 			{
 				if (after == 0)
 				{
-					((ListActivity)ta.getContext()).getListView().clearTextFilter();
+					searchString = "";
+					TransactionFilter f = (TransactionFilter)ta.getFilter();
+					f.publish(searchString, f.filtering(searchString));
 				}
 			}
 
@@ -126,16 +131,18 @@ public class TransactionActivity extends ListActivity
     	};
     	searchEdit.addTextChangedListener(searchChanged);
 
-    	// show the search if the orientation has changed and the activity has restarted
-    	if (showSearch)
-    	{
-    		toggleSearch();
-    		searchChanged.afterTextChanged(searchEdit.getText());
-    	}
-
     	ListView view = getListView();
         registerForContextMenu(view);
         view.setStackFromBottom(true);
+
+        // show the search if the orientation has changed and the activity has restarted
+    	if (showSearch)
+    	{
+    		toggleSearch();
+			TransactionFilter f = (TransactionFilter)ta.getFilter();
+			searchEdit.setText(searchString);
+			f.publish(searchString, f.filtering(searchString));
+    	}
         
     	/*@SuppressWarnings("unused")
 		OrientationListener orient = new OrientationListener(this)
@@ -225,6 +232,7 @@ public class TransactionActivity extends ListActivity
 		{
 			new_vis = LinearLayout.GONE;
 			searchEdit.setText("");
+			showSearch = false;
 		}
 		else
 		{

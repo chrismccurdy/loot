@@ -24,7 +24,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private int rowResId;
 	private Context context;
 	private LayoutInflater mInflater;
-	private CharSequence mConstraint;
+	private static CharSequence mConstraint;
 	private int mAcctId;
 
 	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
@@ -261,6 +261,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 
 	public class TransactionFilter extends Filter
 	{
+		public FilterResults filtering(CharSequence constraint)
+		{
+			return performFiltering(constraint);
+		}
+		
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint)
 		{
@@ -320,6 +325,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			return results;
 		}
 
+		public void publish(CharSequence constraint, FilterResults results)
+		{
+			publishResults(constraint, results);
+		}
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void publishResults(CharSequence constraint, FilterResults results)
