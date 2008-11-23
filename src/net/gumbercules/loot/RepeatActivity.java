@@ -169,11 +169,6 @@ public class RepeatActivity extends TabActivity
 
     		if (mEndDate != null && mEndDate.getTime() > 0)
     		{
-    			//Calendar cal = Calendar.getInstance();
-   				//cal.setTime(mEndDate);
-    			//DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-    			//endDate.add(df.format(cal.getTime()));
-    			//mEndSpinner.setSelection(2);
     			setEndSpinner(mEndDate);
     			mEndSpinner.setSelection(2);
     		}
@@ -416,13 +411,20 @@ public class RepeatActivity extends TabActivity
 		if (mFinishIntent == RESULT_CANCELED || mFinished)
 			return;
 		
+		long end = parseFields(tabId);
+
+		end(end);
+	}
+	
+	private long parseFields(int tabId)
+	{
 		long end = 0;
 		if (tabId == TAB_NEVER)
 		{
 			mIter = RepeatSchedule.NO_REPEAT;
 			mFreq = -1;
 			mCustom = -1;
-			end(end);
+			return end;
 		}
 		else if (tabId == TAB_DAY)
 			mIter = RepeatSchedule.DAILY;
@@ -434,7 +436,6 @@ public class RepeatActivity extends TabActivity
 			{
 				if (button.isChecked())
 				{
-					//String tag = (String)button.getTag();
 					int tag = (Integer)button.getTag();
 					mCustom |= tag;
 				}
@@ -445,7 +446,7 @@ public class RepeatActivity extends TabActivity
 				mIter = RepeatSchedule.NO_REPEAT;
 				mFreq = -1;
 				mCustom = -1;
-				end(end);
+				return end;
 			}
 		}
 		else if (tabId == TAB_MONTH)
@@ -466,14 +467,13 @@ public class RepeatActivity extends TabActivity
 			mIter = RepeatSchedule.NO_REPEAT;
 			mFreq = -1;
 			mCustom = -1;
-			end(end);
+			return end;
 		}
 		
 		mEndDate = parseEndSpinner();
 		if (mEndDate != null)
 			end = mEndDate.getTime();
-
-		end(end);
+		return end;
 	}
 	
 	private void end(long end_date)
@@ -493,5 +493,16 @@ public class RepeatActivity extends TabActivity
 	{
 		super.onResume();
 		populateFields();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		long end_date = parseFields(getTabHost().getCurrentTab());
+		outState.putInt(RepeatSchedule.KEY_ITER, mIter);
+		outState.putInt(RepeatSchedule.KEY_FREQ, mFreq);
+		outState.putInt(RepeatSchedule.KEY_CUSTOM, mCustom);
+		outState.putLong(RepeatSchedule.KEY_DATE, end_date);
 	}
 }

@@ -392,24 +392,27 @@ public class TransactionEdit extends Activity
 			break;
 		
 		case RepeatSchedule.DAILY:
-			if (repeat.freq == 1 && repeat.end.getTime() <= 0)
+			if (repeat.freq == 1 && (repeat.end == null || repeat.end.getTime() <= 0))
 				spinner_num = 1;
 			break;
 		
 		case RepeatSchedule.WEEKLY:
-			if (repeat.freq == 1 && repeat.custom == -1 && repeat.end.getTime() <= 0)
+			if (repeat.freq == 1 && repeat.custom == 0 &&
+					(repeat.end == null || repeat.end.getTime() <= 0))
 				spinner_num = 2;
-			else if (repeat.freq == 2 && repeat.custom == -1 && repeat.end.getTime() <= 0)
+			else if (repeat.freq == 2 && repeat.custom == 0 &&
+					(repeat.end == null || repeat.end.getTime() <= 0))
 				spinner_num = 3;
 			break;
 		
 		case RepeatSchedule.MONTHLY:
-			if (repeat.freq == 1 && repeat.custom == RepeatSchedule.DATE && repeat.end.getTime() <= 0)
+			if (repeat.freq == 1 && repeat.custom == RepeatSchedule.DATE &&
+					(repeat.end == null || repeat.end.getTime() <= 0))
 				spinner_num = 4;
 			break;
 
 		case RepeatSchedule.YEARLY:
-			if (repeat.freq == 1 && repeat.end.getTime() <= 0)
+			if (repeat.freq == 1 && (repeat.end == null || repeat.end.getTime() <= 0))
 				spinner_num = 5;
 			break;
 		}
@@ -606,7 +609,7 @@ public class TransactionEdit extends Activity
 		case 4:
 			mRepeat.iter = RepeatSchedule.MONTHLY;
 			mRepeat.freq = 1;
-			mRepeat.custom = 0;
+			mRepeat.custom = RepeatSchedule.DATE;
 			mRepeat.end = null;
 			break;
 			
@@ -637,9 +640,7 @@ public class TransactionEdit extends Activity
 			if (mRepeat.iter != RepeatSchedule.NO_REPEAT)
 			{
 				mRepeat.start = trans.date;
-				Log.e("SAVE_STATE", "WRITING REPEAT TRANSACTION");
-				if (mRepeat.write(id) == -1)
-					Log.e("SAVE_STATE", "WRITING REPEAT FAILED");
+				mRepeat.write(id);
 			}
 			
 			mTransId = id;
