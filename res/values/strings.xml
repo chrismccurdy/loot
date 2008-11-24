@@ -38,5 +38,5 @@
 <string name="pin">Please enter the PIN to unlock the accounts.</string>
 <string name="invalid">Invalid PIN</string>
 <string name="update">There is an update available for this application. Please download it from the Android Market.</string>
-<string name="version">1.0.0</string>
+
 </resources>

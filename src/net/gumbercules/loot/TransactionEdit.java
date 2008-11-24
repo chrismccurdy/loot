@@ -603,6 +603,8 @@ public class TransactionEdit extends Activity
 		
 		// get if it's a budget transaction
 		trans.budget = budgetRadio.isChecked();
+		if (trans.budget && trans.id() != -1 && trans.isPosted())
+			trans.post(false);
 
 		setRepeat();
 		

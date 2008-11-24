@@ -12,8 +12,10 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -70,6 +72,8 @@ public class TransactionActivity extends ListActivity
 	private static boolean showSearch = false;
 	private static String searchString = "";
 	
+	private static boolean showColors;
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -83,7 +87,10 @@ public class TransactionActivity extends ListActivity
     	budgetValue = (TextView)findViewById(R.id.budgetValue);
     	balanceValue = (TextView)findViewById(R.id.balanceValue);
     	postedValue = (TextView)findViewById(R.id.postedValue);
-    	
+    
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		showColors = prefs.getBoolean("color", false);
+
     	// add a listener to filter the list whenever the text changes
     	searchEdit = (MultiAutoCompleteTextView)findViewById(R.id.SearchEdit);
     	
@@ -417,7 +424,7 @@ public class TransactionActivity extends ListActivity
 		setBalances();
     }
     
-    private void updateList(int trans_id, int request)
+    public void updateList(int trans_id, int request)
     {
     	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
     	addRepeatedTransactions();
@@ -482,6 +489,16 @@ public class TransactionActivity extends ListActivity
 		{
 			Bundle extras = data.getExtras();
 			updateList(extras.getInt(Transaction.KEY_ID), extras.getInt(TransactionActivity.KEY_REQ));
+		}
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean colors = prefs.getBoolean("color", false);
+		
+		if (colors != showColors)
+		{
+			showColors = colors;
+			TransactionAdapter ta = (TransactionAdapter)getListAdapter();
+			ta.notifyDataSetChanged();
 		}
 	}
 	

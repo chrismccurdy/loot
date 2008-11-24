@@ -14,6 +14,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -237,10 +239,10 @@ public class AccountChooser extends ListActivity
 				InputStream is = conn.getInputStream();
 				byte[] bytes = new byte[10];
 				int len = is.read(bytes);
-				Version remote_ver = new Version(new String(bytes, 0, len).trim());
-				Version current_ver = new Version(getResources().getString(R.string.version));
+				int current_ver = Integer.valueOf(new String(bytes, 0, len).trim());
+				PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
 
-				if (current_ver.compareTo(remote_ver) < 0)
+				if (current_ver < pi.versionCode)
 				{
 					Message msg = new Message();
 					msg.what = R.string.update;
@@ -252,6 +254,9 @@ public class AccountChooser extends ListActivity
 				e.printStackTrace();
 			}
 			catch (IOException e)
+			{
+				e.printStackTrace();
+			} catch (NameNotFoundException e)
 			{
 				e.printStackTrace();
 			}
@@ -283,59 +288,6 @@ public class AccountChooser extends ListActivity
 			};
 			
 			Looper.loop();
-		}
-	}
-	
-	private class Version implements Comparable<Version>
-	{
-		private int mMajor;
-		private int mMinor;
-		private int mMaintenance;
-		
-		public Version(String str)
-		{
-			String[] nums = str.split("\\.");
-
-			if (nums.length >= 1)
-			{
-				mMajor = Integer.parseInt(nums[0]);
-				if (nums.length >= 2)
-				{
-					mMinor = Integer.parseInt(nums[1]);
-					if (nums.length >= 3)
-					{
-						mMaintenance = Integer.parseInt(nums[2]);
-					}
-				}
-			}
-		}
-
-		public int compareTo(Version v2)
-		{
-			int ret = compareNum(this.mMajor, v2.mMajor);
-			
-			if (ret == 0)
-			{
-				ret = compareNum(this.mMinor, v2.mMinor);
-				
-				if (ret == 0)
-					ret = compareNum(this.mMaintenance, v2.mMaintenance);
-			}
-			
-			return ret;
-		}
-
-		private int compareNum(int n1, int n2)
-		{
-			int a = n1,
-				b = n2;
-			
-			int alb = 0, agb = 0;
-			if (a > b)
-				agb = 1;
-			if (a < b)
-				alb = 1;
-			return agb - alb;
 		}
 	}
 }

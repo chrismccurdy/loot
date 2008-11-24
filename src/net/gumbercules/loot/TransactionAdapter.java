@@ -218,6 +218,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 					trans.post(isChecked);
 					TransactionActivity ta = (TransactionActivity) buttonView.getContext();
 					ta.setBalances();
+					ta.updateList(trans.id(), TransactionActivity.ACTIVITY_EDIT);
 				}
 			}
 		});
