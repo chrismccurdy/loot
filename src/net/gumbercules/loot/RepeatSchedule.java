@@ -12,6 +12,7 @@ import android.database.sqlite.*;
 public class RepeatSchedule
 implements Cloneable
 {
+	public static final String KEY_ID		= "rs_id";
 	public static final String KEY_ITER		= "key_iter";
 	public static final String KEY_FREQ		= "key_freq";
 	public static final String KEY_CUSTOM	= "key_custom";
@@ -65,6 +66,11 @@ implements Cloneable
 		this.custom = cu;
 		this.start = st;
 		this.end = en;
+	}
+	
+	public int id()
+	{
+		return id;
 	}
 	
 	protected Object clone()

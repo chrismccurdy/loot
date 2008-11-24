@@ -31,6 +31,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class TransactionEdit extends Activity
 {
+	public static final String KEY_DATE = "trans_date";
+	
 	private Transaction mTrans;
 	private RepeatSchedule mRepeat;
 	private int mTransId;
@@ -89,6 +91,15 @@ public class TransactionEdit extends Activity
 			mType = savedInstanceState.getInt(TransactionActivity.KEY_TYPE);
 			mTransId = savedInstanceState.getInt(Transaction.KEY_ID);
 			mAccountId = savedInstanceState.getInt(Account.KEY_ID);
+			long date = savedInstanceState.getLong(TransactionEdit.KEY_DATE);
+			mDate = (date == 0 ? null : new Date(date));
+			
+			mRepeat = new RepeatSchedule();
+			mRepeat.iter = savedInstanceState.getInt(RepeatSchedule.KEY_ITER);
+			mRepeat.freq = savedInstanceState.getInt(RepeatSchedule.KEY_FREQ);
+			mRepeat.custom = savedInstanceState.getInt(RepeatSchedule.KEY_CUSTOM);
+			long end = savedInstanceState.getLong(RepeatSchedule.KEY_DATE);
+			mRepeat.end = (end == 0 ? null : new Date(end));
 		}
 		else
 		{
@@ -147,6 +158,8 @@ public class TransactionEdit extends Activity
 			mTrans = new Transaction();
 			if (mRepeat == null)
 				mRepeat = new RepeatSchedule();
+			else
+				setRepeatSpinnerSelection(mRepeat);
 			
 			// set the date edittext to the current date by default
         	setDateEdit(mDate);
@@ -572,7 +585,46 @@ public class TransactionEdit extends Activity
 		
 		// get if it's a budget transaction
 		trans.budget = budgetRadio.isChecked();
+
+		setRepeat();
 		
+		int id = -1;
+		if (mType == TransactionActivity.TRANSACTION)
+			id = trans.write(mAccountId);
+		else
+		{
+			trans.account = mAccountId;
+			id = trans.transfer(acct2);
+		}
+		
+		mFinished = true;
+		if (id != -1)
+		{
+			// write the repeat schedule if it's not set to NO_REPEAT
+			if (mRepeat.iter != RepeatSchedule.NO_REPEAT)
+			{
+				mRepeat.start = trans.date;
+				mRepeat.write(id);
+			}
+			
+			mTransId = id;
+			Intent i = new Intent();
+			Bundle b = new Bundle();
+			b.putInt(Transaction.KEY_ID, mTransId);
+			b.putInt(TransactionActivity.KEY_REQ, mRequest);
+			i.putExtras(b);
+			setResult(mFinishIntent, i);
+		}
+		else
+		{
+			setResult(RESULT_CANCELED);
+		}
+
+		finish();
+	}
+	
+	private void setRepeat()
+	{
 		// set repeat values
 		switch (repeatSpinner.getSelectedItemPosition())
 		{
@@ -623,40 +675,6 @@ public class TransactionEdit extends Activity
 		
 		// if it's past position 5, mRepeat has already been set
 		}
-		
-		int id = -1;
-		if (mType == TransactionActivity.TRANSACTION)
-			id = trans.write(mAccountId);
-		else
-		{
-			trans.account = mAccountId;
-			id = trans.transfer(acct2);
-		}
-		
-		mFinished = true;
-		if (id != -1)
-		{
-			// write the repeat schedule if it's not set to NO_REPEAT
-			if (mRepeat.iter != RepeatSchedule.NO_REPEAT)
-			{
-				mRepeat.start = trans.date;
-				mRepeat.write(id);
-			}
-			
-			mTransId = id;
-			Intent i = new Intent();
-			Bundle b = new Bundle();
-			b.putInt(Transaction.KEY_ID, mTransId);
-			b.putInt(TransactionActivity.KEY_REQ, mRequest);
-			i.putExtras(b);
-			setResult(mFinishIntent, i);
-		}
-		else
-		{
-			setResult(RESULT_CANCELED);
-		}
-
-		finish();
 	}
 
 	@Override
@@ -676,5 +694,14 @@ public class TransactionEdit extends Activity
 			outState.putInt(Account.KEY_ID, mAccountId);
 		if (mTransId > 0)
 			outState.putInt(Transaction.KEY_ID, mTransId);
+		if (mDate != null)
+			outState.putLong(TransactionEdit.KEY_DATE, mDate.getTime());
+		
+		setRepeat();
+		outState.putInt(RepeatSchedule.KEY_ITER, mRepeat.iter);
+		outState.putInt(RepeatSchedule.KEY_FREQ, mRepeat.freq);
+		outState.putInt(RepeatSchedule.KEY_CUSTOM, mRepeat.custom);
+		long end = (mRepeat.end == null ? 0 : mRepeat.end.getTime());
+		outState.putLong(RepeatSchedule.KEY_DATE, end);
 	}
 }
