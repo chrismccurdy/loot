@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -221,14 +224,40 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		
 		// populate the widgets with data
 		String partyStr = "";
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean showColors = prefs.getBoolean("color", false);
+		int color = Color.LTGRAY;
 		if (trans.budget)
-			partyStr += "B:";
+		{
+			if (trans.type == Transaction.DEPOSIT)
+				partyStr += "+";
+			else
+				partyStr += "-";
+		}
 		if (trans.type == Transaction.CHECK)
+		{
 			partyStr += trans.check_num;
+			if (trans.budget)
+				color = Color.rgb(185, 255, 255);
+			else
+				color = Color.CYAN;
+		}
 		else if (trans.type == Transaction.WITHDRAW)
+		{
 			partyStr += "W";
+			if (trans.budget)
+				color = Color.rgb(255, 120, 120);
+			else
+				color = Color.RED;
+		}
 		else
+		{
 			partyStr += "D";
+			if (trans.budget)
+				color = Color.rgb(120, 255, 120);
+			else
+				color = Color.GREEN;
+		}
 		partyStr += ":" + trans.party;
 		
 		// change the date to the locale date format
@@ -242,11 +271,23 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		if (postedCheck != null)
 			postedCheck.setChecked(trans.isPosted());
 		if (dateText != null)
+		{
 			dateText.setText(dateStr);
+			if (showColors)
+				dateText.setTextColor(color);
+		}
 		if (partyText != null)
+		{
 			partyText.setText(partyStr);
+			if (showColors)
+				partyText.setTextColor(color);
+		}
 		if (amountText != null)
+		{
 			amountText.setText(amountStr);
+			if (showColors)
+				amountText.setTextColor(color);
+		}
 		
 		return convertView;
 	}

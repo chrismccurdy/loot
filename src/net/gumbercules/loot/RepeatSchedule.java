@@ -577,9 +577,10 @@ implements Cloneable
 		}
 		
 		// insert the transaction into the transactions table
-		String insert = "insert into transactions (account,date,party,amount,check_num,timestamp) " +
+		String insert = "insert into transactions (account,date,party,amount,check_num,budget,timestamp) " +
 						"select account," + date.getTime() + ",party,amount," + next_check_num +
-						",strftime('%%s','now') from repeat_transactions where repeat_id = " + this.id;
+						",budget,strftime('%%s','now') from repeat_transactions where repeat_id = " + 
+						this.id;
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
@@ -628,7 +629,6 @@ implements Cloneable
 		}
 		
 		// write the tags to the tags table for the new transaction
-		// TODO: verify that the tags are written
 		trans = Transaction.getTransactionById(max);
 		trans.addTags(this.getTags());
 		
@@ -662,9 +662,10 @@ implements Cloneable
 		}
 		cur.close();
 		
-		String insert = "insert into repeat_transactions (trans_id,repeat_id,account,date,party," +
-						"amount,check_num,transfer_id) select id," + this.id + ",account,date,party," +
-						"amount,check_num," + transfer_id + " from transactions where id = " + trans_id;
+		String insert = "insert into repeat_transactions (trans_id,repeat_id,account,date,party,amount," +
+						"check_num,budget,transfer_id) select id," + this.id + ",account,date,party," +
+						"amount,check_num,budget," + transfer_id + " from transactions where id = " + 
+						trans_id;
 		lootDB.beginTransaction();
 		
 		try

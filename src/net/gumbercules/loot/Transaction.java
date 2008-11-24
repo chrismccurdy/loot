@@ -20,7 +20,8 @@ public class Transaction
 	
 	private static int comp = -1;
 	
-	public static final String KEY_ID	= "t_id";
+	public static final String KEY_ID		= "t_id";
+	public static final String KEY_DATE		= "t_date";
 		
 	private int id;
 	int account;

@@ -31,7 +31,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class TransactionEdit extends Activity
 {
-	public static final String KEY_DATE = "trans_date";
+	public static final String KEY_TRANSFER = "te_transfer";
 	
 	private Transaction mTrans;
 	private RepeatSchedule mRepeat;
@@ -44,6 +44,7 @@ public class TransactionEdit extends Activity
 	private int mDefaultRepeatValue;
 	private int mLastRepeatValue;
 	private Date mDate;
+	private int mAccountPos;
 
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
@@ -66,6 +67,8 @@ public class TransactionEdit extends Activity
 	private Button saveButton;
 	private Button cancelButton;
 	
+	private boolean restarted;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -77,6 +80,7 @@ public class TransactionEdit extends Activity
 		mFinished = false;
 		mDefaultRepeatValue = -1;
 		mDate = null;
+		restarted = false;
 
 		ArrayList<String> repeat =
 			new ArrayList(Arrays.asList(getResources().getStringArray(R.array.repeat)));
@@ -91,7 +95,7 @@ public class TransactionEdit extends Activity
 			mType = savedInstanceState.getInt(TransactionActivity.KEY_TYPE);
 			mTransId = savedInstanceState.getInt(Transaction.KEY_ID);
 			mAccountId = savedInstanceState.getInt(Account.KEY_ID);
-			long date = savedInstanceState.getLong(TransactionEdit.KEY_DATE);
+			long date = savedInstanceState.getLong(Transaction.KEY_DATE);
 			mDate = (date == 0 ? null : new Date(date));
 			
 			mRepeat = new RepeatSchedule();
@@ -100,6 +104,9 @@ public class TransactionEdit extends Activity
 			mRepeat.custom = savedInstanceState.getInt(RepeatSchedule.KEY_CUSTOM);
 			long end = savedInstanceState.getLong(RepeatSchedule.KEY_DATE);
 			mRepeat.end = (end == 0 ? null : new Date(end));
+			mAccountPos = savedInstanceState.getInt(TransactionEdit.KEY_TRANSFER);
+			
+			restarted = true;
 		}
 		else
 		{
@@ -169,57 +176,60 @@ public class TransactionEdit extends Activity
 			mTrans = Transaction.getTransactionById(mTransId);
 			trans = mTrans;
 			
-			if (mRepeat == null)
+			if (!restarted)
 			{
-				int repeat_id = RepeatSchedule.getRepeatId(mTransId);
-				if (repeat_id != -1)
-					mRepeat = RepeatSchedule.getSchedule(repeat_id);
+				if (mRepeat == null)
+				{
+					int repeat_id = RepeatSchedule.getRepeatId(mTransId);
+					if (repeat_id != -1)
+						mRepeat = RepeatSchedule.getSchedule(repeat_id);
+					else
+						mRepeat = new RepeatSchedule();
+				}
+				
+				if (trans == null)
+				{
+					Log.e(TransactionEdit.class.toString(), "trans is null in populateFields()");
+					return;
+				}
+	
+				// figure out if this is a normal transaction or a transfer
+				if (mTrans.getTransferId() != -1)
+					mType = TransactionActivity.TRANSFER;
 				else
-					mRepeat = new RepeatSchedule();
+					mType = TransactionActivity.TRANSACTION;
+				
+				if (trans.type == Transaction.WITHDRAW)
+				{
+					withdrawRadio.setChecked(true);
+				}
+				else if (trans.type == Transaction.DEPOSIT)
+				{
+					depositRadio.setChecked(true);
+				}
+				
+				if (trans.budget && !trans.isPosted())
+				{
+					budgetRadio.setChecked(true);
+				}
+				else
+				{
+					actualRadio.setChecked(true);
+				}
+				
+				if (mDate == null)
+					setDateEdit(trans.date);
+				else
+					setDateEdit(mDate);
+	
+				// replace comma and currency symbol with empty string
+				NumberFormat nf = NumberFormat.getCurrencyInstance();
+				Currency cur = nf.getCurrency();
+				amountEdit.setText(nf.format(trans.amount).replace(cur.getSymbol(), "")
+						.replace(",", ""));
+				
+				tagsEdit.setText(trans.tagListToString());
 			}
-			
-			if (trans == null)
-			{
-				Log.e(TransactionEdit.class.toString(), "trans is null in populateFields()");
-				return;
-			}
-
-			// figure out if this is a normal transaction or a transfer
-			if (mTrans.getTransferId() != -1)
-				mType = TransactionActivity.TRANSFER;
-			else
-				mType = TransactionActivity.TRANSACTION;
-			
-			if (trans.type == Transaction.WITHDRAW)
-			{
-				withdrawRadio.setChecked(true);
-			}
-			else if (trans.type == Transaction.DEPOSIT)
-			{
-				depositRadio.setChecked(true);
-			}
-			
-			if (trans.budget && !trans.isPosted())
-			{
-				budgetRadio.setChecked(true);
-			}
-			else
-			{
-				actualRadio.setChecked(true);
-			}
-			
-			if (mDate == null)
-				setDateEdit(trans.date);
-			else
-				setDateEdit(mDate);
-
-			// replace comma and currency symbol with empty string
-			NumberFormat nf = NumberFormat.getCurrencyInstance();
-			Currency cur = nf.getCurrency();
-			amountEdit.setText(nf.format(trans.amount).replace(cur.getSymbol(), "")
-					.replace(",", ""));
-			
-			tagsEdit.setText(trans.tagListToString());
 
 			setRepeatSpinnerSelection(mRepeat);
 		}
@@ -227,11 +237,19 @@ public class TransactionEdit extends Activity
 		if (mType == TransactionActivity.TRANSFER)
 		{
 	        ArrayAdapter<CharSequence> accountAdapter = showTransferFields();
-	        if (mTransId != 0 && accountAdapter != null)
+	        if (accountAdapter != null)
 	        {
-	        	Account acct = Account.getAccountById(mAccountId);
-	        	int pos = accountAdapter.getPosition(acct.name);
-	        	accountSpinner.setSelection(pos);
+	        	if (!restarted && mTransId != 0)
+	        	{
+	        		Transaction transfer = Transaction.getTransactionById(mTrans.getTransferId());
+	        		Account acct = Account.getAccountById(transfer.account);
+	        		int pos = accountAdapter.getPosition(acct.name);
+	        		accountSpinner.setSelection(pos);
+	        	}
+		        else if (restarted)
+		        {
+		        	accountSpinner.setSelection(mAccountPos);
+		        }
 	        }
 		}
 		else
@@ -694,8 +712,6 @@ public class TransactionEdit extends Activity
 			outState.putInt(Account.KEY_ID, mAccountId);
 		if (mTransId > 0)
 			outState.putInt(Transaction.KEY_ID, mTransId);
-		if (mDate != null)
-			outState.putLong(TransactionEdit.KEY_DATE, mDate.getTime());
 		
 		setRepeat();
 		outState.putInt(RepeatSchedule.KEY_ITER, mRepeat.iter);
@@ -703,5 +719,11 @@ public class TransactionEdit extends Activity
 		outState.putInt(RepeatSchedule.KEY_CUSTOM, mRepeat.custom);
 		long end = (mRepeat.end == null ? 0 : mRepeat.end.getTime());
 		outState.putLong(RepeatSchedule.KEY_DATE, end);
+		
+		// TODO: handle all the fields
+		if (mDate != null)
+			outState.putLong(Transaction.KEY_DATE, mDate.getTime());
+		if (mType == TransactionActivity.TRANSFER)
+			outState.putInt(TransactionEdit.KEY_TRANSFER, accountSpinner.getSelectedItemPosition());
 	}
 }
