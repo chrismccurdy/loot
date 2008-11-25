@@ -242,7 +242,7 @@ public class AccountChooser extends ListActivity
 				int current_ver = Integer.valueOf(new String(bytes, 0, len).trim());
 				PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
 
-				if (current_ver < pi.versionCode)
+				if (current_ver > pi.versionCode)
 				{
 					Message msg = new Message();
 					msg.what = R.string.update;
