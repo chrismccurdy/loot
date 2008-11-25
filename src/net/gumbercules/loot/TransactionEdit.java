@@ -722,7 +722,6 @@ public class TransactionEdit extends Activity
 		long end = (mRepeat.end == null ? 0 : mRepeat.end.getTime());
 		outState.putLong(RepeatSchedule.KEY_DATE, end);
 		
-		// TODO: handle all the fields
 		if (mDate != null)
 			outState.putLong(Transaction.KEY_DATE, mDate.getTime());
 		if (mType == TransactionActivity.TRANSFER)

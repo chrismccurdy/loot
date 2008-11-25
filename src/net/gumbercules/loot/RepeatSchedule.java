@@ -417,7 +417,7 @@ implements Cloneable
 		String[] tags = null;
 		if (tag_str != null)
 			tags = tag_str.split(" ");
-		if (tags.length == 0)
+		if (tags == null || tags.length == 0)
 			return null;
 		
 		return tags;

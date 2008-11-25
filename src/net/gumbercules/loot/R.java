@@ -154,6 +154,7 @@ public final class R {
         public static final int new_trans=0x7f060002;
         public static final int no=0x7f060010;
         public static final int pin=0x7f060018;
+        public static final int post=0x7f06001b;
         public static final int purge=0x7f060007;
         public static final int save=0x7f06000b;
         public static final int search=0x7f060006;

@@ -77,7 +77,7 @@ public class SettingsActivity extends PreferenceActivity
 		{
 			public boolean onPreferenceChange(Preference preference, Object newValue)
 			{
-				int val = (Integer)newValue;
+				int val = Integer.valueOf((String)newValue);
 				if (val <= 0)
 					return false;
 				
@@ -107,7 +107,7 @@ public class SettingsActivity extends PreferenceActivity
 		{
 			public boolean onPreferenceChange(Preference preference, Object newValue)
 			{
-				int val = (Integer)newValue;
+				int val = Integer.valueOf((String)newValue);
 				if (val <= 0)
 					return false;
 				

@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -58,7 +59,8 @@ public class TransactionActivity extends ListActivity
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_COPY	= Menu.FIRST + 1;
-	public static final int CONTEXT_DEL		= Menu.FIRST + 2;
+	public static final int CONTEXT_POST	= Menu.FIRST + 2;
+	public static final int CONTEXT_DEL		= Menu.FIRST + 3;
 	
 	private ArrayList<Transaction> mTransList;
 	private Account mAcct;
@@ -83,6 +85,14 @@ public class TransactionActivity extends ListActivity
     	Bundle bun = getIntent().getExtras();
     	mAcct = Account.getAccountById(bun.getInt(Account.KEY_ID));
     	setTitle("loot :: " + mAcct.name);
+    	
+    	int auto_purge = (int)Database.getOptionInt("auto_purge_days");
+    	if (auto_purge > 0)
+    	{
+    		Calendar cal = Calendar.getInstance();
+    		cal.add(Calendar.DAY_OF_YEAR, -auto_purge);
+    		mAcct.purgeTransactions(cal.getTime());
+    	}
     	
     	budgetValue = (TextView)findViewById(R.id.budgetValue);
     	balanceValue = (TextView)findViewById(R.id.balanceValue);
@@ -150,19 +160,6 @@ public class TransactionActivity extends ListActivity
 			searchEdit.setText(searchString);
 			f.publish(searchString, f.filtering(searchString));
     	}
-        
-    	/*@SuppressWarnings("unused")
-		OrientationListener orient = new OrientationListener(this)
-    	{
-			@Override
-			public void onOrientationChanged(int orientation)
-			{
-				if (orientation >= 270 && orientation < 360)
-					ta.setResource(R.layout.trans_row_wide);
-				else
-					ta.setResource(R.layout.trans_row_narrow);
-			}
-    	};*/
     }
     
     @Override
@@ -533,6 +530,20 @@ public class TransactionActivity extends ListActivity
 			updateList(id, ACTIVITY_CREATE);
 			return true;
 			
+		case CONTEXT_POST:
+			// ListVIew.getChildAt only keeps track of visible children
+			// so we have to subtract the position of the first visible view
+			// in the ListAdapter from the position of the item we want
+			int vis = getListView().getFirstVisiblePosition();
+			View v = getListView().getChildAt(info.position - vis);
+			if (v == null)
+				return true;
+			CheckBox posted = (CheckBox)v.findViewById(R.id.PostedCheckBox);
+			if (posted != null)
+				posted.setChecked(!posted.isChecked());
+
+			return true;
+			
 		case CONTEXT_DEL:
 			final Transaction trans = Transaction.getTransactionById(id);
 			AlertDialog dialog = new AlertDialog.Builder(this)
@@ -587,6 +598,7 @@ public class TransactionActivity extends ListActivity
 		
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_COPY, 0, R.string.copy);
+		menu.add(0, CONTEXT_POST, 0, R.string.post);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 	}
 	
