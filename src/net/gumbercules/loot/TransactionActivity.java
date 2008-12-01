@@ -401,18 +401,6 @@ public class TransactionActivity extends ListActivity
     private void fillList()
     {
 		int[] transIds = mAcct.getTransactionIds();
-		/*ArrayList<Transaction> transList = mTransList;
-		Transaction trans;
-		transList.clear();
-		
-		if (transIds != null)
-			for ( int id : transIds )
-			{
-				trans = Transaction.getTransactionById(id);
-				if (trans != null)
-					transList.add(trans);
-			}
-		Collections.sort(transList);*/
 		TransactionAdapter ta = (TransactionAdapter)getListAdapter();
     	addRepeatedTransactions();
 		ta.add(transIds);

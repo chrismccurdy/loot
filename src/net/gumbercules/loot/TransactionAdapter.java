@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private LayoutInflater mInflater;
 	private static CharSequence mConstraint;
 	private int mAcctId;
-
+	private DateFormat mDf;
+	private NumberFormat mNf;
+	
 	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
 	{
 		super(con, 0);
@@ -39,6 +40,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		this.rowResId = row;
 		this.context = con;
 		this.mAcctId = acct_id;
+		this.mDf = DateFormat.getDateInstance();
+		this.mNf = NumberFormat.getCurrencyInstance();
 		
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -162,25 +165,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		return (Filter)filter;
 	}
 	
-	private View emptyView()
-	{
-		View v = new View(context);
-		v.setVisibility(View.GONE);
-		return v;
-	}
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		final Transaction trans = transList.get(position);
-		final int pos = position;
-		
-		if (trans == null || trans.account == 0)
-		{
-			Log.e("GET_VIEW", "trans is null");
-			return emptyView();
-		}
-
 		ViewHolder holder;
 		
 		if (convertView == null)
@@ -200,14 +187,18 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			holder = (ViewHolder)convertView.getTag();
 		}
 
+		// bail early if the transaction doesn't exist, isn't for this account, or is not currently visible
+		final Transaction trans = transList.get(position);
+		if (trans == null || trans.account == 0)
+			return convertView;
+		
+		final int pos = position;
+
 		// find and retrieve the widgets
 		CheckBox postedCheck = holder.check;
 		
 		if (postedCheck == null)
-		{
-			Log.e("GET_VIEW", "postedCheck is null");
-			return emptyView();
-		}
+			return convertView;
 		
 		postedCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
@@ -217,15 +208,14 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 				{
 					boolean budget = trans.budget;
 					trans.post(isChecked);
-					TransactionActivity ta = (TransactionActivity) buttonView.getContext();
+					TransactionActivity ta = (TransactionActivity) context;
 					ta.setBalances();
 					
 					// only need to update the view if it changed from budget to posted
 					if (budget)
 					{
 						ListView lv = ta.getListView();
-						int first_id = lv.getFirstVisiblePosition();
-						View v = lv.getChildAt(pos - first_id);
+						View v = lv.getChildAt(pos - lv.getFirstVisiblePosition());
 						ViewHolder holder = (ViewHolder)v.getTag();
 						setViewData(trans, holder, null, null);
 					}
@@ -234,11 +224,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		});
 		
 		// change the date to the locale date format
-		DateFormat df = DateFormat.getDateInstance();
+		DateFormat df = mDf;
 		String dateStr = df.format(trans.date);
 		
 		// change the numbers to the locale currency format
-		NumberFormat nf = NumberFormat.getCurrencyInstance();
+		NumberFormat nf = mNf;
 		String amountStr = nf.format(Math.abs(trans.amount));
 		
 		if (postedCheck != null)
