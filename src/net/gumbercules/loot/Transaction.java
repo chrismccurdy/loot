@@ -377,6 +377,7 @@ public class Transaction
 		}
 		
 		this.posted = p;
+		this.budget = false;
 		return true;
 	}
 	

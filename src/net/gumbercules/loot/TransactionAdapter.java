@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class TransactionAdapter extends ArrayAdapter<Transaction> implements Filterable
@@ -172,6 +173,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		final Transaction trans = transList.get(position);
+		final int pos = position;
+		
 		if (trans == null || trans.account == 0)
 		{
 			Log.e("GET_VIEW", "trans is null");
@@ -199,9 +202,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 
 		// find and retrieve the widgets
 		CheckBox postedCheck = holder.check;
-		TextView dateText = holder.date;
-		TextView partyText = holder.party;
-		TextView amountText = holder.amount;
 		
 		if (postedCheck == null)
 		{
@@ -215,19 +215,48 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			{
 				if (trans.isPosted() != isChecked)
 				{
+					boolean budget = trans.budget;
 					trans.post(isChecked);
 					TransactionActivity ta = (TransactionActivity) buttonView.getContext();
 					ta.setBalances();
-					ta.updateList(trans.id(), TransactionActivity.ACTIVITY_EDIT);
+					
+					// only need to update the view if it changed from budget to posted
+					if (budget)
+					{
+						ListView lv = ta.getListView();
+						int first_id = lv.getFirstVisiblePosition();
+						View v = lv.getChildAt(pos - first_id);
+						ViewHolder holder = (ViewHolder)v.getTag();
+						setViewData(trans, holder, null, null);
+					}
 				}
 			}
 		});
 		
+		// change the date to the locale date format
+		DateFormat df = DateFormat.getDateInstance();
+		String dateStr = df.format(trans.date);
+		
+		// change the numbers to the locale currency format
+		NumberFormat nf = NumberFormat.getCurrencyInstance();
+		String amountStr = nf.format(Math.abs(trans.amount));
+		
+		if (postedCheck != null)
+			postedCheck.setChecked(trans.isPosted());
+
 		// populate the widgets with data
+		setViewData(trans, holder, amountStr, dateStr);
+		
+		return convertView;
+	}
+	
+	private void setViewData(Transaction trans, ViewHolder v, String amountStr, String dateStr)
+	{
 		String partyStr = "";
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean showColors = prefs.getBoolean("color", false);
 		int color = Color.LTGRAY;
+		
 		if (trans.budget)
 		{
 			if (trans.type == Transaction.DEPOSIT)
@@ -261,19 +290,14 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 		partyStr += ":" + trans.party;
 		
-		// change the date to the locale date format
-		DateFormat df = DateFormat.getDateInstance();
-		String dateStr = df.format(trans.date);
+		TextView dateText = v.date;
+		TextView partyText = v.party;
+		TextView amountText = v.amount;
 		
-		// change the numbers to the locale currency format
-		NumberFormat nf = NumberFormat.getCurrencyInstance();
-		String amountStr = nf.format(Math.abs(trans.amount));
-		
-		if (postedCheck != null)
-			postedCheck.setChecked(trans.isPosted());
 		if (dateText != null)
 		{
-			dateText.setText(dateStr);
+			if (dateStr != null)
+				dateText.setText(dateStr);
 			if (showColors)
 				dateText.setTextColor(color);
 		}
@@ -285,12 +309,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 		if (amountText != null)
 		{
-			amountText.setText(amountStr);
+			if (amountStr != null)
+				amountText.setText(amountStr);
 			if (showColors)
 				amountText.setTextColor(color);
 		}
-		
-		return convertView;
 	}
 	
 	static class ViewHolder
