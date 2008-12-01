@@ -7,7 +7,7 @@ public class Database
 {
 	private final static String DB_NAME		= "LootDB";
 	private final static String DB_PATH		= "/data/data/net.gumbercules.loot/" + DB_NAME + ".db";
-	private final static int DB_VERSION		= 1;
+	private final static int DB_VERSION		= 2;
 	private static SQLiteDatabase lootDB	= null;
 	
 	public Database()
@@ -61,7 +61,8 @@ public class Database
 					"	name varchar(100) not null unique,\n" + 
 					"	balance real default 0.0,\n" + 
 					"	timestamp integer default 0,\n" +
-					"	purged bool default 0)";
+					"	purged bool default 0,\n" +
+					"	priority integer default 1)";
 
 		createSQL[1] = "create table transactions(\n" +
 					"	id integer primary key autoincrement,\n" +
@@ -143,10 +144,36 @@ public class Database
 	
 	private boolean upgradeDB( int max_version )
 	{
-		if ( lootDB.getVersion() == max_version )
+		int current_version = lootDB.getVersion();
+		
+		if (current_version < 2)
+		{
+			lootDB.beginTransaction();
+			try
+			{
+				lootDB.execSQL("alter table accounts add column priority integer default 1");
+				lootDB.execSQL("update accounts set priority = 1");
+				// fix errors of not being able to use an old account name
+				lootDB.execSQL("update accounts set name = name||' - Deleted '||timestamp where purged = 1");
+
+				lootDB.setTransactionSuccessful();
+			}
+			catch (SQLException e)
+			{
+				return false;
+			}
+			finally
+			{
+				lootDB.endTransaction();
+			}
+
+			lootDB.setVersion(2);
+			current_version = 2;
+		}
+		
+		if ( current_version == max_version )
 			return true;
 
-		// in the future, this is where upgrades happen
 		return false;
 	}
 	

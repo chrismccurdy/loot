@@ -5,6 +5,7 @@ import java.util.Currency;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ public class AccountEdit extends Activity
 {
 	private EditText mNameEdit;
 	private EditText mBalanceEdit;
+	private EditText mPriorityEdit;
 	private int mRowId;
 	private int mFinishIntent;
 	
@@ -28,6 +30,8 @@ public class AccountEdit extends Activity
 		mNameEdit = (EditText)findViewById(R.id.NameEdit);
 		mBalanceEdit = (EditText)findViewById(R.id.BalanceEdit);
 		mBalanceEdit.setKeyListener(new CurrencyKeyListener());
+		mPriorityEdit = (EditText)findViewById(R.id.PriorityEdit);
+		mPriorityEdit.setKeyListener(new DigitsKeyListener());
 		Button SaveButton = (Button)findViewById(R.id.SaveButton);
 		Button CancelButton = (Button)findViewById(R.id.CancelButton);
 		
@@ -94,6 +98,10 @@ public class AccountEdit extends Activity
 				mBalanceEdit.setText(nf.format(acct.initialBalance).replace(cur.getSymbol(), "")
 						.replace(",", ""));
 			}
+			if (mPriorityEdit != null)
+			{
+				mPriorityEdit.setText(Integer.toString(acct.priority));
+			}
 		}
 	}
 	
@@ -110,6 +118,7 @@ public class AccountEdit extends Activity
 		
 		acct.name = mNameEdit.getText().toString();
 		String balText = mBalanceEdit.getText().toString();
+		String priText = mPriorityEdit.getText().toString();
 		
 		if (acct.name == "" || balText == "")
 		{
@@ -119,7 +128,7 @@ public class AccountEdit extends Activity
 		
 		try
 		{
-			acct.initialBalance = new Double(mBalanceEdit.getText().toString());
+			acct.initialBalance = new Double(balText);
 		}
 		catch (NumberFormatException e)
 		{
@@ -127,7 +136,17 @@ public class AccountEdit extends Activity
 			acct.initialBalance = 0.0;
 		}
 		
+		try
+		{
+			acct.priority = new Integer(priText);
+		}
+		catch (NumberFormatException e)
+		{
+			acct.priority = 1;
+		}
+		
 		int id = acct.write();
+
 		if (id != -1)
 			mRowId = id;
 	}

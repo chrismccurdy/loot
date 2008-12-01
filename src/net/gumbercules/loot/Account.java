@@ -15,6 +15,7 @@ public class Account
 	private int id;
 	String name;
 	double initialBalance;
+	int priority;
 	private static int currentAccount;
 	private double actual_balance;
 	private double posted_balance;
@@ -30,6 +31,7 @@ public class Account
 		this.id = -1;
 		this.name = name;
 		this.initialBalance = initialBalance;
+		this.priority = 1;
 	}
 	
 	public int id()
@@ -48,8 +50,9 @@ public class Account
 	private int newAccount()
 	{
 		// insert the new row into the database
-		String insert = "insert into accounts (name,balance,timestamp) values (?,?,strftime('%s','now'))";
-		Object[] bindArgs = {this.name, new Double(this.initialBalance)};
+		String insert = "insert into accounts (name,balance,timestamp,priority) " +
+				"values (?,?,strftime('%s','now'),?)";
+		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Long(this.priority)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -82,9 +85,10 @@ public class Account
 	private int updateAccount()
 	{
 		// update the row in the database
-		String update = "update accounts set name = ?, balance = ?, " +
+		String update = "update accounts set name = ?, balance = ?, priority = ?, " +
 						"timestamp = strftime('%s','now') where id = ?";
-		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Integer(this.id)};
+		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Long(this.priority),
+				new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -107,7 +111,8 @@ public class Account
 	public boolean erase()
 	{
 		// mark the row as 'purged' in the database, so it is still recoverable later
-		String del = "update accounts set purged = 1, timestamp = strftime('%s','now') where id = ?";
+		String del = "update accounts set name = name || ' - Deleted ' || strftime('%s','now'), " +
+				"purged = 1, timestamp = strftime('%s','now') where id = ?";
 		Object[] bindArgs = {new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
@@ -256,7 +261,7 @@ public class Account
 			return false;
 		}
 		
-		String[] columns = {"id", "name", "balance"};
+		String[] columns = {"id", "name", "balance", "priority"};
 		String[] sArgs = {Integer.toString(id)};
 		Cursor cur = lootDB.query("accounts", columns, "id = ? and purged = 0", sArgs,
 				null, null, null, "1");
@@ -269,6 +274,7 @@ public class Account
 		this.id = cur.getInt(0);
 		this.name = cur.getString(1);
 		this.initialBalance = cur.getDouble(2);
+		this.priority = cur.getInt(3);
 		cur.close();
 		
 		return true;
@@ -297,7 +303,7 @@ public class Account
 		}
 		
 		String[] columns = {"name"};
-		Cursor cur = lootDB.query("accounts", columns, "purged = 0", null, null, null, null);
+		Cursor cur = lootDB.query("accounts", columns, "purged = 0", null, null, null, "priority, id");
 		ArrayList<String> accounts = new ArrayList<String>();
 		
 		if (!cur.moveToFirst())
@@ -332,7 +338,7 @@ public class Account
 		}
 		
 		String[] columns = {"id"};
-		Cursor cur = lootDB.query("accounts", columns, "purged = 0", null, null, null, null);
+		Cursor cur = lootDB.query("accounts", columns, "purged = 0", null, null, null, "priority, id");
 		if (!cur.moveToFirst())
 		{
 			cur.close();
