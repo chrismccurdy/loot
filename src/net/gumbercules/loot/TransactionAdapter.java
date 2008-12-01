@@ -276,15 +276,15 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			partyStr += "W";
 			if (trans.budget)
-				color = Color.rgb(255, 120, 120);
+				color = Color.rgb(255, 255, 185);
 			else
-				color = Color.RED;
+				color = Color.rgb(255, 255, 0);
 		}
 		else
 		{
 			partyStr += "D";
 			if (trans.budget)
-				color = Color.rgb(120, 255, 120);
+				color = Color.rgb(185, 255, 185);
 			else
 				color = Color.GREEN;
 		}

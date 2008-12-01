@@ -22,14 +22,14 @@
 </LinearLayout>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/amountRow"><TextView android:layout_width="wrap_content" android:text="Amount:" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/amountLabel" android:minWidth="65px"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/amountEdit"></EditText>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/amountEdit" android:singleLine="true"></EditText>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/partyRow"><TextView android:layout_width="wrap_content" android:text="Party:" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/partyLabel" android:minWidth="65px"></TextView>
 <AutoCompleteTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/partyEdit" android:singleLine="true"></AutoCompleteTextView>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" android:id="@+id/accountRow"><TextView android:layout_width="wrap_content" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/accountLabel" android:text="Account:" android:minWidth="65px"></TextView><Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/accountSpinner"></Spinner>
 </TableRow><TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/checkRow"><TextView android:layout_width="wrap_content" android:text="Check #:" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/checkLabel" android:minWidth="65px"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/checkEdit" android:enabled="false" android:cursorVisible="true"></EditText>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/checkEdit" android:enabled="false" android:cursorVisible="true" android:singleLine="true"></EditText>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/tagsRow"><TextView android:layout_width="wrap_content" android:text="Tags:" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/tagsLabel" android:minWidth="65px"></TextView>
 <MultiAutoCompleteTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/tagsEdit" android:singleLine="true"></MultiAutoCompleteTextView>

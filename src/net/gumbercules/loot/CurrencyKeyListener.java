@@ -23,7 +23,9 @@ public class CurrencyKeyListener extends NumberKeyListener
 		if (keyCode == KeyEvent.KEYCODE_DEL ||
 		// return successfully if we're using the arrow keys
 				keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT ||
-				keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_DPAD_UP)
+				keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_DPAD_UP ||
+		// return if hitting enter or back keys
+				keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_BACK)
 			return super.onKeyDown(view, text, keyCode, event);
 		
 		// return if it's not an accepted char

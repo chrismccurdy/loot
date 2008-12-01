@@ -421,7 +421,7 @@ public class TransactionActivity extends ListActivity
 		setBalances();
     }
     
-    public void updateList(int trans_id, int request)
+    private void updateList(int trans_id, int request)
     {
     	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
     	addRepeatedTransactions();
@@ -500,6 +500,27 @@ public class TransactionActivity extends ListActivity
 	}
 	
 	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id)
+	{
+		postListItem(position);
+	}
+
+	private void postListItem(int position)
+	{
+		// ListView.getChildAt only keeps track of visible children
+		// so we have to subtract the position of the first visible view
+		// in the ListAdapter from the position of the item we want
+		int vis = getListView().getFirstVisiblePosition();
+		View v = getListView().getChildAt(position - vis);
+		if (v != null)
+		{
+			CheckBox posted = (CheckBox)v.findViewById(R.id.PostedCheckBox);
+			if (posted != null)
+				posted.setChecked(!posted.isChecked());
+		}
+	}
+	
+	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
 		AdapterView.AdapterContextMenuInfo info;
@@ -531,17 +552,7 @@ public class TransactionActivity extends ListActivity
 			return true;
 			
 		case CONTEXT_POST:
-			// ListVIew.getChildAt only keeps track of visible children
-			// so we have to subtract the position of the first visible view
-			// in the ListAdapter from the position of the item we want
-			int vis = getListView().getFirstVisiblePosition();
-			View v = getListView().getChildAt(info.position - vis);
-			if (v == null)
-				return true;
-			CheckBox posted = (CheckBox)v.findViewById(R.id.PostedCheckBox);
-			if (posted != null)
-				posted.setChecked(!posted.isChecked());
-
+			postListItem(info.position);
 			return true;
 			
 		case CONTEXT_DEL:
