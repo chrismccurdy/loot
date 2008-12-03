@@ -34,6 +34,8 @@ public class SettingsActivity extends PreferenceActivity
 		});
 		
 		EditTextPreference pin = (EditTextPreference)findPreference("pin");
+		EditText pinEdit = pin.getEditText();
+		pinEdit.setKeyListener(new DigitsKeyListener());
 		pin.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
 		{
 			public boolean onPreferenceChange(Preference preference, Object newValue)

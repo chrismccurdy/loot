@@ -31,6 +31,32 @@ public class PinActivity extends Activity
 		mPinEdit = (EditText)findViewById(R.id.pinEdit);
 		mInvalidView = (TextView)findViewById(R.id.invalidView);
 		
+		Button clearButton = (Button)findViewById(R.id.clearButton);
+		clearButton.setOnClickListener(new Button.OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				mPinEdit.setText("");
+				mInvalidView.setText("");
+			}
+		});
+		
+		int[] buttonIds = {R.id.Button00, R.id.Button01, R.id.Button02, R.id.Button03,
+				R.id.Button04, R.id.Button05, R.id.Button06, R.id.Button07, R.id.Button08, R.id.Button09};
+		Button button;
+		for (int resId : buttonIds)
+		{
+			button = (Button)findViewById(resId);
+			button.setOnClickListener(new Button.OnClickListener()
+			{
+				public void onClick(View v)
+				{
+					mPinEdit.append(v.getTag().toString());
+					mInvalidView.setText("");
+				}
+			});
+		}
+		
 		mUnlockButton.setOnClickListener(new Button.OnClickListener()
 		{
 			public void onClick(View v)
@@ -65,6 +91,7 @@ public class PinActivity extends Activity
 				}
 
 				mInvalidView.setText(R.string.invalid);
+				mPinEdit.setText("");
 			}
 		});
 	}
