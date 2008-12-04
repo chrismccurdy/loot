@@ -41,4 +41,5 @@
 
 <string name="post">Post</string>
 <string name="acct_priority">Display Priority:</string>
+<string name="nag">Would you like to be reminded to update again in a week?</string>
 </resources>

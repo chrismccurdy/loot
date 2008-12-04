@@ -11,15 +11,19 @@ import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -228,6 +232,9 @@ public class AccountChooser extends ListActivity
 	
 	private class UpdateChecker extends Thread
 	{
+		public static final String VERSION_CODE_DENIED	= "up_denied";
+		public static final String UPDATE_REMINDER		= "up_remind";
+
 		@Override
 		public void run()
 		{
@@ -241,11 +248,12 @@ public class AccountChooser extends ListActivity
 				int len = is.read(bytes);
 				int current_ver = Integer.valueOf(new String(bytes, 0, len).trim());
 				PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-
+				
 				if (current_ver > pi.versionCode)
 				{
 					Message msg = new Message();
 					msg.what = R.string.update;
+					msg.arg1 = current_ver;
 					mUpdateThread.mHandler.sendMessage(msg);
 				}
 			}
@@ -256,7 +264,8 @@ public class AccountChooser extends ListActivity
 			catch (IOException e)
 			{
 				e.printStackTrace();
-			} catch (NameNotFoundException e)
+			}
+			catch (NameNotFoundException e)
 			{
 				e.printStackTrace();
 			}
@@ -267,7 +276,7 @@ public class AccountChooser extends ListActivity
 	{
 		public Handler mHandler;
 		private Context mContext;
-
+		
 		public UpdateThread(Context con)
 		{
 			mContext = con;
@@ -282,8 +291,76 @@ public class AccountChooser extends ListActivity
 			{
 				public void handleMessage(Message msg)
 				{
-					Toast t = Toast.makeText(mContext, msg.what, Toast.LENGTH_LONG);
-					t.show();
+					final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+					final int current_version = msg.arg1;
+
+					// return early if the user is opting not to update right now
+					long now = Calendar.getInstance().getTimeInMillis();
+					long nag_date = prefs.getLong(UpdateChecker.UPDATE_REMINDER, now);
+					int nag_version = prefs.getInt(UpdateChecker.VERSION_CODE_DENIED, current_version);
+					if ((nag_date == -1 || now < nag_date) && current_version == nag_version)
+						return;
+					
+					final AlertDialog.Builder reminder = new AlertDialog.Builder(mContext)
+						.setMessage(R.string.nag)
+						.setPositiveButton(R.string.yes,
+								new AlertDialog.OnClickListener()
+								{
+									public void onClick(DialogInterface dialog, int which)
+									{
+										Calendar cal = Calendar.getInstance();
+										cal.add(Calendar.WEEK_OF_YEAR, 1);
+										SharedPreferences.Editor editor = prefs.edit();
+										editor.putLong(UpdateChecker.UPDATE_REMINDER, cal.getTimeInMillis());
+										editor.commit();
+									}
+								})
+						.setNegativeButton(R.string.no,
+								new AlertDialog.OnClickListener()
+								{
+									public void onClick(DialogInterface dialog, int which)
+									{
+										SharedPreferences.Editor editor = prefs.edit();
+										editor.putLong(UpdateChecker.UPDATE_REMINDER, -1);
+										editor.commit();
+									}
+								});
+
+					
+					(new AlertDialog.Builder(mContext)
+						.setMessage(msg.what)
+						.setPositiveButton(R.string.yes,
+								new AlertDialog.OnClickListener()
+								{
+									public void onClick(DialogInterface arg0, int arg1)
+									{
+										// update required
+										Intent intent = new Intent(Intent.ACTION_VIEW);
+										intent.setData(Uri.parse("market://search?q=Loot"));
+		
+										try
+										{
+											mContext.startActivity(intent);
+										}
+										catch (ActivityNotFoundException e)
+										{
+											Toast.makeText(mContext, "Market not available",
+													Toast.LENGTH_SHORT).show();
+										}
+									}
+								})
+						.setNegativeButton(R.string.no,
+                            	new AlertDialog.OnClickListener()
+                            	{
+                                    public void onClick(DialogInterface arg0, int arg1)
+                                    {
+										SharedPreferences.Editor editor = prefs.edit();
+                                    	editor.putInt(UpdateChecker.VERSION_CODE_DENIED, current_version);
+                                    	editor.commit();
+                                    	reminder.show();
+                                    }
+                            	}))
+                    	.show();
 				}
 			};
 			
