@@ -162,10 +162,30 @@ public class AccountChooser extends ListActivity
 	
 	private void restoreAccount()
 	{
-		// TODO Auto-generated method stub
 		final Account[] finalAccts = findDeletedAccounts();
 		if (finalAccts == null)
 			return;
+		int len = finalAccts.length;
+		acct_names = new CharSequence[len];
+		String[] split;
+		for (int i = 0; i < len; ++i)
+		{
+			split = finalAccts[i].name.split(" - Deleted ");
+			if (split != null)
+				acct_names[i] = split[0];
+		}
+		
+		new AlertDialog.Builder(this)
+			.setTitle(R.string.restore)
+			.setItems(acct_names, new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					Account.restoreDeletedAccount(finalAccts[which].id());
+					fillList();
+				}
+			})
+			.show();
 	}
 
 	private void clearAccount()

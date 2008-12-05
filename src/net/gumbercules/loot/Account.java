@@ -731,6 +731,25 @@ public class Account
 	
 	public static boolean restoreDeletedAccount(int id)
 	{
-		return false;
+		SQLiteDatabase lootDB = Database.getDatabase();
+		
+		lootDB.beginTransaction();
+		
+		try
+		{
+			lootDB.execSQL("update accounts set purged = 0, timestamp = strftime('%s','now') " +
+					"where id = " + id + " and purged = 1");
+			lootDB.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		finally
+		{
+			lootDB.endTransaction();
+		}
+		
+		return true;
 	}
 }
