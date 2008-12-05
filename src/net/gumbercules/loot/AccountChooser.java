@@ -42,13 +42,17 @@ public class AccountChooser extends ListActivity
 	public static final int ACTIVITY_EDIT	= 1;
 	
 	public static final int NEW_ACCT_ID		= Menu.FIRST;
-	public static final int SETTINGS_ID		= Menu.FIRST + 1;
+	public static final int RESTORE_ID		= Menu.FIRST + 1;
+	public static final int CLEAR_ID		= Menu.FIRST + 2;
+	public static final int SETTINGS_ID		= Menu.FIRST + 3;
 	
-	public static final int CONTEXT_EDIT	= Menu.FIRST + 2;
-	public static final int CONTEXT_DEL		= Menu.FIRST + 3;
+	public static final int CONTEXT_EDIT	= Menu.FIRST + 4;
+	public static final int CONTEXT_DEL		= Menu.FIRST + 5;
 
 	private ArrayList<Account> accountList;
 	private UpdateThread mUpdateThread;
+	
+	private CharSequence[] acct_names;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -100,6 +104,10 @@ public class AccountChooser extends ListActivity
 		boolean result = super.onCreateOptionsMenu(menu);
 		menu.add(0, NEW_ACCT_ID, 0, R.string.new_account)
 			.setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, RESTORE_ID, 0, R.string.restore_account)
+			.setIcon(android.R.drawable.ic_menu_revert);
+		menu.add(0, CLEAR_ID, 0, R.string.clear_account)
+			.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
 			.setIcon(android.R.drawable.ic_menu_preferences);
 		return result;
@@ -114,6 +122,14 @@ public class AccountChooser extends ListActivity
     		createAccount();
     		return true;
     		
+    	case RESTORE_ID:
+    		restoreAccount();
+    		return true;
+    		
+    	case CLEAR_ID:
+    		clearAccount();
+    		return true;
+    		
     	case SETTINGS_ID:
     		showSettings();
     		return true;
@@ -122,6 +138,79 @@ public class AccountChooser extends ListActivity
 		return super.onOptionsItemSelected(item);
 	}
 	
+	private Account[] findDeletedAccounts()
+	{
+		int[] ids = Account.getDeletedAccountIds();
+		if (ids == null)
+		{
+			new AlertDialog.Builder(this)
+				.setMessage(R.string.no_deleted_accounts)
+				.show();
+			return null;
+		}
+		
+		int len = ids.length;
+		Account[] accounts = new Account[len];
+		for (int i = len - 1; i >= 0; --i)
+		{
+			accounts[i] = new Account();
+			accounts[i].loadById(ids[i], true);
+		}
+		
+		return accounts;
+	}
+	
+	private void restoreAccount()
+	{
+		// TODO Auto-generated method stub
+		final Account[] finalAccts = findDeletedAccounts();
+		if (finalAccts == null)
+			return;
+	}
+
+	private void clearAccount()
+	{
+		final Account[] finalAccts = findDeletedAccounts();
+		if (finalAccts == null)
+			return;
+		int len = finalAccts.length;
+		acct_names = new CharSequence[len];
+		String[] split;
+		for (int i = 0; i < len; ++i)
+		{
+			split = finalAccts[i].name.split(" - Deleted ");
+			if (split != null)
+				acct_names[i] = split[0];
+		}
+		
+		final Context con = this;
+		new AlertDialog.Builder(this)
+			.setTitle(R.string.clear)
+			.setItems(acct_names, new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					final int pos = which;
+					AlertDialog yn_dialog = new AlertDialog.Builder(con)
+						.setMessage("Are you sure you wish to remove this account completely?")
+						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+						{
+							public void onClick(DialogInterface dialog, int which)
+							{
+								Account.clearDeletedAccount(finalAccts[pos].id());
+							}
+						})
+						.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+						{
+							public void onClick(DialogInterface dialog, int which) { }
+						})
+						.create();
+					yn_dialog.show();
+				}
+			})
+			.show();
+	}
+
 	private void createAccount()
 	{
 		Intent i = new Intent(this, AccountEdit.class);
@@ -327,7 +416,7 @@ public class AccountChooser extends ListActivity
 								});
 
 					
-					(new AlertDialog.Builder(mContext)
+					new AlertDialog.Builder(mContext)
 						.setMessage(msg.what)
 						.setPositiveButton(R.string.yes,
 								new AlertDialog.OnClickListener()
@@ -359,7 +448,7 @@ public class AccountChooser extends ListActivity
                                     	editor.commit();
                                     	reminder.show();
                                     }
-                            	}))
+                            	})
                     	.show();
 				}
 			};

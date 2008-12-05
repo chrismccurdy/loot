@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +48,8 @@ public class PinActivity extends Activity
 		for (int resId : buttonIds)
 		{
 			button = (Button)findViewById(resId);
+			if (button == null)
+				continue;
 			button.setOnClickListener(new Button.OnClickListener()
 			{
 				public void onClick(View v)
@@ -56,6 +59,15 @@ public class PinActivity extends Activity
 				}
 			});
 		}
+		
+		mPinEdit.setOnKeyListener(new EditText.OnKeyListener()
+		{
+			public boolean onKey(View v, int keyCode, KeyEvent event)
+			{
+				mInvalidView.setText("");
+				return false;
+			}	
+		});
 		
 		mUnlockButton.setOnClickListener(new Button.OnClickListener()
 		{

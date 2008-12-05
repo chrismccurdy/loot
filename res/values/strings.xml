@@ -42,4 +42,9 @@
 <string name="post">Post</string>
 <string name="acct_priority">Display Priority:</string>
 <string name="nag">Would you like to be reminded to update again in a week?</string>
+<string name="restore_account">Restore Account</string>
+<string name="clear_account">Clear Account</string>
+<string name="clear">Clear Deleted Account</string>
+<string name="restore">Restore Deleted Account</string>
+<string name="no_deleted_accounts">There are no deleted accounts in the database.</string>
 </resources>

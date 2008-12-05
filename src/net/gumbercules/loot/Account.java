@@ -251,6 +251,11 @@ public class Account
 	
 	public boolean loadById(int id)
 	{
+		return loadById(id, false);
+	}
+	
+	public boolean loadById(int id, boolean get_purged)
+	{
 		SQLiteDatabase lootDB;
 		try
 		{
@@ -261,9 +266,13 @@ public class Account
 			return false;
 		}
 		
+		int purged = 0;
+		if (get_purged)
+			purged = 1;
+		
 		String[] columns = {"id", "name", "balance", "priority"};
-		String[] sArgs = {Integer.toString(id)};
-		Cursor cur = lootDB.query("accounts", columns, "id = ? and purged = 0", sArgs,
+		String[] sArgs = {Integer.toString(id), Integer.toString(purged)};
+		Cursor cur = lootDB.query("accounts", columns, "id = ? and purged = ?", sArgs,
 				null, null, null, "1");
 		if (!cur.moveToFirst())
 		{
@@ -359,6 +368,29 @@ public class Account
 		{
 			acc_ids[i] = ids.get(i).intValue();
 		}
+		
+		return acc_ids;
+	}
+	
+	public static int[] getDeletedAccountIds()
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		
+		String[] columns = {"id"};
+		Cursor cur = lootDB.query("accounts", columns, "purged = 1", null, null, null, "priority, id");
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		int[] acc_ids = new int[cur.getCount()];
+		int i = 0;
+		
+		do
+			acc_ids[i++] = cur.getInt(0);
+		while (cur.moveToNext());
+		cur.close();
 		
 		return acc_ids;
 	}
@@ -616,5 +648,89 @@ public class Account
 		}
 
 		return ids;
+	}
+	
+	public static boolean clearDeletedAccount(int id)
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		
+		Cursor cur = lootDB.query("transactions", new String[]{"id"}, "account = " + id,
+				null, null, null, null);
+		int trans_len = 0;
+		int repeat_len = 0;
+		int[] trans_ids = null;
+		if (cur.moveToFirst())
+		{
+			trans_len = cur.getCount();
+			trans_ids = new int[trans_len];
+			int i = 0;
+			
+			do
+				trans_ids[i++] = cur.getInt(0);
+			while (cur.moveToNext());
+		}
+		cur.close();
+		
+		String trans_id_group = "(";
+		String repeat_id_group = "(";
+		
+		// if there are no transactions, we don't have to worry about deleting
+		// any other rows that reference the transaction
+		if (trans_len != 0)
+		{
+			int i = 0;
+			trans_id_group = "(" + trans_ids[i++];
+			for (; i < trans_len; ++i)
+				trans_id_group += "," + trans_ids[i];
+			trans_id_group += ")";
+			
+			cur = lootDB.query("repeat_transactions", new String[]{"repeat_id"},
+					"trans_id in " + trans_id_group, null, null, null, null);
+			if (cur.moveToFirst())
+			{
+				repeat_len = cur.getCount();
+				repeat_id_group = "(" + cur.getInt(0);
+
+				while (cur.moveToNext())
+					repeat_id_group += "," + cur.getInt(0);
+				repeat_id_group += ")";
+			}
+			cur.close();
+		}
+		
+		lootDB.beginTransaction();
+		
+		try
+		{
+			if (repeat_len > 0)
+			{
+				lootDB.delete("repeat_pattern", "id in " + repeat_id_group, null);
+				lootDB.delete("repeat_transactions", "repeat_id in " + repeat_id_group, null);
+			}
+			if (trans_len > 0)
+			{
+				lootDB.delete("transactions", "id in " + trans_id_group, null);
+				lootDB.delete("tags", "trans_id in " + trans_id_group, null);
+			}
+
+			int removed = lootDB.delete("accounts", "id = " + id + " and purged = 1", null);
+			if (removed > 0)
+				lootDB.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		finally
+		{
+			lootDB.endTransaction();
+		}
+		
+		return true;
+	}
+	
+	public static boolean restoreDeletedAccount(int id)
+	{
+		return false;
 	}
 }

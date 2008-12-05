@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:orientation="vertical">
+
+<TextView android:id="@+id/TextView01" android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="@string/pin" android:gravity="center_horizontal" android:textSize="24px"></TextView>
+<TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center_vertical|center_horizontal" android:id="@+id/invalidView" android:textSize="24px" android:textStyle="bold" android:textColor="#ff0000"></TextView><EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_marginLeft="40px" android:layout_marginRight="40px" android:id="@+id/pinEdit" android:password="true" android:gravity="center"></EditText>
+
+
+
+<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></TextView><LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_marginTop="15px"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="24px" android:textStyle="bold" android:text="Clear" android:layout_weight="1" android:layout_marginLeft="10px" android:id="@+id/clearButton"></Button><Button android:layout_height="wrap_content" android:text="@string/unlock" android:layout_width="wrap_content" android:textSize="24px" android:id="@+id/unlockButton" android:textStyle="bold" android:layout_weight="1" android:layout_marginRight="10px" android:layout_marginLeft="35px"></Button></LinearLayout>
+
+</LinearLayout>
