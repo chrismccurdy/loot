@@ -162,6 +162,10 @@ public final class R {
         public static final int acct_name=0x7f060009;
         public static final int acct_priority=0x7f06001c;
         public static final int app_name=0x7f060000;
+        public static final int backup=0x7f060024;
+        public static final int backup_failed=0x7f060027;
+        public static final int backup_path=0x7f060023;
+        public static final int backup_successful=0x7f060026;
         public static final int cancel=0x7f06000c;
         public static final int clear=0x7f060020;
         public static final int clear_account=0x7f06001f;
@@ -179,6 +183,9 @@ public final class R {
         public static final int purge=0x7f060007;
         public static final int restore=0x7f060021;
         public static final int restore_account=0x7f06001e;
+        public static final int restore_db=0x7f060025;
+        public static final int restore_failed=0x7f060029;
+        public static final int restore_successful=0x7f060028;
         public static final int save=0x7f06000b;
         public static final int search=0x7f060006;
         public static final int search_text=0x7f060001;

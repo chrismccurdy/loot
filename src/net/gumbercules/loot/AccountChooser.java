@@ -45,9 +45,13 @@ public class AccountChooser extends ListActivity
 	public static final int RESTORE_ID		= Menu.FIRST + 1;
 	public static final int CLEAR_ID		= Menu.FIRST + 2;
 	public static final int SETTINGS_ID		= Menu.FIRST + 3;
+	public static final int BACKUP_ID		= Menu.FIRST + 4;
+	public static final int BU_RESTORE_ID	= Menu.FIRST + 5;
 	
-	public static final int CONTEXT_EDIT	= Menu.FIRST + 4;
-	public static final int CONTEXT_DEL		= Menu.FIRST + 5;
+	public static final int CONTEXT_EDIT	= Menu.FIRST + 6;
+	public static final int CONTEXT_DEL		= Menu.FIRST + 7;
+	
+	private static boolean copyInProgress = false;
 
 	private ArrayList<Account> accountList;
 	private UpdateThread mUpdateThread;
@@ -110,12 +114,19 @@ public class AccountChooser extends ListActivity
 			.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
 			.setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(0, BACKUP_ID, 0, R.string.backup)
+			.setShortcut('1', 'b')
+			.setVisible(false);
+		menu.add(0, BU_RESTORE_ID, 0, R.string.restore_db)
+			.setShortcut('2', 'r')
+			.setVisible(false);
 		return result;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		CopyThread ct;
     	switch (item.getItemId())
     	{
     	case NEW_ACCT_ID:
@@ -132,6 +143,16 @@ public class AccountChooser extends ListActivity
     		
     	case SETTINGS_ID:
     		showSettings();
+    		return true;
+    		
+    	case BACKUP_ID:
+    		ct = new CopyThread(CopyThread.BACKUP, this);
+    		ct.start();
+    		return true;
+    		
+    	case BU_RESTORE_ID:
+    		ct = new CopyThread(CopyThread.RESTORE, this);
+    		ct.start();
     		return true;
     	}
     	
@@ -483,6 +504,69 @@ public class AccountChooser extends ListActivity
 			};
 			
 			Looper.loop();
+		}
+	}
+	
+	private class CopyThread extends Thread
+	{
+		public static final int BACKUP	= 0;
+		public static final int RESTORE	= 1;
+		
+		private Context mContext;
+		private int mOp;
+		
+		public CopyThread(int op, Context con)
+		{
+			mOp = op;
+			mContext = con;
+		}
+		
+		@Override
+		public void run()
+		{
+    		if (copyInProgress)
+    			return;
+    		else
+    			copyInProgress = true;
+
+			Looper.prepare();
+			
+    		int res = 0;
+    		if (mOp == BACKUP)
+			{
+	    		if (Database.backup(getResources().getString(R.string.backup_path)))
+	    			res = R.string.backup_successful;
+	    		else
+	    			res = R.string.backup_failed;
+			}
+			else if (mOp == RESTORE)
+			{
+	    		if (Database.restore(getResources().getString(R.string.backup_path)))
+	    		{
+	    			res = R.string.restore_successful;
+	    			
+	    			new Thread()
+	    			{
+	    				public void run()
+	    				{
+	    					try
+	    					{
+								Thread.sleep(3000);
+							}
+	    					catch (InterruptedException e) { }
+	    					System.exit(0);
+	    				}
+	    			}.start();
+	    		}
+	    		else
+	    			res = R.string.restore_failed;
+			}
+    		copyInProgress = false;
+    		
+    		if (res != 0)
+    			Toast.makeText(mContext, res, Toast.LENGTH_LONG).show();
+    		
+    		Looper.loop();
 		}
 	}
 }

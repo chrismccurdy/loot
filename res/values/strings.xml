@@ -47,4 +47,11 @@
 <string name="clear">Clear Deleted Account</string>
 <string name="restore">Restore Deleted Account</string>
 <string name="no_deleted_accounts">There are no deleted accounts in the database.</string>
+<string name="backup_path">/sdcard/LootDB.db</string>
+<string name="backup">Backup Database</string>
+<string name="restore_db">Restore Database</string>
+<string name="backup_successful">Database backed up to SD card.</string>
+<string name="backup_failed">Database could not be backed up to SD card.</string>
+<string name="restore_successful">Database restored from SD card. Application will be stopped to reload the database.</string>
+<string name="restore_failed">Database could not be restored from the SD card.</string>
 </resources>

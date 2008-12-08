@@ -1,5 +1,12 @@
 package net.gumbercules.loot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import android.content.ContentValues;
 import android.database.*;
 import android.database.sqlite.*;
 
@@ -34,7 +41,7 @@ public class Database
 			try
 			{
 				lootDB = SQLiteDatabase.openOrCreateDatabase( DB_PATH, null);
-				if ( !this.createDB() )
+				if ( !createDB(lootDB) )
 					lootDB = null;
 			}
 			// something went wrong creating the database
@@ -52,7 +59,7 @@ public class Database
 		}
 	}
 	
-	private boolean createDB()
+	private static boolean createDB(SQLiteDatabase db)
 	{
 		String[] createSQL = new String[11];
 		
@@ -120,15 +127,15 @@ public class Database
 		
 		try
 		{
-			lootDB.beginTransaction();
+			db.beginTransaction();
 			
 			// loop through creation strings to create entire database
 			for ( String sql_str : createSQL )
 			{
-				lootDB.execSQL( sql_str );
+				db.execSQL( sql_str );
 			}
-			lootDB.setTransactionSuccessful();
-			lootDB.setVersion( DB_VERSION );
+			db.setTransactionSuccessful();
+			db.setVersion( DB_VERSION );
 		}
 		catch ( SQLException e )
 		{
@@ -136,7 +143,7 @@ public class Database
 		}
 		finally
 		{
-			lootDB.endTransaction();
+			db.endTransaction();
 		}
 
 		return true;
@@ -347,5 +354,233 @@ public class Database
 		if (!b)
 			return 0;
 		return 1;
+	}
+	
+/*	private static boolean copyFile(String from, String to)
+	{
+		File inputFile = new File(from);
+		File outputFile = new File(to);
+		
+		try
+		{
+			if (!outputFile.exists())
+			{
+				outputFile.createNewFile();
+			}
+
+			FileReader in = new FileReader(inputFile);
+			FileWriter out = new FileWriter(outputFile);
+			
+			int c;
+			while ((c = in.read()) != -1)
+				out.write(c);
+			
+			in.close();
+			out.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}*/
+	
+	private static boolean copyDatabase(String from, String to)
+	{
+		try
+		{
+			SQLiteDatabase fromDb = SQLiteDatabase.openDatabase(from, null, SQLiteDatabase.OPEN_READONLY);
+			
+			File toFile = new File(to);
+			if (toFile.exists())
+			{
+				if (!toFile.delete())
+					return false;
+			}
+			SQLiteDatabase toDb = SQLiteDatabase.openOrCreateDatabase(to, null);
+			
+			createDB(toDb);
+			ContentValues cv;
+			String[] columns;
+			
+			// accounts table
+			columns = new String[]{"id", "name", "balance", "timestamp", "purged", "priority"};
+			Cursor cur = fromDb.query("accounts", columns, null, null, null, null, null);
+			if (cur.moveToFirst())
+			{
+				do
+				{
+					cv = new ContentValues();
+					cv.put(columns[0], cur.getInt(0));
+					cv.put(columns[1], cur.getString(1));
+					cv.put(columns[2], cur.getDouble(2));
+					cv.put(columns[3], cur.getLong(3));
+					cv.put(columns[4], cur.getInt(4));
+					cv.put(columns[5], cur.getInt(5));
+					
+					toDb.insert("accounts", null, cv);
+				} while (cur.moveToNext());
+			}
+			cur.close();
+			
+			// transactions table
+			columns = new String[]{"id", "posted", "account", "date", "party", "amount",
+					"check_num", "timestamp", "purged", "budget"};
+			cur = fromDb.query("transactions", columns, null, null, null, null, null);
+			if (cur.moveToFirst())
+			{
+				do
+				{
+					cv = new ContentValues();
+					cv.put(columns[0], cur.getInt(0));
+					cv.put(columns[1], cur.getInt(1));
+					cv.put(columns[2], cur.getInt(2));
+					cv.put(columns[3], cur.getLong(3));
+					cv.put(columns[4], cur.getString(4));
+					cv.put(columns[5], cur.getDouble(5));
+					cv.put(columns[6], cur.getInt(6));
+					cv.put(columns[7], cur.getLong(7));
+					cv.put(columns[8], cur.getInt(8));
+					cv.put(columns[9], cur.getInt(9));
+					
+					toDb.insert("transactions", null, cv);
+				} while (cur.moveToNext());
+			}
+			cur.close();
+			
+			// tags table
+			columns = new String[]{"trans_id", "name"};
+			cur = fromDb.query("tags", columns, null, null, null, null, null);
+			if (cur.moveToFirst())
+			{
+				do
+				{
+					cv = new ContentValues();
+					cv.put(columns[0], cur.getInt(0));
+					cv.put(columns[1], cur.getString(1));
+					
+					toDb.insert("tags", null, cv);
+				} while (cur.moveToNext());
+			}
+			cur.close();
+			
+			// options table
+			// delete the pre-populated options to prevent unique constraint errors
+			toDb.delete("options", null, null);
+			
+			columns = new String[]{"option", "value"};
+			cur = fromDb.query("options", columns, null, null, null, null, null);
+			if (cur.moveToFirst())
+			{
+				String option;
+				do
+				{
+					cv = new ContentValues();
+					option = cur.getString(0);
+					
+					// don't backup the PIN
+					if (option.equals("pin"))
+						continue;
+					
+					cv.put(columns[0], option);
+					cv.put(columns[1], cur.getString(1));
+					
+					toDb.insert("options", null, cv);
+				} while (cur.moveToNext());
+			}
+			cur.close();
+			
+			// transfers table
+			columns = new String[]{"trans_id1", "trans_id2"};
+			cur = fromDb.query("transfers", columns, null, null, null, null, null);
+			if (cur.moveToFirst())
+			{
+				do
+				{
+					cv = new ContentValues();
+					cv.put(columns[0], cur.getInt(0));
+					cv.put(columns[1], cur.getInt(1));
+					
+					toDb.insert("transfers", null, cv);
+				} while (cur.moveToNext());
+			}
+			cur.close();
+			
+			// repeat_pattern table
+			columns = new String[]{"id", "start_date", "due", "end_date",
+					"iterator", "frequency", "custom"};
+			cur = fromDb.query("repeat_pattern", columns, null, null, null, null, null);
+			if (cur.moveToFirst())
+			{
+				do
+				{
+					cv = new ContentValues();
+					cv.put(columns[0], cur.getInt(0));
+					cv.put(columns[1], cur.getLong(1));
+					cv.put(columns[2], cur.getLong(2));
+					cv.put(columns[3], cur.getLong(3));
+					cv.put(columns[4], cur.getInt(4));
+					cv.put(columns[5], cur.getInt(5));
+					cv.put(columns[6], cur.getInt(6));
+					
+					toDb.insert("repeat_pattern", null, cv);
+				} while (cur.moveToNext());
+			}
+			cur.close();
+			
+			// repeat_transactions table
+			columns = new String[]{"trans_id", "repeat_id", "account", "date", "party",
+					"amount", "check_num", "budget", "tags", "transfer_id"};
+			cur = fromDb.query("repeat_transactions", columns, null, null, null, null, null);
+			if (cur.moveToFirst())
+			{
+				do
+				{
+					cv = new ContentValues();
+					cv.put(columns[0], cur.getInt(0));
+					cv.put(columns[1], cur.getInt(1));
+					cv.put(columns[2], cur.getInt(2));
+					cv.put(columns[3], cur.getLong(3));
+					cv.put(columns[4], cur.getString(4));
+					cv.put(columns[5], cur.getDouble(5));
+					cv.put(columns[6], cur.getInt(6));
+					cv.put(columns[7], cur.getInt(7));
+					cv.put(columns[8], cur.getString(8));
+					cv.put(columns[9], cur.getInt(9));
+					
+					toDb.insert("repeat_transactions", null, cv);
+				} while (cur.moveToNext());
+			}
+			cur.close();
+			
+			toDb.close();
+			fromDb.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static boolean backup(String to)
+	{
+		//return copyFile(DB_PATH, to);
+		return copyDatabase(DB_PATH, to);
+	}
+	
+	public static boolean restore(String from)
+	{
+		//return copyFile(from, DB_PATH);
+		return copyDatabase(from, DB_PATH);
 	}
 }
