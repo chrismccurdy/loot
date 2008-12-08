@@ -58,8 +58,8 @@ public class AccountChooser extends ListActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.accounts);
 
+		setContentView(R.layout.accounts);
 		getListView().setOnCreateContextMenuListener(this);
 		
 		accountList = new ArrayList<Account>();
@@ -338,7 +338,16 @@ public class AccountChooser extends ListActivity
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 	}
-	
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if (!prefs.getBoolean(PinActivity.SHOW_ACCOUNTS, true))
+			finish();
+	}
+
 	private class UpdateChecker extends Thread
 	{
 		public static final String VERSION_CODE_DENIED	= "up_denied";

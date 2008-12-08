@@ -5,7 +5,9 @@ import java.security.NoSuchAlgorithmException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 
 public class PinActivity extends Activity
 {
+	public static final String SHOW_ACCOUNTS = "show";
+	
 	private Button mUnlockButton;
 	private EditText mPinEdit;
 	private TextView mInvalidView;
@@ -23,7 +27,7 @@ public class PinActivity extends Activity
 	{
 		final byte[] pin_hash = Database.getOptionBlob("pin");
 		if (pin_hash == null || pin_hash.length == 1)
-			startAccountChooser();
+			startAccountChooser(true);
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pin);
@@ -97,7 +101,7 @@ public class PinActivity extends Activity
 					
 					if (i <= 0)
 					{
-						startAccountChooser();
+						startAccountChooser(true);
 						return;
 					}
 				}
@@ -108,10 +112,24 @@ public class PinActivity extends Activity
 		});
 	}
 	
-	private void startAccountChooser()
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if (keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			startAccountChooser(false);
+			return true;
+		}
+		
+		return false;
+	}
+
+	private void startAccountChooser(boolean show)
 	{
         Intent intent = new Intent();
         intent.setClass(PinActivity.this, AccountChooser.class);
+       	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+       	prefs.edit().putBoolean(SHOW_ACCOUNTS, show).commit();
         startActivity(intent);
         finish();
 	}
