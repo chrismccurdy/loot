@@ -62,8 +62,9 @@ public class TransactionActivity extends ListActivity
 	public static final int CONTEXT_POST	= Menu.FIRST + 2;
 	public static final int CONTEXT_DEL		= Menu.FIRST + 3;
 	
-	private ArrayList<Transaction> mTransList;
-	private Account mAcct;
+	private static ArrayList<Transaction> mTransList;
+	private static Account mAcct;
+	private static TransactionAdapter mTa;
 	
 	private MultiAutoCompleteTextView searchEdit;
 	
@@ -83,7 +84,13 @@ public class TransactionActivity extends ListActivity
     	setContentView(R.layout.main);
         
     	Bundle bun = getIntent().getExtras();
-    	mAcct = Account.getAccountById(bun.getInt(Account.KEY_ID));
+    	int acct_id = bun.getInt(Account.KEY_ID);
+    	boolean new_account = false;
+    	if (mAcct == null || acct_id != mAcct.id())
+    	{
+    		new_account = true;
+    		mAcct = Account.getAccountById(acct_id);
+    	}
     	setTitle("loot :: " + mAcct.name);
     	
     	int auto_purge = (int)Database.getOptionInt("auto_purge_days");
@@ -119,10 +126,16 @@ public class TransactionActivity extends ListActivity
     	if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
     		layoutResId = R.layout.trans_row_wide;
     	
-    	mTransList = new ArrayList<Transaction>();
-	    final TransactionAdapter ta = new TransactionAdapter(this, layoutResId, mTransList, mAcct.id());
-        setListAdapter(ta);
-        fillList();
+    	if (new_account)
+    	{
+	    	mTransList = new ArrayList<Transaction>();
+		    mTa = new TransactionAdapter(this, layoutResId, mTransList, mAcct.id());
+	        setListAdapter(mTa);
+	        fillList();
+    	}
+    	else
+    		setListAdapter(mTa);
+    	
         
     	TextWatcher searchChanged = new TextWatcher()
     	{
@@ -130,7 +143,7 @@ public class TransactionActivity extends ListActivity
 			public void afterTextChanged(Editable s)
 			{
 				searchString = s.toString();
-				TransactionFilter f = (TransactionFilter)ta.getFilter();
+				TransactionFilter f = (TransactionFilter)mTa.getFilter();
 				f.publish(searchString, f.filtering(searchString));
 			}
 
@@ -139,7 +152,7 @@ public class TransactionActivity extends ListActivity
 				if (after == 0)
 				{
 					searchString = "";
-					TransactionFilter f = (TransactionFilter)ta.getFilter();
+					TransactionFilter f = (TransactionFilter)mTa.getFilter();
 					f.publish(searchString, f.filtering(searchString));
 				}
 			}
@@ -156,7 +169,7 @@ public class TransactionActivity extends ListActivity
     	if (showSearch)
     	{
     		toggleSearch();
-			TransactionFilter f = (TransactionFilter)ta.getFilter();
+			TransactionFilter f = (TransactionFilter)mTa.getFilter();
 			searchEdit.setText(searchString);
 			f.publish(searchString, f.filtering(searchString));
     	}
