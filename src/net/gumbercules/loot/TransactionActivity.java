@@ -282,7 +282,7 @@ public class TransactionActivity extends ListActivity
     					Transaction.setComparator(Transaction.COMP_PARTY);
     				else if (which == 2)	// Amount
     					Transaction.setComparator(Transaction.COMP_AMT);
-    		    	((TransactionAdapter)getListAdapter()).sort();
+    		    	mTa.sort();
     			}
     		})
     		.show();
@@ -414,25 +414,24 @@ public class TransactionActivity extends ListActivity
     private void fillList()
     {
 		int[] transIds = mAcct.getTransactionIds();
-		TransactionAdapter ta = (TransactionAdapter)getListAdapter();
     	addRepeatedTransactions();
-		ta.add(transIds);
-		ta.sort();
+		mTa.add(transIds);
+		mTa.sort();
 		
 		setBalances();
     }
     
     private void updateList(int trans_id, int request)
     {
-    	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
     	addRepeatedTransactions();
+    	TransactionAdapter ta = mTa;
     	Transaction trans;
     	int pos;
     	
     	switch (request)
     	{
     	case ACTIVITY_EDIT:
-    		pos = ((TransactionAdapter)getListAdapter()).findItemById(trans_id);
+    		pos = ta.findItemById(trans_id);
     		ta.remove(ta.getItem(pos));
     		// don't break, the transaction needs to be added back to the list
 
@@ -443,7 +442,7 @@ public class TransactionActivity extends ListActivity
     		break;
     		
     	case ACTIVITY_DEL:
-    		pos = ((TransactionAdapter)getListAdapter()).findItemById(trans_id);
+    		pos = ta.findItemById(trans_id);
     		ta.remove(ta.getItem(pos));
     		break;
     	}
@@ -453,8 +452,8 @@ public class TransactionActivity extends ListActivity
     
     private void updateList(int[] ids, int request)
     {
-    	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
     	addRepeatedTransactions();
+    	TransactionAdapter ta = mTa;
     	
     	switch (request)
     	{
@@ -474,8 +473,7 @@ public class TransactionActivity extends ListActivity
     private void addRepeatedTransactions()
     {
     	int[] ids = RepeatSchedule.processDueRepetitions(new Date());
-    	TransactionAdapter ta = (TransactionAdapter)getListAdapter();
-    	ta.add(ids);
+    	mTa.add(ids);
     }
 
 	@Override
@@ -485,8 +483,15 @@ public class TransactionActivity extends ListActivity
 		
 		if (resultCode == RESULT_OK && data != null)
 		{
-			Bundle extras = data.getExtras();
-			updateList(extras.getInt(Transaction.KEY_ID), extras.getInt(TransactionActivity.KEY_REQ));
+			try
+			{
+				Bundle extras = data.getExtras();
+				updateList(extras.getInt(Transaction.KEY_ID), extras.getInt(TransactionActivity.KEY_REQ));
+			}
+			catch (Exception e)
+			{
+				Logger.logStackTrace(e, this);
+			}
 		}
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -495,8 +500,7 @@ public class TransactionActivity extends ListActivity
 		if (colors != showColors)
 		{
 			showColors = colors;
-			TransactionAdapter ta = (TransactionAdapter)getListAdapter();
-			ta.notifyDataSetChanged();
+			mTa.notifyDataSetChanged();
 		}
 	}
 	
@@ -543,13 +547,21 @@ public class TransactionActivity extends ListActivity
 			return true;
 			
 		case CONTEXT_COPY:
-			Transaction tr = Transaction.getTransactionById(id);
-			tr.setId(-1);
-			if (tr.type == Transaction.CHECK)
-				tr.check_num = mAcct.getNextCheckNum();
-			tr.post(false);
-			id = tr.write(mAcct.id());
-			updateList(id, ACTIVITY_CREATE);
+			try
+			{
+				Transaction tr = Transaction.getTransactionById(id);
+				tr.setId(-1);
+				if (tr.type == Transaction.CHECK)
+					tr.check_num = mAcct.getNextCheckNum();
+				if (tr.isPosted())
+					tr.post(false);
+				id = tr.write(mAcct.id());
+				updateList(id, ACTIVITY_CREATE);
+			}
+			catch (Exception e)
+			{
+				Logger.logStackTrace(e, this);
+			}
 			return true;
 			
 		case CONTEXT_POST:
@@ -558,6 +570,7 @@ public class TransactionActivity extends ListActivity
 			
 		case CONTEXT_DEL:
 			final Transaction trans = Transaction.getTransactionById(id);
+			final Context c = this;
 			AlertDialog dialog = new AlertDialog.Builder(this)
 				.setTitle(R.string.account_del_box)
 				.setMessage("Are you sure you wish to delete " + trans.party + "?")
@@ -565,9 +578,16 @@ public class TransactionActivity extends ListActivity
 				{
 					public void onClick(DialogInterface dialog, int which)
 					{
-						int id = trans.id();
-						trans.erase();
-						updateList(id, ACTIVITY_DEL);
+						try
+						{
+							int id = trans.id();
+							trans.erase();
+							updateList(id, ACTIVITY_DEL);
+						}
+						catch (Exception e)
+						{
+							Logger.logStackTrace(e, c);
+						}
 					}
 				})
 				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()

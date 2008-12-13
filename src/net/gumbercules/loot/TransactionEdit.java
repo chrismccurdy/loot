@@ -537,10 +537,17 @@ public class TransactionEdit extends Activity
 	protected void onPause()
 	{
 		super.onPause();
-		saveState();
+		try
+		{
+			saveState();
+		}
+		catch (Exception e)
+		{
+			Logger.logStackTrace(e, this);
+		}
 	}
 
-	private void saveState()
+	private void saveState() throws Exception
 	{
 		if (mFinishIntent == RESULT_CANCELED || mFinished)
 			return;

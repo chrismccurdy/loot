@@ -1,11 +1,6 @@
 package net.gumbercules.loot;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import android.content.ContentValues;
 import android.database.*;
 import android.database.sqlite.*;
