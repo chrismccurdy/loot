@@ -134,8 +134,10 @@ public class TransactionActivity extends ListActivity
 	        fillList();
     	}
     	else
+    	{
     		setListAdapter(mTa);
-    	
+    		setBalances();
+    	}
         
     	TextWatcher searchChanged = new TextWatcher()
     	{
@@ -396,18 +398,21 @@ public class TransactionActivity extends ListActivity
 			str = nf.format(posted);
 		else
 			str = "Error";
+		Log.e("SET_BALANCES", str);
 		postedValue.setText(str);
 		
 		if (balance != null)
 			str = nf.format(balance);
 		else
 			str = "Error";
+		Log.e("SET_BALANCES", str);
 		balanceValue.setText(nf.format(balance));
 		
 		if (budget != null)
 			str = nf.format(budget);
 		else
 			str = "Error";
+		Log.e("SET_BALANCES", str);
 		budgetValue.setText(nf.format(budget));
     }
     
