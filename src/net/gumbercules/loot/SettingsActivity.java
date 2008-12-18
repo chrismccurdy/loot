@@ -40,6 +40,9 @@ public class SettingsActivity extends PreferenceActivity
 		{
 			public boolean onPreferenceChange(Preference preference, Object newValue)
 			{
+				if (newValue.equals(""))
+					return false;
+				
 				String val = (String)newValue;
 				byte[] bytes = {0};
 				try
@@ -79,6 +82,9 @@ public class SettingsActivity extends PreferenceActivity
 		{
 			public boolean onPreferenceChange(Preference preference, Object newValue)
 			{
+				if (newValue.equals(""))
+					return false;
+				
 				int val = Integer.valueOf((String)newValue);
 				if (val <= 0)
 					return false;
@@ -109,6 +115,9 @@ public class SettingsActivity extends PreferenceActivity
 		{
 			public boolean onPreferenceChange(Preference preference, Object newValue)
 			{
+				if (newValue.equals(""))
+					return false;
+				
 				int val = Integer.valueOf((String)newValue);
 				if (val <= 0)
 					return false;
@@ -118,6 +127,5 @@ public class SettingsActivity extends PreferenceActivity
 				return true;
 			}
 		});
-		
 	}
 }
