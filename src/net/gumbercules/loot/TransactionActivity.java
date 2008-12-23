@@ -135,6 +135,7 @@ public class TransactionActivity extends ListActivity
     	}
     	else
     	{
+    		mTa.setResource(layoutResId);
     		setListAdapter(mTa);
     		setBalances();
     	}
