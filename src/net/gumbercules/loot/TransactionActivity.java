@@ -362,7 +362,7 @@ public class TransactionActivity extends ListActivity
     	i.putExtra(TransactionActivity.KEY_REQ, request);
     	i.putExtra(TransactionActivity.KEY_TYPE, TRANSACTION);
     	i.putExtra(Account.KEY_ID, mAcct.id());
-    	startActivityForResult(i, request);    	
+    	startActivityForResult(i, request);
     }
     
     private void createTransfer()
@@ -399,21 +399,18 @@ public class TransactionActivity extends ListActivity
 			str = nf.format(posted);
 		else
 			str = "Error";
-		Log.e("SET_BALANCES", str);
 		postedValue.setText(str);
 		
 		if (balance != null)
 			str = nf.format(balance);
 		else
 			str = "Error";
-		Log.e("SET_BALANCES", str);
 		balanceValue.setText(nf.format(balance));
 		
 		if (budget != null)
 			str = nf.format(budget);
 		else
 			str = "Error";
-		Log.e("SET_BALANCES", str);
 		budgetValue.setText(nf.format(budget));
     }
     
@@ -640,6 +637,13 @@ public class TransactionActivity extends ListActivity
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 	}
 	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		mAcct = null;
+	}
+
 	public static class SpaceTokenizer implements Tokenizer
 	{
 		public int findTokenEnd(CharSequence text, int cursor)
