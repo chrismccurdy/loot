@@ -66,6 +66,7 @@ public class AccountChooser extends ListActivity
 		setContentView(R.layout.accounts);
 		getListView().setOnCreateContextMenuListener(this);
 		
+		TransactionActivity.setAccountNull();
 		accountList = new ArrayList<Account>();
 		AccountAdapter accounts = new AccountAdapter(this, R.layout.account_row, accountList);
 		setListAdapter(accounts);

@@ -637,10 +637,8 @@ public class TransactionActivity extends ListActivity
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 	}
 	
-	@Override
-	protected void onDestroy()
+	public static void setAccountNull()
 	{
-		super.onDestroy();
 		mAcct = null;
 	}
 
