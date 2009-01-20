@@ -401,7 +401,7 @@ public class Database
 			}
 			else
 			{
-				toFile.mkdirs();
+				new File(toFile.getParent()).mkdirs();
 			}
 			SQLiteDatabase toDb = SQLiteDatabase.openOrCreateDatabase(to, null);
 			

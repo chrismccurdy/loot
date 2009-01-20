@@ -1,5 +1,6 @@
 package net.gumbercules.loot;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -135,9 +136,9 @@ public class AccountChooser extends ListActivity
 		CopyThread ct;
 		ProgressDialog pd = new ProgressDialog(this);
 		pd.setCancelable(true);
-		pd.setIndeterminate(true);
-		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
+		pd.setMax(100);
+		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		
 		switch (item.getItemId())
     	{
     	case NEW_ACCT_ID:
@@ -551,16 +552,29 @@ public class AccountChooser extends ListActivity
     		int res = 0;
     		if (mOp == BACKUP)
 			{
-	    		if (Database.backup(getResources().getString(R.string.backup_path)))
+    			String backup_path = getResources().getString(R.string.backup_path);
+    			FileWatcherThread fwt = new FileWatcherThread(Database.getDbPath(), backup_path, mPd);
+    			fwt.start();
+    			
+	    		if (Database.backup(backup_path))
+	    		{
 	    			res = R.string.backup_successful;
+	    			mPd.setProgress(100);
+	    		}
 	    		else
 	    			res = R.string.backup_failed;
+	    		fwt.stop();
 			}
 			else if (mOp == RESTORE)
 			{
-	    		if (Database.restore(getResources().getString(R.string.backup_path)))
+    			String backup_path = getResources().getString(R.string.backup_path);
+    			FileWatcherThread fwt = new FileWatcherThread(backup_path, Database.getDbPath(), mPd);
+    			fwt.start();
+
+    			if (Database.restore(backup_path))
 	    		{
 	    			res = R.string.restore_successful;
+	    			mPd.setProgress(100);
 	    			
 	    			new Thread()
 	    			{
@@ -577,6 +591,7 @@ public class AccountChooser extends ListActivity
 	    		}
 	    		else
 	    			res = R.string.restore_failed;
+    			fwt.stop();
 			}
     		mPd.dismiss();
     		copyInProgress = false;
@@ -585,6 +600,41 @@ public class AccountChooser extends ListActivity
     			Toast.makeText(mContext, res, Toast.LENGTH_LONG).show();
     		
     		Looper.loop();
+		}
+	}
+	
+	private class FileWatcherThread extends Thread
+	{
+		private ProgressDialog mPd;
+		private String mFilename;
+		private long mTarget;
+		
+		public FileWatcherThread(String from_fn, String fn, ProgressDialog pd)
+		{
+			File fromFile = new File(from_fn);
+			mTarget = fromFile.length();
+			
+			mFilename = fn;
+			mPd = pd;
+		}
+		
+		@Override
+		public void run()
+		{
+			File mFile;
+			
+			try
+			{
+				int progress = 0;
+				while (progress < 100)
+				{
+					mPd.setProgress(progress);
+					Thread.sleep(100);
+					mFile = new File(mFilename);
+					progress = (int)(((float)mFile.length() / mTarget) * 100);
+				}
+			}
+			catch (InterruptedException e) { }
 		}
 	}
 }
