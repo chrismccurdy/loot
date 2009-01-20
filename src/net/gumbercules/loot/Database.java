@@ -399,6 +399,10 @@ public class Database
 				if (!toFile.delete())
 					return false;
 			}
+			else
+			{
+				toFile.mkdirs();
+			}
 			SQLiteDatabase toDb = SQLiteDatabase.openOrCreateDatabase(to, null);
 			
 			createDB(toDb);
@@ -569,13 +573,16 @@ public class Database
 	
 	public static boolean backup(String to)
 	{
-		//return copyFile(DB_PATH, to);
 		return copyDatabase(DB_PATH, to);
 	}
 	
 	public static boolean restore(String from)
 	{
-		//return copyFile(from, DB_PATH);
 		return copyDatabase(from, DB_PATH);
+	}
+	
+	public static String getDbPath()
+	{
+		return DB_PATH;
 	}
 }

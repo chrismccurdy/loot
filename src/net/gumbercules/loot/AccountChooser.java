@@ -11,6 +11,7 @@ import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -108,19 +109,23 @@ public class AccountChooser extends ListActivity
 	{
 		boolean result = super.onCreateOptionsMenu(menu);
 		menu.add(0, NEW_ACCT_ID, 0, R.string.new_account)
+			.setShortcut('1', 'n')
 			.setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, RESTORE_ID, 0, R.string.restore_account)
+			.setShortcut('2', 'h')
 			.setIcon(android.R.drawable.ic_menu_revert);
 		menu.add(0, CLEAR_ID, 0, R.string.clear_account)
+			.setShortcut('3', 'c')
 			.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
-		menu.add(0, SETTINGS_ID, 0, R.string.settings)
-			.setIcon(android.R.drawable.ic_menu_preferences);
 		menu.add(0, BACKUP_ID, 0, R.string.backup)
-			.setShortcut('1', 'b')
-			.setVisible(false);
+			.setShortcut('4', 'b')
+			.setIcon(android.R.drawable.ic_menu_save);
 		menu.add(0, BU_RESTORE_ID, 0, R.string.restore_db)
-			.setShortcut('2', 'r')
-			.setVisible(false);
+			.setShortcut('5', 'r')
+			.setIcon(android.R.drawable.ic_menu_set_as);
+		menu.add(0, SETTINGS_ID, 0, R.string.settings)
+			.setShortcut('6', 's')
+			.setIcon(android.R.drawable.ic_menu_preferences);
 		return result;
 	}
 
@@ -128,7 +133,12 @@ public class AccountChooser extends ListActivity
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		CopyThread ct;
-    	switch (item.getItemId())
+		ProgressDialog pd = new ProgressDialog(this);
+		pd.setCancelable(true);
+		pd.setIndeterminate(true);
+		pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+		switch (item.getItemId())
     	{
     	case NEW_ACCT_ID:
     		createAccount();
@@ -147,12 +157,16 @@ public class AccountChooser extends ListActivity
     		return true;
     		
     	case BACKUP_ID:
-    		ct = new CopyThread(CopyThread.BACKUP, this);
+    		ct = new CopyThread(CopyThread.BACKUP, pd, this);
+    		pd.setMessage(getResources().getText(R.string.backing_up));
+    		pd.show();
     		ct.start();
     		return true;
     		
     	case BU_RESTORE_ID:
-    		ct = new CopyThread(CopyThread.RESTORE, this);
+    		ct = new CopyThread(CopyThread.RESTORE, pd, this);
+    		pd.setMessage(getResources().getText(R.string.restoring));
+    		pd.show();
     		ct.start();
     		return true;
     	}
@@ -515,11 +529,13 @@ public class AccountChooser extends ListActivity
 		
 		private Context mContext;
 		private int mOp;
+		private ProgressDialog mPd;
 		
-		public CopyThread(int op, Context con)
+		public CopyThread(int op, ProgressDialog pd, Context con)
 		{
 			mOp = op;
 			mContext = con;
+			mPd = pd;
 		}
 		
 		@Override
@@ -562,6 +578,7 @@ public class AccountChooser extends ListActivity
 	    		else
 	    			res = R.string.restore_failed;
 			}
+    		mPd.dismiss();
     		copyInProgress = false;
     		
     		if (res != 0)
