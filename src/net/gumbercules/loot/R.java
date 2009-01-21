@@ -172,11 +172,14 @@ public final class R {
         public static final int clear_account=0x7f06001f;
         public static final int copy=0x7f060012;
         public static final int del=0x7f06000e;
+        public static final int donate_location=0x7f06002d;
+        public static final int donate_url=0x7f06002e;
         public static final int edit=0x7f06000d;
         public static final int invalid=0x7f060019;
         public static final int nag=0x7f06001d;
         public static final int new_account=0x7f060008;
         public static final int new_trans=0x7f060002;
+        public static final int new_version=0x7f06002c;
         public static final int no=0x7f060010;
         public static final int no_deleted_accounts=0x7f060022;
         public static final int pin=0x7f060018;

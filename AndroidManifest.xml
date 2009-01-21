@@ -36,6 +36,9 @@
 <category android:name="android.intent.category.LAUNCHER"></category>
 <category android:name="android.intent.category.DEFAULT"></category>
 </intent-filter></activity>
+<activity android:name=".DonateActivity"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+</intent-filter>
+</activity>
 </application>
 
 

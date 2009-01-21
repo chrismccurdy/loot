@@ -78,6 +78,29 @@ public class AccountChooser extends ListActivity
 		mUpdateThread.start();
 		UpdateChecker uc = new UpdateChecker();
 		uc.start();
+		
+		if (Database.getOptionInt("nag_donate") < 1)
+		{
+			new AlertDialog.Builder(this)
+				.setMessage(R.string.new_version)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int which)
+					{
+						donate();
+					}
+				})
+				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int which)
+					{
+						donateReminder();
+					}
+				})
+				.setCancelable(false)
+				.show();
+			Database.setOption("nag_donate", 1);
+		}
 
 		// automatically purge transactions on load if this option is set
 		int purge_days = (int)Database.getOptionInt("auto_purge_days");
@@ -91,6 +114,18 @@ public class AccountChooser extends ListActivity
 				acct.purgeTransactions(date);
 			}
 		}
+	}
+
+	private void donate()
+	{
+		startActivity(new Intent(this, DonateActivity.class));
+	}
+	
+	private void donateReminder()
+	{
+		new AlertDialog.Builder(this)
+		.setMessage(R.string.donate_location)
+		.show();
 	}
 
 	@Override
