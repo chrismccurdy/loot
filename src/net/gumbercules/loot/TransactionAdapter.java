@@ -216,8 +216,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 					{
 						ListView lv = ta.getListView();
 						View v = lv.getChildAt(pos - lv.getFirstVisiblePosition());
-						ViewHolder holder = (ViewHolder)v.getTag();
-						setViewData(trans, holder, null, null);
+						if (v != null)
+						{
+							ViewHolder holder = (ViewHolder)v.getTag();
+							setViewData(trans, holder, null, null);
+						}
 					}
 				}
 			}
