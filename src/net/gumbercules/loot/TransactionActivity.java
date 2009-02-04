@@ -104,7 +104,7 @@ public class TransactionActivity extends ListActivity
     	budgetValue = (TextView)findViewById(R.id.budgetValue);
     	balanceValue = (TextView)findViewById(R.id.balanceValue);
     	postedValue = (TextView)findViewById(R.id.postedValue);
-    
+
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		showColors = prefs.getBoolean("color", false);
 
@@ -136,6 +136,7 @@ public class TransactionActivity extends ListActivity
     	else
     	{
     		mTa.setResource(layoutResId);
+    		mTa.setContext(this);
     		setListAdapter(mTa);
     		setBalances();
     	}
@@ -405,13 +406,13 @@ public class TransactionActivity extends ListActivity
 			str = nf.format(balance);
 		else
 			str = "Error";
-		balanceValue.setText(nf.format(balance));
+		balanceValue.setText(str);
 		
 		if (budget != null)
 			str = nf.format(budget);
 		else
 			str = "Error";
-		budgetValue.setText(nf.format(budget));
+		budgetValue.setText(str);
     }
     
     private void fillList()
@@ -641,7 +642,7 @@ public class TransactionActivity extends ListActivity
 	{
 		mAcct = null;
 	}
-
+	
 	public static class SpaceTokenizer implements Tokenizer
 	{
 		public int findTokenEnd(CharSequence text, int cursor)

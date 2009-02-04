@@ -46,6 +46,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
+	public void setContext(Context con)
+	{
+		this.context = con;
+	}
+	
 	@Override
 	public int getCount()
 	{
