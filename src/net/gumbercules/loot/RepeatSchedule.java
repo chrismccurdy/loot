@@ -83,7 +83,11 @@ implements Cloneable
 	{
 		this.due = this.calculateDueDate();
 		if (this.due == null || this.start == null)
+		{
+			if (this.id > 0)
+				this.erase(true);
 			return -1;
+		}
 		
 		if (this.id == -1)
 			return newRepeat(trans_id);

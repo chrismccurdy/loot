@@ -631,7 +631,7 @@ public class TransactionEdit extends Activity
 		if (id != -1)
 		{
 			// write the repeat schedule if it's not set to NO_REPEAT
-			if (mRepeat.iter != RepeatSchedule.NO_REPEAT)
+			if (mRepeat.iter != RepeatSchedule.NO_REPEAT || mRepeat.id() > 0)
 			{
 				mRepeat.start = trans.date;
 				mRepeat.write(id);
@@ -660,7 +660,7 @@ public class TransactionEdit extends Activity
 		{
 		// No Repeat
 		case 0:
-			mRepeat = new RepeatSchedule();
+			mRepeat.iter = RepeatSchedule.NO_REPEAT;
 			break;
 		
 		// Daily

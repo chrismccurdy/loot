@@ -74,10 +74,14 @@ public class AccountChooser extends ListActivity
 		setListAdapter(accounts);
 		fillList();
 		
-		mUpdateThread = new UpdateThread(this);
-		mUpdateThread.start();
-		UpdateChecker uc = new UpdateChecker();
-		uc.start();
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if (prefs.getBoolean("update", false))
+		{
+			mUpdateThread = new UpdateThread(this);
+			mUpdateThread.start();
+			UpdateChecker uc = new UpdateChecker();
+			uc.start();
+		}
 		
 		if (Database.getOptionInt("nag_donate") < 1)
 		{
@@ -124,8 +128,8 @@ public class AccountChooser extends ListActivity
 	private void donateReminder()
 	{
 		new AlertDialog.Builder(this)
-		.setMessage(R.string.donate_location)
-		.show();
+			.setMessage(R.string.donate_location)
+			.show();
 	}
 
 	@Override
