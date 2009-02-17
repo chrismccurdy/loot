@@ -98,7 +98,9 @@ public class TransactionActivity extends ListActivity
     	{
     		Calendar cal = Calendar.getInstance();
     		cal.add(Calendar.DAY_OF_YEAR, -auto_purge);
-    		mAcct.purgeTransactions(cal.getTime());
+    		int[] ids = mAcct.purgeTransactions(cal.getTime());
+    		if (ids != null && mTa != null && !mTa.isEmpty())
+    			mTa.remove(ids);
     	}
     	
     	budgetValue = (TextView)findViewById(R.id.budgetValue);

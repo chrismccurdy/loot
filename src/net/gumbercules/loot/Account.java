@@ -490,7 +490,7 @@ public class Account
 		
 		// find the ids of the transactions
 		Cursor cur = lootDB.rawQuery("select id from transactions where posted = 1 " +
-				"and date <= " + time + " and account = " + this.id, null);
+				"and date <= " + time + " and account = " + this.id + " and purged = 0", null);
 		if (!cur.moveToFirst())
 		{
 			cur.close();

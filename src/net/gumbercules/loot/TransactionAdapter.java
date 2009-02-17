@@ -60,6 +60,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	@Override
 	public Transaction getItem(int position)
 	{
+		if (position == -1)
+			return null;
 		return transList.get(position);
 	}
 
