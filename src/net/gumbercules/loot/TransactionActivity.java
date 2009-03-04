@@ -333,7 +333,7 @@ public class TransactionActivity extends ListActivity
 				            		break;
 				            		
 				            	case 2:	// clear
-				            		if (!mAcct.deletePurgedTransactions(date))
+				            		mAcct.deletePurgedTransactions(date);
 				            		break;
 				            	}
 				            }

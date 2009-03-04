@@ -194,8 +194,20 @@ public class TransactionEdit extends Activity
 				}
 	
 				// figure out if this is a normal transaction or a transfer
-				if (mTrans.getTransferId() != -1)
-					mType = TransactionActivity.TRANSFER;
+				int transfer_id = mTrans.getTransferId();
+				if (transfer_id != -1)
+				{
+					Transaction transfer = Transaction.getTransactionById(transfer_id, true);
+					if (transfer == null)
+					{
+						transfer = new Transaction();
+						transfer.setId(-1);
+						mTrans.removeTransfer(transfer);
+						mType = TransactionActivity.TRANSACTION;
+					}
+					else
+						mType = TransactionActivity.TRANSFER;
+				}
 				else
 					mType = TransactionActivity.TRANSACTION;
 				
@@ -241,7 +253,7 @@ public class TransactionEdit extends Activity
 	        {
 	        	if (!restarted && mTransId != 0)
 	        	{
-	        		Transaction transfer = Transaction.getTransactionById(mTrans.getTransferId());
+	        		Transaction transfer = Transaction.getTransactionById(mTrans.getTransferId(), true);
 	        		Account acct = Account.getAccountById(transfer.account);
 	        		int pos = accountAdapter.getPosition(acct.name);
 	        		accountSpinner.setSelection(pos);

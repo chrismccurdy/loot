@@ -388,8 +388,13 @@ public class Transaction
 	
 	public boolean erase()
 	{
+		return erase(true);
+	}
+	
+	public boolean erase(boolean erase_transfer)
+	{
 		int transfer = this.getTransferId();
-		if (transfer != -1)
+		if (erase_transfer && transfer != -1)
 		{
 			return this.eraseTransfer();
 		}

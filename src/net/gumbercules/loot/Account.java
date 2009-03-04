@@ -586,11 +586,14 @@ public class Account
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
 		
-		Transaction trans;
+		Transaction trans, trans2;
 		for (int id : ids)
 		{
 			trans = Transaction.getTransactionById(id, true);
-			if (trans == null || !trans.erase())
+			trans2 = Transaction.getTransactionById(trans.getTransferId(), true);
+			if (trans2 != null)
+				trans.removeTransfer(trans2);
+			if (trans == null || !trans.erase(false))
 			{
 				lootDB.endTransaction();
 				return false;
