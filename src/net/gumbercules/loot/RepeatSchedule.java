@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import android.content.ContentValues;
 import android.database.*;
 import android.database.sqlite.*;
+import android.util.Log;
 
 public class RepeatSchedule
 implements Cloneable
@@ -144,7 +145,7 @@ implements Cloneable
 			return -1;
 		}
 		
-		Transaction trans = Transaction.getTransactionById(trans_id);
+		Transaction trans = Transaction.getTransactionById(trans_id, true);
 		int trans_id2 = trans.getTransferId();
 		if (trans_id2 > 0)
 		{
@@ -186,7 +187,7 @@ implements Cloneable
 		}
 		catch (Exception e) { }
 
-		Transaction trans = Transaction.getTransactionById(trans_id);
+		Transaction trans = Transaction.getTransactionById(trans_id, true);
 		int trans_id2 = trans.getTransferId();
 		int repeat_id2 = -1;
 		if (trans_id2 > 0)
@@ -245,7 +246,7 @@ implements Cloneable
 	
 	public boolean erase(boolean eraseTransfers)
 	{
-		Transaction trans = Transaction.getTransactionById(this.getTransactionId());
+		Transaction trans = Transaction.getTransactionById(this.getTransactionId(), true);
 		int repeat_id2 = -1;
 		if (eraseTransfers)
 		{
@@ -501,7 +502,11 @@ implements Cloneable
 				int transfer_id = pattern.getTransferId();
 				if (transfer_id != -1)
 				{
-					Transaction transfer = Transaction.getTransactionById(transfer_id);
+					Transaction transfer = Transaction.getTransactionById(transfer_id, true);
+					Log.e("processDueRepetitions", "transfer_id = " + transfer_id);
+					Log.e("processDueRepetitions", "trans_id = " + trans_id);
+					Log.e("processDueRepetitions", "transfer is null? " + (transfer==null));
+					
 					if (transfer.getTransferId() == transfer_id)
 						transfer.linkTransfer(trans_id, transfer_id);
 				}
@@ -628,12 +633,12 @@ implements Cloneable
 		// link transaction to itself if rows are updated
 		if (updated > 0)
 		{
-			Transaction tmp = Transaction.getTransactionById(max);
+			Transaction tmp = Transaction.getTransactionById(max, true);
 			tmp.linkTransfer(max, max);
 		}
 		
 		// write the tags to the tags table for the new transaction
-		trans = Transaction.getTransactionById(max);
+		trans = Transaction.getTransactionById(max, true);
 		trans.addTags(this.getTags());
 		
 		int ret = trans.write(trans.account);
@@ -646,7 +651,7 @@ implements Cloneable
 	
 	public boolean writeTransactionToRepeatTable(int trans_id)
 	{
-		Transaction trans = Transaction.getTransactionById(trans_id);
+		Transaction trans = Transaction.getTransactionById(trans_id, true);
 		if (trans == null)
 			return false;
 		
