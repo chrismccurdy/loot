@@ -754,7 +754,10 @@ public class Transaction
 		String del = "delete from transfers where trans_id1 in (?,?) or trans_id2 in (?,?)";
 		Long id1, id2;
 		id1 = new Long(this.id);
-		id2 = new Long(trans.id);
+		if (trans != null)
+			id2 = new Long(trans.id);
+		else
+			id2 = id1;
 		Object[] bindArgs = {id1, id2, id1, id2};
 		
 		SQLiteDatabase lootDB = Database.getDatabase();

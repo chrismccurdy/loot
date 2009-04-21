@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import android.content.ContentValues;
 import android.database.*;
 import android.database.sqlite.*;
-import android.util.Log;
 
 public class RepeatSchedule
 implements Cloneable
@@ -503,11 +502,12 @@ implements Cloneable
 				if (transfer_id != -1)
 				{
 					Transaction transfer = Transaction.getTransactionById(transfer_id, true);
-					Log.e("processDueRepetitions", "transfer_id = " + transfer_id);
-					Log.e("processDueRepetitions", "trans_id = " + trans_id);
-					Log.e("processDueRepetitions", "transfer is null? " + (transfer==null));
-					
-					if (transfer.getTransferId() == transfer_id)
+					if (transfer == null)
+					{
+						transfer = Transaction.getTransactionById(trans_id);
+						transfer.linkTransfer(trans_id, transfer_id);
+					}
+					else if (transfer.getTransferId() == transfer_id)
 						transfer.linkTransfer(trans_id, transfer_id);
 				}
 			}

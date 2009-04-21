@@ -56,7 +56,7 @@ public class Database
 	
 	private static boolean createDB(SQLiteDatabase db)
 	{
-		String[] createSQL = new String[12];
+		String[] createSQL = new String[13];
 		
 		createSQL[0] = "create table accounts(\n" + 
 					"	id integer primary key autoincrement,\n" +
@@ -119,7 +119,7 @@ public class Database
 		createSQL[9] = "insert into options values ('post_repeats_early','2')";
 
 		createSQL[10] = "create index idx_trans_id on transactions ( id asc )";
-		createSQL[11] = "create index idx_account on transactions ( account asc )";
+		createSQL[11] = "create index idx_account on transactions ( account, purged )";
 		
 		try
 		{
@@ -178,7 +178,7 @@ public class Database
 			lootDB.beginTransaction();
 			try
 			{
-				lootDB.execSQL("create index idx_account on transactions ( account asc )");
+				lootDB.execSQL("create index idx_account on transactions ( account, purged )");
 				lootDB.setTransactionSuccessful();
 			}
 			catch (SQLException e)
