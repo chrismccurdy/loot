@@ -4,6 +4,7 @@ import java.io.File;
 import android.content.ContentValues;
 import android.database.*;
 import android.database.sqlite.*;
+import android.util.Log;
 
 public class Database
 {
@@ -56,7 +57,7 @@ public class Database
 	
 	private static boolean createDB(SQLiteDatabase db)
 	{
-		String[] createSQL = new String[13];
+		String[] createSQL = new String[12];
 		
 		createSQL[0] = "create table accounts(\n" + 
 					"	id integer primary key autoincrement,\n" +
@@ -418,7 +419,10 @@ public class Database
 			if (toFile.exists())
 			{
 				if (!toFile.delete())
+				{
+					Log.e("copyDatabase", "log file not deleted");
 					return false;
+				}
 			}
 			else
 			{
