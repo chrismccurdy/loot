@@ -6,6 +6,7 @@ import java.util.Currency;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.method.NumberKeyListener;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -20,6 +21,7 @@ public class CurrencyKeyListener extends NumberKeyListener
 		char ch = event.getMatch(getAcceptedChars());
 		
 		// return successfully if we're backspacing
+		Log.e("CurrencyKeyListener", "keyCode: " + keyCode);
 		if (keyCode == KeyEvent.KEYCODE_DEL ||
 		// return successfully if we're using the arrow keys
 				keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT ||

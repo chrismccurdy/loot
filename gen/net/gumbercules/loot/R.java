@@ -55,6 +55,7 @@ public final class R {
         public static final int LinearLayout05=0x7f07003f;
         public static final int LinearLayout06=0x7f070043;
         public static final int LinearLayout07=0x7f07002f;
+        public static final int MainLayout=0x7f070056;
         public static final int NameEdit=0x7f070003;
         public static final int NameLabel=0x7f070002;
         public static final int NameRow=0x7f070001;
@@ -66,7 +67,6 @@ public final class R {
         public static final int RadioGroup01=0x7f070057;
         public static final int RadioGroup02=0x7f070072;
         public static final int SaveButton=0x7f07000b;
-        public static final int ScrollView01=0x7f070056;
         public static final int SearchEdit=0x7f070010;
         public static final int SearchLayout=0x7f07000f;
         public static final int TableLayout01=0x7f070000;

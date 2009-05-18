@@ -1,6 +1,12 @@
 package net.gumbercules.loot;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -202,6 +208,9 @@ public class TransactionActivity extends ListActivity
     	menu.add(0, SETTINGS_ID, 0, R.string.settings)
     		.setIcon(android.R.drawable.ic_menu_preferences);
     	
+    	// TODO: remove
+    	//menu.add(0, 50, 0, "import");
+    	
     	return result;
     }
     
@@ -232,6 +241,11 @@ public class TransactionActivity extends ListActivity
     		
     	case SETTINGS_ID:
     		showSettings();
+    		return true;
+    		
+    	// TODO: remove
+    	case 50:
+    		importCsv();
     		return true;
     	}
     	
@@ -643,6 +657,68 @@ public class TransactionActivity extends ListActivity
 	public static void setAccountNull()
 	{
 		mAcct = null;
+	}
+	
+	private void importCsv()
+	{
+		try
+		{
+			FileReader fr = new FileReader("/sdcard/loot/csv_load.csv");
+			BufferedReader br = new BufferedReader(fr, 8192);
+			String line = br.readLine();
+			String[] parts = null;
+			
+			while (line != null)
+			{
+				line = line.replace("\"", "");
+				parts = line.split(",");
+				SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
+				if (parts.length >= 3)
+				{
+					Date d = sdf.parse(parts[0]);
+					String party = parts[1];
+					Double amt = Double.valueOf(parts[2]);
+					int type = Transaction.DEPOSIT;
+					if (amt < 0)
+					{
+						type = Transaction.WITHDRAW;
+						amt = -amt;
+					}
+					boolean posted = true;
+					boolean budget = false;
+					int check_num = -1;
+					
+					Transaction trans = new Transaction(posted, budget, d, type, party, amt, check_num);
+					
+					if (trans == null)
+						continue;
+					trans.account = mAcct.id();
+					
+					if (parts.length >= 4)
+					{
+						trans.addTags(parts[3]);
+					}
+					
+					trans.write(trans.account);
+					trans.post(true);
+				}
+				
+				line = br.readLine();
+			}
+		}
+		catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static class SpaceTokenizer implements Tokenizer
