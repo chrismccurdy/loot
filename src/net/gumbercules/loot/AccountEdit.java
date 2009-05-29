@@ -1,8 +1,7 @@
 package net.gumbercules.loot;
 
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.Currency;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
@@ -17,6 +16,7 @@ public class AccountEdit extends Activity
 	private EditText mPriorityEdit;
 	private int mRowId;
 	private int mFinishIntent;
+	private CurrencyKeyListener mCurrencyListener;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -29,7 +29,9 @@ public class AccountEdit extends Activity
 		
 		mNameEdit = (EditText)findViewById(R.id.NameEdit);
 		mBalanceEdit = (EditText)findViewById(R.id.BalanceEdit);
-		mBalanceEdit.setKeyListener(new CurrencyKeyListener());
+		mCurrencyListener = new CurrencyKeyListener();
+		mBalanceEdit.setKeyListener(mCurrencyListener);
+		mBalanceEdit.addTextChangedListener(new CurrencyKeyListener.CurrencyWatcher());
 		mPriorityEdit = (EditText)findViewById(R.id.PriorityEdit);
 		mPriorityEdit.setKeyListener(new DigitsKeyListener());
 		Button SaveButton = (Button)findViewById(R.id.SaveButton);
@@ -94,9 +96,13 @@ public class AccountEdit extends Activity
 			if (mBalanceEdit != null)
 			{
 				NumberFormat nf = NumberFormat.getCurrencyInstance();
-				Currency cur = nf.getCurrency();
-				mBalanceEdit.setText(nf.format(acct.initialBalance).replace(cur.getSymbol(), "")
-						.replace(",", ""));
+				String num = nf.format(acct.initialBalance);
+				StringBuilder sb = new StringBuilder();
+				sb.append(mCurrencyListener.getAcceptedChars());
+				String accepted = "[^" + sb.toString() + "]";
+				num = num.replaceAll(accepted, "");
+				
+				mBalanceEdit.setText(num);
 			}
 			if (mPriorityEdit != null)
 			{
@@ -128,6 +134,11 @@ public class AccountEdit extends Activity
 		
 		try
 		{
+			DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+			char sep = dfs.getMonetaryDecimalSeparator();
+			
+			if (sep != '.')
+				balText = balText.replaceAll(String.valueOf(sep), ".");
 			acct.initialBalance = new Double(balText);
 		}
 		catch (NumberFormatException e)

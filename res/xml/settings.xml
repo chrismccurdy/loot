@@ -2,7 +2,7 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-<PreferenceScreen android:summary="About Loot, contact info, etc." android:title="About - v1.2.7">
+<PreferenceScreen android:summary="About Loot, contact info, etc." android:title="About - v1.3.0">
 <intent android:action="android.intent.action.VIEW" android:data="http://gumbercules.net/loot/about.html"/>
 
 </PreferenceScreen><CheckBoxPreference android:defaultValue="false" android:title="Colors" android:key="color" android:summary="Display transactions in color based on type."></CheckBoxPreference><CheckBoxPreference android:key="update" android:title="Update Checker" android:summary="Check for updates when the application launches." android:defaultValue="false"></CheckBoxPreference><PreferenceCategory android:title="Security" android:key="cat_security">

@@ -1,12 +1,12 @@
 package net.gumbercules.loot;
 
 import java.text.DateFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -45,6 +45,7 @@ public class TransactionEdit extends Activity
 	private int mLastRepeatValue;
 	private Date mDate;
 	private int mAccountPos;
+	private CurrencyKeyListener mCurrencyListener;
 
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
@@ -130,7 +131,9 @@ public class TransactionEdit extends Activity
 		dateButton = (ImageButton)findViewById(R.id.datePickerButton);
 		
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
-		amountEdit.setKeyListener(new CurrencyKeyListener());
+		mCurrencyListener = new CurrencyKeyListener();
+		amountEdit.setKeyListener(mCurrencyListener);
+		amountEdit.addTextChangedListener(new CurrencyKeyListener.CurrencyWatcher());
 		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
 		String[] tags = Transaction.getAllTags();
 		if (tags == null)
@@ -236,9 +239,13 @@ public class TransactionEdit extends Activity
 	
 				// replace comma and currency symbol with empty string
 				NumberFormat nf = NumberFormat.getCurrencyInstance();
-				Currency cur = nf.getCurrency();
-				amountEdit.setText(nf.format(trans.amount).replace(cur.getSymbol(), "")
-						.replace(",", ""));
+				String num = nf.format(trans.amount);
+				StringBuilder sb = new StringBuilder();
+				sb.append(mCurrencyListener.getAcceptedChars());
+				String accepted = "[^" + sb.toString() + "]";
+				num = num.replaceAll(accepted, "");
+
+				amountEdit.setText(num);
 				
 				tagsEdit.setText(trans.tagListToString());
 			}
@@ -589,7 +596,13 @@ public class TransactionEdit extends Activity
 		// get the amount of the transaction
 		try
 		{
-			trans.amount = new Double(amountEdit.getText().toString());
+			DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+			char sep = dfs.getMonetaryDecimalSeparator();
+			
+			String str = amountEdit.getText().toString();
+			if (sep != '.')
+				str = str.replaceAll(String.valueOf(sep), ".");
+			trans.amount = new Double(str);
 		}
 		catch (NumberFormatException e)
 		{

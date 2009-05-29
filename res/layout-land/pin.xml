@@ -4,7 +4,7 @@
     android:layout_height="fill_parent" android:orientation="vertical">
 
 <TextView android:id="@+id/TextView01" android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="@string/pin" android:gravity="center_horizontal" android:textSize="24px"></TextView>
-<TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center_vertical|center_horizontal" android:id="@+id/invalidView" android:textSize="24px" android:textStyle="bold" android:textColor="#ff0000"></TextView><EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_marginLeft="40px" android:layout_marginRight="40px" android:id="@+id/pinEdit" android:password="true" android:gravity="center"></EditText>
+<TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center_vertical|center_horizontal" android:id="@+id/invalidView" android:textSize="24px" android:textStyle="bold" android:textColor="#ff0000"></TextView><EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_marginLeft="40px" android:layout_marginRight="40px" android:id="@+id/pinEdit" android:gravity="center" android:inputType="textPassword|number"></EditText>
 
 
 
