@@ -128,6 +128,7 @@ public class TransactionEdit extends Activity
 		checkRadio = (RadioButton)findViewById(R.id.checkRadio);
 		
 		dateEdit = (EditText)findViewById(R.id.dateEdit);
+		dateEdit.setEnabled(false);
 		dateButton = (ImageButton)findViewById(R.id.datePickerButton);
 		
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
@@ -282,6 +283,7 @@ public class TransactionEdit extends Activity
 				{
 					checkEdit.setText(new Integer(trans.check_num).toString());
 					checkRadio.setChecked(true);
+					checkEdit.setEnabled(true);
 				}
 			}
 		}
@@ -503,6 +505,7 @@ public class TransactionEdit extends Activity
 		
 		partyEdit = (AutoCompleteTextView)findViewById(R.id.partyEdit);
 		checkEdit = (EditText)findViewById(R.id.checkEdit);
+		checkEdit.setEnabled(false);
 		
 		// set the autocompletion values for partyEdit
 		String[] parties = Transaction.getAllParties();
