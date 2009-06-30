@@ -13,6 +13,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -133,7 +134,7 @@ public class TransactionEdit extends Activity
 		
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
 		mCurrencyListener = new CurrencyKeyListener();
-		amountEdit.setKeyListener(mCurrencyListener);
+		//amountEdit.setKeyListener(mCurrencyListener);
 		amountEdit.addTextChangedListener(new CurrencyKeyListener.CurrencyWatcher());
 		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
 		String[] tags = Transaction.getAllTags();
@@ -487,7 +488,7 @@ public class TransactionEdit extends Activity
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
 				checkEdit = (EditText)findViewById(R.id.checkEdit);
-				checkEdit.setKeyListener(new CurrencyKeyListener());
+				checkEdit.setKeyListener(new DigitsKeyListener());
 
 				if (isChecked)
 				{

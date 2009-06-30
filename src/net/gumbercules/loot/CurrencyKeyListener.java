@@ -9,6 +9,7 @@ import android.text.InputType;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.method.NumberKeyListener;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -79,33 +80,35 @@ public class CurrencyKeyListener extends NumberKeyListener
 	
 	public static class CurrencyWatcher implements TextWatcher
 	{
-		private String old;
+		private String mOld;
 		private final char mSeparator;
-		private boolean changed;
+		private boolean mChanged;
 		private final int mFractionDigits;
 		
 		public CurrencyWatcher()
 		{
 			DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 			mSeparator = dfs.getMonetaryDecimalSeparator();
-			changed = false;
+			mChanged = false;
 			Currency cur = NumberFormat.getInstance().getCurrency();
 			mFractionDigits = cur.getDefaultFractionDigits();
 		}
 		
 		public void afterTextChanged(Editable s)
 		{
-			if (changed)
+			String str = s.toString();
+			Log.i(CurrencyWatcher.class.toString(), "Text changing from " + mOld + " to " + str);
+			if (mChanged)
 			{
-				changed = false;
-				old = s.toString();
+				mChanged = false;
+				mOld = str;
+				Log.i(CurrencyWatcher.class.toString(), "Changed is true, not changing anymore");
 				return;
 			}
 			
-			String str = s.toString();
 			int separator_count = 0;
 			int last_sep = str.indexOf(mSeparator);
-			int previous_sep = -1;;
+			int previous_sep = -1;
 			
 			// see if there is more than one separator being added
 			while (last_sep != -1)
@@ -120,14 +123,15 @@ public class CurrencyKeyListener extends NumberKeyListener
 			if (separator_count > 1 || (previous_sep != -1 && 
 					(s.length() - previous_sep - 1) > mFractionDigits))
 			{
-				changed = true;
-				s.replace(0, s.length(), old);
+				mChanged = true;
+				s.replace(0, s.length(), mOld);
+				Log.i(CurrencyWatcher.class.toString(), "Denying change to " + str);
 			}
 		}
 
 		public void beforeTextChanged(CharSequence s, int start, int count, int after)
 		{
-			old = s.toString();
+			mOld = s.toString();
 		}
 
 		public void onTextChanged(CharSequence s, int start, int before, int count)

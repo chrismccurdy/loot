@@ -13,8 +13,8 @@
 <string name="search">Search</string>
 <string name="purge">Purge</string>
 <string name="new_account">New Account</string>
-<string name="acct_name">Account Name:</string>
-<string name="acct_bal">Initial Balance:</string>
+<string name="acct_name">Account Name</string>
+<string name="acct_bal">Initial Balance</string>
 <string name="save">Save</string>
 <string name="cancel">Cancel</string>
 <string name="edit">Edit</string>
@@ -40,7 +40,7 @@
 <string name="update">There is an update available for this application. Please download it from the Android Market.</string>
 
 <string name="post">Post</string>
-<string name="acct_priority">Display Priority:</string>
+<string name="acct_priority">Display Priority</string>
 <string name="nag">Would you like to be reminded to update again in a week?</string>
 <string name="restore_account">Restore Account</string>
 <string name="clear_account">Clear Account</string>
@@ -59,4 +59,11 @@
 <string name="new_version">You have upgraded to a new version of loot. If you encounter any bugs, please email me at christopher.mccurdy@gmail.com with what you were doing at the time. Also, please feel free to donate to me through PayPal. Would you like to donate now?</string>
 <string name="donate_location">You can always donate at a later time by going to \&quot;Settings\&quot;, choosing \&quot;About\&quot;, and clicking on the donation button.</string>
 <string name="donate_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=1368357</string>
+<string name="trans_amt">Amount</string>
+<string name="trans_party">Party</string>
+<string name="trans_date">Date</string>
+<string name="trans_account">Account</string>
+<string name="trans_check_num">Check #</string>
+<string name="trans_tags">Tags</string>
+<string name="trans_repeat">Repeat</string>
 </resources>
