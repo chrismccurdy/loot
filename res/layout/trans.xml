@@ -19,7 +19,7 @@
 </LinearLayout>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/amountRow"><TextView android:layout_width="wrap_content" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/amountLabel" android:minWidth="65px" android:text="@string/trans_amt"></TextView>
-<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/amountEdit" android:inputType="number|numberDecimal" android:hint="@string/trans_amt"></EditText>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/amountEdit" android:hint="@string/trans_amt" android:inputType="numberDecimal"></EditText>
 </TableRow>
 <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/partyRow"><TextView android:layout_width="wrap_content" android:layout_height="fill_parent" android:gravity="left|center_vertical" android:id="@+id/partyLabel" android:minWidth="65px" android:text="@string/trans_party"></TextView>
 <AutoCompleteTextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="2" android:id="@+id/partyEdit" android:inputType="text|textCapWords|textAutoComplete" android:hint="@string/trans_party"></AutoCompleteTextView>

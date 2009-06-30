@@ -373,42 +373,6 @@ public class Database
 		return 1;
 	}
 	
-/*	private static boolean copyFile(String from, String to)
-	{
-		File inputFile = new File(from);
-		File outputFile = new File(to);
-		
-		try
-		{
-			if (!outputFile.exists())
-			{
-				outputFile.createNewFile();
-			}
-
-			FileReader in = new FileReader(inputFile);
-			FileWriter out = new FileWriter(outputFile);
-			
-			int c;
-			while ((c = in.read()) != -1)
-				out.write(c);
-			
-			in.close();
-			out.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}*/
-	
 	private static boolean copyDatabase(String from, String to)
 	{
 		try
@@ -439,9 +403,10 @@ public class Database
 			Cursor cur = fromDb.query("accounts", columns, null, null, null, null, null);
 			if (cur.moveToFirst())
 			{
+				cv = new ContentValues();
 				do
 				{
-					cv = new ContentValues();
+					//cv = new ContentValues();
 					cv.put(columns[0], cur.getInt(0));
 					cv.put(columns[1], cur.getString(1));
 					cv.put(columns[2], cur.getDouble(2));
@@ -450,9 +415,12 @@ public class Database
 					cv.put(columns[5], cur.getInt(5));
 					
 					toDb.insert("accounts", null, cv);
+					//cv = null;
 				} while (cur.moveToNext());
 			}
 			cur.close();
+			cv = null;
+			cur = null;
 			
 			// transactions table
 			columns = new String[]{"id", "posted", "account", "date", "party", "amount",
@@ -460,9 +428,10 @@ public class Database
 			cur = fromDb.query("transactions", columns, null, null, null, null, null);
 			if (cur.moveToFirst())
 			{
+				cv = new ContentValues();
 				do
 				{
-					cv = new ContentValues();
+					//cv = new ContentValues();
 					cv.put(columns[0], cur.getInt(0));
 					cv.put(columns[1], cur.getInt(1));
 					cv.put(columns[2], cur.getInt(2));
@@ -475,25 +444,32 @@ public class Database
 					cv.put(columns[9], cur.getInt(9));
 					
 					toDb.insert("transactions", null, cv);
+					//cv = null;
 				} while (cur.moveToNext());
 			}
 			cur.close();
+			cv = null;
+			cur = null;
 			
 			// tags table
 			columns = new String[]{"trans_id", "name"};
 			cur = fromDb.query("tags", columns, null, null, null, null, null);
 			if (cur.moveToFirst())
 			{
+				cv = new ContentValues();
 				do
 				{
-					cv = new ContentValues();
+					//cv = new ContentValues();
 					cv.put(columns[0], cur.getInt(0));
 					cv.put(columns[1], cur.getString(1));
 					
 					toDb.insert("tags", null, cv);
+					//cv = null;
 				} while (cur.moveToNext());
 			}
 			cur.close();
+			cv = null;
+			cur = null;
 			
 			// options table
 			// delete the pre-populated options to prevent unique constraint errors
@@ -504,9 +480,10 @@ public class Database
 			if (cur.moveToFirst())
 			{
 				String option;
+				cv = new ContentValues();
 				do
 				{
-					cv = new ContentValues();
+					//cv = new ContentValues();
 					option = cur.getString(0);
 					
 					// don't backup the PIN
@@ -517,25 +494,33 @@ public class Database
 					cv.put(columns[1], cur.getString(1));
 					
 					toDb.insert("options", null, cv);
+					//cv = null;
+					option = null;
 				} while (cur.moveToNext());
 			}
 			cur.close();
+			cv = null;
+			cur = null;
 			
 			// transfers table
 			columns = new String[]{"trans_id1", "trans_id2"};
 			cur = fromDb.query("transfers", columns, null, null, null, null, null);
 			if (cur.moveToFirst())
 			{
+				cv = new ContentValues();
 				do
 				{
-					cv = new ContentValues();
+					//cv = new ContentValues();
 					cv.put(columns[0], cur.getInt(0));
 					cv.put(columns[1], cur.getInt(1));
 					
 					toDb.insert("transfers", null, cv);
+					//cv = null;
 				} while (cur.moveToNext());
 			}
 			cur.close();
+			cv = null;
+			cur = null;
 			
 			// repeat_pattern table
 			columns = new String[]{"id", "start_date", "due", "end_date",
@@ -543,9 +528,10 @@ public class Database
 			cur = fromDb.query("repeat_pattern", columns, null, null, null, null, null);
 			if (cur.moveToFirst())
 			{
+				cv = new ContentValues();
 				do
 				{
-					cv = new ContentValues();
+					//cv = new ContentValues();
 					cv.put(columns[0], cur.getInt(0));
 					cv.put(columns[1], cur.getLong(1));
 					cv.put(columns[2], cur.getLong(2));
@@ -555,9 +541,12 @@ public class Database
 					cv.put(columns[6], cur.getInt(6));
 					
 					toDb.insert("repeat_pattern", null, cv);
+					//cv = null;
 				} while (cur.moveToNext());
 			}
 			cur.close();
+			cv = null;
+			cur = null;
 			
 			// repeat_transactions table
 			columns = new String[]{"trans_id", "repeat_id", "account", "date", "party",
@@ -565,9 +554,10 @@ public class Database
 			cur = fromDb.query("repeat_transactions", columns, null, null, null, null, null);
 			if (cur.moveToFirst())
 			{
+				cv = new ContentValues();
 				do
 				{
-					cv = new ContentValues();
+					//cv = new ContentValues();
 					cv.put(columns[0], cur.getInt(0));
 					cv.put(columns[1], cur.getInt(1));
 					cv.put(columns[2], cur.getInt(2));
@@ -580,9 +570,12 @@ public class Database
 					cv.put(columns[9], cur.getInt(9));
 					
 					toDb.insert("repeat_transactions", null, cv);
+					//cv = null;
 				} while (cur.moveToNext());
 			}
 			cur.close();
+			cv = null;
+			cur = null;
 			
 			toDb.close();
 			fromDb.close();

@@ -132,10 +132,12 @@ public class CurrencyKeyListener extends NumberKeyListener
 		public void beforeTextChanged(CharSequence s, int start, int count, int after)
 		{
 			mOld = s.toString();
+			Log.i(CurrencyWatcher.class.toString(), s.toString());
 		}
 
 		public void onTextChanged(CharSequence s, int start, int before, int count)
 		{
+			Log.i(CurrencyWatcher.class.toString(), s.toString());
 		}	
 	}
 }

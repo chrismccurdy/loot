@@ -3,11 +3,14 @@ package net.gumbercules.loot;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.text.method.DigitsKeyListener;
 import android.widget.EditText;
 
@@ -20,6 +23,17 @@ public class SettingsActivity extends PreferenceActivity
 		
 		addPreferencesFromResource(R.xml.settings);
 
+		PreferenceScreen about = (PreferenceScreen)findPreference("about");
+		try
+		{
+			PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+			about.setTitle("About - " + pi.versionName);
+		}
+		catch (NameNotFoundException e1)
+		{
+			about.setTitle("About - Unknown Version");
+		}
+		
 		CheckBoxPreference security = (CheckBoxPreference)findPreference("security");
 		security.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
 		{
