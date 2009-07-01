@@ -92,6 +92,10 @@ public class CurrencyKeyListener extends NumberKeyListener
 			mChanged = false;
 			Currency cur = NumberFormat.getInstance().getCurrency();
 			mFractionDigits = cur.getDefaultFractionDigits();
+			Log.i(CurrencyWatcher.class.toString(), "Currency Code: " + cur.getCurrencyCode());
+			Log.i(CurrencyWatcher.class.toString(), "Currency Symbol: " + cur.getSymbol());
+			Log.i(CurrencyWatcher.class.toString(), "mFractionDigits = " + mFractionDigits);
+			Log.i(CurrencyWatcher.class.toString(), "mSeparator = " + mSeparator);
 		}
 		
 		public void afterTextChanged(Editable s)
@@ -123,6 +127,14 @@ public class CurrencyKeyListener extends NumberKeyListener
 			if (separator_count > 1 || (previous_sep != -1 && 
 					(s.length() - previous_sep - 1) > mFractionDigits))
 			{
+				if (separator_count > 1)
+				{
+					Log.i(CurrencyWatcher.class.toString(), "Separator count > 1");
+				}
+				else if (previous_sep != -1 && (s.length() - previous_sep - 1) > mFractionDigits)
+				{
+					Log.i(CurrencyWatcher.class.toString(), "Too many fractional digits");
+				}
 				mChanged = true;
 				s.replace(0, s.length(), mOld);
 				Log.i(CurrencyWatcher.class.toString(), "Denying change to " + str);
