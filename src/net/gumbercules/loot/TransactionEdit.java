@@ -46,7 +46,7 @@ public class TransactionEdit extends Activity
 	private int mLastRepeatValue;
 	private Date mDate;
 	private int mAccountPos;
-	private CurrencyKeyListener mCurrencyListener;
+	private CurrencyWatcher mCurrencyWatcher;
 
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
@@ -133,9 +133,9 @@ public class TransactionEdit extends Activity
 		dateButton = (ImageButton)findViewById(R.id.datePickerButton);
 		
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
-		mCurrencyListener = new CurrencyKeyListener();
+		mCurrencyWatcher = new CurrencyWatcher();
 		//amountEdit.setKeyListener(mCurrencyListener);
-		amountEdit.addTextChangedListener(new CurrencyKeyListener.CurrencyWatcher());
+		amountEdit.addTextChangedListener(mCurrencyWatcher);
 		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
 		String[] tags = Transaction.getAllTags();
 		if (tags == null)
@@ -243,7 +243,7 @@ public class TransactionEdit extends Activity
 				NumberFormat nf = NumberFormat.getCurrencyInstance();
 				String num = nf.format(trans.amount);
 				StringBuilder sb = new StringBuilder();
-				sb.append(mCurrencyListener.getAcceptedChars());
+				sb.append(mCurrencyWatcher.getAcceptedChars());
 				String accepted = "[^" + sb.toString() + "]";
 				num = num.replaceAll(accepted, "");
 

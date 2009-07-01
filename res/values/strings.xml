@@ -66,4 +66,5 @@
 <string name="trans_check_num">Check #</string>
 <string name="trans_tags">Tags</string>
 <string name="trans_repeat">Repeat</string>
+<string name="no_locale">Loot requires that you have a valid locale set in order to work properly. Please set your locale in \&quot;Settings -&gt; Locale &amp; text -&gt; Set locale\&quot; and try again, otherwise you may not be able to enter transaction amounts properly. If you\'ve set the locale and it still doesn\'t work, use loot\'s settings to override the values it should detect.</string>
 </resources>

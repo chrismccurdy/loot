@@ -2,12 +2,14 @@ package net.gumbercules.loot;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
@@ -138,6 +140,51 @@ public class SettingsActivity extends PreferenceActivity
 				
 				Database.setOption("post_repeats_early", val);
 					
+				return true;
+			}
+		});
+		
+		CheckBoxPreference override_locale = (CheckBoxPreference)findPreference("override_locale");
+		override_locale.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+		{
+			public boolean onPreferenceChange(Preference preference, Object newValue)
+			{
+				boolean val = new Boolean(newValue.toString());
+				if (!val)
+					Database.setOption("override_locale", -1);
+				
+				return true;
+			}	
+		});
+		
+		// TODO: replace with a list of ISO 4217 currencies
+		ListPreference locale_list = (ListPreference)findPreference("locale_list");
+		Locale[] locales = Locale.getAvailableLocales();
+		int len = locales.length;
+		String[] entries = new String[len],
+				 entry_values = new String[len];
+		
+		for (int i = 0; i < len; ++i)
+		{
+			entries[i] = locales[i].getDisplayName();
+			entry_values[i] = Integer.toString(i);
+		}
+		locale_list.setEntries(entries);
+		locale_list.setEntryValues(entry_values);
+		
+		locale_list.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+		{
+			public boolean onPreferenceChange(Preference preference, Object newValue)
+			{
+				if (newValue.equals(""))
+					return false;
+				
+				int val = Integer.valueOf((String)newValue);
+				if (val <= 0)
+					return false;
+				
+				Database.setOption("override_locale", val);
+				
 				return true;
 			}
 		});

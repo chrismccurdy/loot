@@ -18,4 +18,11 @@
 
 
 
+<PreferenceCategory android:title="Locale" android:key="cat_locale"><CheckBoxPreference android:title="Override Locale Settings" android:key="override_locale" android:summary="Set locale independently of your global settings." android:defaultValue="false"></CheckBoxPreference>
+
+
+
+
+<ListPreference android:key="locale_list" android:summary="Locale to use instead of the system-detected one." android:title="Locale" android:dependency="override_locale" android:defaultValue="0"></ListPreference>
+</PreferenceCategory>
 </PreferenceScreen>

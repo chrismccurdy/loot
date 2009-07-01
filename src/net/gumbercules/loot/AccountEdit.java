@@ -16,7 +16,7 @@ public class AccountEdit extends Activity
 	private EditText mPriorityEdit;
 	private int mRowId;
 	private int mFinishIntent;
-	private CurrencyKeyListener mCurrencyListener;
+	private CurrencyWatcher mCurrencyWatcher;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -29,9 +29,8 @@ public class AccountEdit extends Activity
 		
 		mNameEdit = (EditText)findViewById(R.id.NameEdit);
 		mBalanceEdit = (EditText)findViewById(R.id.BalanceEdit);
-		mCurrencyListener = new CurrencyKeyListener();
-		//mBalanceEdit.setKeyListener(mCurrencyListener);
-		mBalanceEdit.addTextChangedListener(new CurrencyKeyListener.CurrencyWatcher());
+		mCurrencyWatcher = new CurrencyWatcher();
+		mBalanceEdit.addTextChangedListener(mCurrencyWatcher);
 		mPriorityEdit = (EditText)findViewById(R.id.PriorityEdit);
 		mPriorityEdit.setKeyListener(new DigitsKeyListener());
 		Button SaveButton = (Button)findViewById(R.id.SaveButton);
@@ -98,7 +97,7 @@ public class AccountEdit extends Activity
 				NumberFormat nf = NumberFormat.getCurrencyInstance();
 				String num = nf.format(acct.initialBalance);
 				StringBuilder sb = new StringBuilder();
-				sb.append(mCurrencyListener.getAcceptedChars());
+				sb.append(mCurrencyWatcher.getAcceptedChars());
 				String accepted = "[^" + sb.toString() + "]";
 				num = num.replaceAll(accepted, "");
 				

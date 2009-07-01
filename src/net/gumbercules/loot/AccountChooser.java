@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -104,6 +106,10 @@ public class AccountChooser extends ListActivity
 				.show();
 			Database.setOption("nag_donate", 1);
 		}
+		
+		// if we're not overriding locale, check to see if the detected one is valid
+		if (Database.getOptionInt("override_locale") < 0)
+			checkLocale();
 
 		// automatically purge transactions on load if this option is set
 		int purge_days = (int)Database.getOptionInt("auto_purge_days");
@@ -116,6 +122,18 @@ public class AccountChooser extends ListActivity
 			{
 				acct.purgeTransactions(date);
 			}
+		}
+	}
+	
+	private void checkLocale()
+	{
+		Currency cur = NumberFormat.getInstance().getCurrency();
+
+		if (cur.getCurrencyCode().equalsIgnoreCase("xxx"))
+		{
+			new AlertDialog.Builder(this)
+				.setMessage(R.string.no_locale)
+				.show();
 		}
 	}
 
