@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -118,8 +119,6 @@ public class TransactionEdit extends Activity
 			mTransId = extras.getInt(Transaction.KEY_ID);
 			mAccountId = extras.getInt(Account.KEY_ID);
 		}
-
-		populateFields();
 	}
 	
 	private void populateFields()
@@ -134,7 +133,6 @@ public class TransactionEdit extends Activity
 		
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
 		mCurrencyWatcher = new CurrencyWatcher();
-		//amountEdit.setKeyListener(mCurrencyListener);
 		amountEdit.addTextChangedListener(mCurrencyWatcher);
 		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
 		String[] tags = Transaction.getAllTags();
@@ -241,6 +239,9 @@ public class TransactionEdit extends Activity
 	
 				// replace comma and currency symbol with empty string
 				NumberFormat nf = NumberFormat.getCurrencyInstance();
+				String new_currency = Database.getOptionString("override_locale");
+				if (new_currency != null && !new_currency.equals(""))
+					nf.setCurrency(Currency.getInstance(new_currency));
 				String num = nf.format(trans.amount);
 				StringBuilder sb = new StringBuilder();
 				sb.append(mCurrencyWatcher.getAcceptedChars());

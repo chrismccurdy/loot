@@ -108,7 +108,8 @@ public class AccountChooser extends ListActivity
 		}
 		
 		// if we're not overriding locale, check to see if the detected one is valid
-		if (Database.getOptionInt("override_locale") < 0)
+		String locale = Database.getOptionString("override_locale");
+		if (locale == null || locale.equals(""))
 			checkLocale();
 
 		// automatically purge transactions on load if this option is set

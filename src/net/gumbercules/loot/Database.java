@@ -10,7 +10,7 @@ public class Database
 {
 	private final static String DB_NAME		= "LootDB";
 	private final static String DB_PATH		= "/data/data/net.gumbercules.loot/" + DB_NAME + ".db";
-	private final static int DB_VERSION		= 3;
+	private final static int DB_VERSION		= 4;
 	private static SQLiteDatabase lootDB	= null;
 	
 	public Database()
@@ -57,7 +57,7 @@ public class Database
 	
 	private static boolean createDB(SQLiteDatabase db)
 	{
-		String[] createSQL = new String[12];
+		String[] createSQL = new String[13];
 		
 		createSQL[0] = "create table accounts(\n" + 
 					"	id integer primary key autoincrement,\n" +
@@ -121,6 +121,7 @@ public class Database
 
 		createSQL[10] = "create index idx_trans_id on transactions ( id asc )";
 		createSQL[11] = "create index idx_account on transactions ( account, purged )";
+		createSQL[12] = "create index idx_tags on tags ( trans_id asc )";
 		
 		try
 		{
@@ -193,6 +194,26 @@ public class Database
 			
 			lootDB.setVersion(3);
 			current_version = 3;
+		}
+		if (current_version < 4)
+		{
+			lootDB.beginTransaction();
+			try
+			{
+				lootDB.execSQL("create index idx_tags on tags ( trans_id asc )");
+				lootDB.setTransactionSuccessful();
+			}
+			catch (SQLException e)
+			{
+				return false;
+			}
+			finally
+			{
+				lootDB.endTransaction();
+			}
+			
+			lootDB.setVersion(4);
+			current_version = 4;
 		}
 		
 		if ( current_version == max_version )

@@ -18,7 +18,12 @@ public class CurrencyWatcher implements TextWatcher
 		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 		mSeparator = dfs.getMonetaryDecimalSeparator();
 		mChanged = false;
-		Currency cur = NumberFormat.getInstance().getCurrency();
+		String new_currency = Database.getOptionString("override_locale");
+		Currency cur = null;
+		if (new_currency != null && !new_currency.equals(""))
+			cur = Currency.getInstance(new_currency);
+		else
+			cur = NumberFormat.getInstance().getCurrency();
 		mFractionDigits = cur.getDefaultFractionDigits();
 	}
 	

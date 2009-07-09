@@ -483,6 +483,54 @@ public class Account
 		return ids;
 	}
 	
+	public Transaction[] getTransactions()
+	{
+		SQLiteDatabase lootDB;
+		try
+		{
+			lootDB = Database.getDatabase();
+		}
+		catch (SQLException e)
+		{
+			return null;
+		}
+		
+		Cursor cur = lootDB.rawQuery("select posted, date, party, amount, check_num, account, budget, id " +
+				"from transactions where account = " + this.id + " and purged = 0", null);
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		Cursor tags_cur = lootDB.rawQuery("select trans_id, name from tags, transactions " +
+				"where account = " + this.id + " and trans_id = id", null);
+		if (!tags_cur.moveToFirst())
+			tags_cur.close();
+		
+		Transaction[] trans_list = new Transaction[cur.getCount()];
+		int i = 0;
+		Transaction trans = null;
+		do
+		{
+			trans = new Transaction();
+			trans.fromCursor(cur);
+			
+			// add tags to the transaction
+			while (!tags_cur.isClosed() && !tags_cur.isAfterLast() && tags_cur.getInt(0) == trans.id())
+			{
+				trans.addTags(cur.getString(1));
+				tags_cur.moveToNext();
+			}
+			
+			trans_list[i++] = trans;
+		} while (cur.moveToNext());
+		tags_cur.close();
+		cur.close();
+		
+		return trans_list;
+	}
+	
 	public int[] purgeTransactions(Date through)
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();

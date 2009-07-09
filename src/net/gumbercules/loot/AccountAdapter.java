@@ -2,6 +2,8 @@ package net.gumbercules.loot;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Currency;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +61,9 @@ public class AccountAdapter extends ArrayAdapter<Account>
 		if (AccountBal != null)
 		{
 			NumberFormat nf = NumberFormat.getCurrencyInstance();
+			String new_currency = Database.getOptionString("override_locale");
+			if (new_currency != null && !new_currency.equals(""))
+				nf.setCurrency(Currency.getInstance(new_currency));
 			Double bal = acct.calculateActualBalance();
 			String text;
 			if (bal != null)

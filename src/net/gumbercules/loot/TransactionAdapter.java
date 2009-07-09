@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Currency;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -30,7 +31,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private static CharSequence mConstraint;
 	private int mAcctId;
 	private DateFormat mDf;
-	private NumberFormat mNf;
+	private static NumberFormat mNf = null;
 	
 	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
 	{
@@ -41,7 +42,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		this.context = con;
 		this.mAcctId = acct_id;
 		this.mDf = DateFormat.getDateInstance();
-		this.mNf = NumberFormat.getCurrencyInstance();
+		mNf = NumberFormat.getCurrencyInstance();
+		String new_currency = Database.getOptionString("override_locale");
+		if (new_currency != null && !new_currency.equals("") &&
+				!new_currency.equals(mNf.getCurrency().getCurrencyCode()))
+			mNf.setCurrency(Currency.getInstance(new_currency));
 		
 		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -125,6 +130,21 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		for (int id : ids)
 		{
 			trans = Transaction.getTransactionById(id);
+			if (trans != null && trans.account == mAcctId)
+				mOriginalList.add(trans);
+		}
+		notifyDataSetChanged();
+	}
+
+	public void add(Transaction[] trans_list)
+	{
+		if (trans_list == null)
+			return;
+		
+		Transaction trans;
+		for (int i = trans_list.length - 1; i >= 0; --i)
+		{
+			trans = trans_list[i];
 			if (trans != null && trans.account == mAcctId)
 				mOriginalList.add(trans);
 		}

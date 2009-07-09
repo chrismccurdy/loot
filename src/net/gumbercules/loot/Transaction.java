@@ -565,10 +565,43 @@ public class Transaction
 		Transaction trans = new Transaction(posted, budget, date, type, cur.getString(2), amount, check);
 		trans.account = cur.getInt(5);
 		trans.id = id;
-		trans.loadTags();
 		cur.close();
 		
+		trans.loadTags();
+		
 		return trans;
+	}
+	
+	public void fromCursor(Cursor cur)
+	{
+		double amount = cur.getDouble(3);
+		int check = cur.getInt(4);
+		int type;
+		this.posted = Database.getBoolean(cur.getInt(0));
+		this.budget = Database.getBoolean(cur.getInt(6));
+		this.date = new Date(cur.getLong(1));
+		if ( check > 0 )
+		{
+			type = Transaction.CHECK;
+			amount = -amount;
+		}
+		else
+		{
+			if ( amount >= 0 )
+				type = Transaction.DEPOSIT;
+			else
+			{
+				type = Transaction.WITHDRAW;
+				amount = -amount;
+			}
+		}
+		
+		this.party = cur.getString(2);
+		this.check_num = check;
+		this.amount = amount;
+		this.type = type;
+		this.account = cur.getInt(5);
+		this.id = cur.getInt(7);
 	}
 	
 	public int transfer(Account acct2)

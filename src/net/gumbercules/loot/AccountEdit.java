@@ -2,6 +2,8 @@ package net.gumbercules.loot;
 
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Currency;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
@@ -95,6 +97,9 @@ public class AccountEdit extends Activity
 			if (mBalanceEdit != null)
 			{
 				NumberFormat nf = NumberFormat.getCurrencyInstance();
+				String new_currency = Database.getOptionString("override_locale");
+				if (new_currency != null && !new_currency.equals(""))
+					nf.setCurrency(Currency.getInstance(new_currency));
 				String num = nf.format(acct.initialBalance);
 				StringBuilder sb = new StringBuilder();
 				sb.append(mCurrencyWatcher.getAcceptedChars());
