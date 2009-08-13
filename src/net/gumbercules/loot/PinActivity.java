@@ -27,7 +27,10 @@ public class PinActivity extends Activity
 	{
 		final byte[] pin_hash = Database.getOptionBlob("pin");
 		if (pin_hash == null || pin_hash.length == 1)
+		{
 			startAccountChooser(true);
+			finish();
+		}
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pin);
@@ -78,6 +81,8 @@ public class PinActivity extends Activity
 			public void onClick(View v)
 			{
 				String pin = mPinEdit.getText().toString();
+				mPinEdit.setText("");
+
 				byte[] bytes;
 				try
 				{
@@ -107,7 +112,6 @@ public class PinActivity extends Activity
 				}
 
 				mInvalidView.setText(R.string.invalid);
-				mPinEdit.setText("");
 			}
 		});
 	}
@@ -117,7 +121,7 @@ public class PinActivity extends Activity
 	{
 		if (keyCode == KeyEvent.KEYCODE_BACK)
 		{
-			startAccountChooser(false);
+			finish();
 			return true;
 		}
 		
@@ -131,6 +135,5 @@ public class PinActivity extends Activity
        	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
        	prefs.edit().putBoolean(SHOW_ACCOUNTS, show).commit();
         startActivity(intent);
-        finish();
 	}
 }
