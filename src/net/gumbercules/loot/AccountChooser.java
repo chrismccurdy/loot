@@ -65,7 +65,11 @@ public class AccountChooser extends ListActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		
+		// required to prevent last-used from jumping back to this spot
+		@SuppressWarnings("unused")
+		Bundle bun = getIntent().getExtras();
+		
 		setContentView(R.layout.accounts);
 		getListView().setOnCreateContextMenuListener(this);
 		

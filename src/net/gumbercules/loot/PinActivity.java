@@ -17,6 +17,7 @@ import android.widget.TextView;
 public class PinActivity extends Activity
 {
 	public static final String SHOW_ACCOUNTS = "show";
+	public static final String CHECKSUM = "checksum";
 	
 	private Button mUnlockButton;
 	private EditText mPinEdit;
