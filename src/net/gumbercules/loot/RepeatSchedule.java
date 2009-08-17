@@ -737,6 +737,8 @@ implements Cloneable
 
 	public Date calculateDueDate()
 	{
+		// if frequency is 0, or the iterator is NO_REPEAT
+		// or the start time is after the end time, return null
 		if (this.freq == 0 || this.iter == NO_REPEAT ||
 				((this.end != null && this.end.getTime() > 0) && this.start.after(this.end)))
 			return null;
@@ -843,7 +845,7 @@ implements Cloneable
 		}
 		
 		Date due = cal.getTime();
-		if (due.before(this.start) || (this.end != null && due.after(this.end)))
+		if (due.before(this.start) || ((this.end != null && this.end.getTime() > 0) && due.after(this.end)))
 			return null;
 		else
 			return due;
