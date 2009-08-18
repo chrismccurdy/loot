@@ -56,6 +56,8 @@ public class SettingsActivity extends PreferenceActivity
 			premium.setEnabled(false);
 			premium.setTitle(R.string.premium_enabled_title);
 			premium.setSummary(R.string.premium_enabled_body);
+			
+			// TODO: stuff regarding the premium settings
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -64,7 +66,8 @@ public class SettingsActivity extends PreferenceActivity
 			premium.setSummary(R.string.premium_disabled_body);
 			
 			String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
-					"color_budget_deposit", "color_check", "color_budget_check"};
+					"color_budget_deposit", "color_check", "color_budget_check", 
+					"cal_enabled", "calendar_tag"};
 			Preference cb_pref = null;
 			for (String pref : prefs)
 			{
