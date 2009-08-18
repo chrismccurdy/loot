@@ -3,6 +3,8 @@ package net.gumbercules.loot;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import net.gumbercules.loot.R;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;

@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+
+import net.gumbercules.loot.R;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;

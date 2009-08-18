@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import net.gumbercules.loot.R;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;

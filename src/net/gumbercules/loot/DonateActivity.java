@@ -1,5 +1,6 @@
 package net.gumbercules.loot;
 
+import net.gumbercules.loot.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;

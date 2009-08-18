@@ -4,6 +4,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Currency;
 
+import net.gumbercules.loot.R;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

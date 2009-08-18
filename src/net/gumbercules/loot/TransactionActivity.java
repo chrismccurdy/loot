@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
+import net.gumbercules.loot.R;
 import net.gumbercules.loot.TransactionAdapter.TransactionFilter;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;

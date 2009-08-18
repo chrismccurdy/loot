@@ -2,6 +2,8 @@ package net.gumbercules.loot;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import net.gumbercules.loot.R;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -46,6 +48,30 @@ public class SettingsActivity extends PreferenceActivity
 				return true;
 			}
 		});
+		
+		Preference premium = (Preference)findPreference("premium_enabled");
+		try
+		{
+			Class.forName("net.gumbercules.loot.Premium");
+			premium.setEnabled(false);
+			premium.setTitle(R.string.premium_enabled_title);
+			premium.setSummary(R.string.premium_enabled_body);
+		}
+		catch (ClassNotFoundException e)
+		{
+			premium.setEnabled(true);
+			premium.setTitle(R.string.premium_disabled_title);
+			premium.setSummary(R.string.premium_disabled_body);
+			
+			String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
+					"color_budget_deposit", "color_check", "color_budget_check"};
+			Preference cb_pref = null;
+			for (String pref : prefs)
+			{
+				cb_pref = (Preference)findPreference(pref);
+				cb_pref.setEnabled(false);
+			}
+		}
 		
 		EditTextPreference pin = (EditTextPreference)findPreference("pin");
 		EditText pinEdit = pin.getEditText();

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Currency;
 
+import net.gumbercules.loot.R;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;

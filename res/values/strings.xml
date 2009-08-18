@@ -37,11 +37,11 @@
 <string name="unlock">Unlock</string>
 <string name="pin">Please enter the PIN to unlock the accounts.</string>
 <string name="invalid">Invalid PIN</string>
-<string name="update">There is an update available for this application. Please download it from the Android Market.</string>
+
 
 <string name="post">Post</string>
 <string name="acct_priority">Display Priority</string>
-<string name="nag">Would you like to be reminded to update again in a week?</string>
+
 <string name="restore_account">Restore Account</string>
 <string name="clear_account">Clear Account</string>
 <string name="clear">Clear Deleted Account</string>
@@ -67,4 +67,8 @@
 <string name="trans_tags">Tags</string>
 <string name="trans_repeat">Repeat</string>
 <string name="no_locale">Loot requires that you have a valid locale set in order to work properly. Please set your locale in \&quot;Settings -&gt; Locale &amp; text -&gt; Set locale\&quot; and try again, otherwise you may not be able to enter transaction amounts properly. If you\'ve set the locale and it still doesn\'t work, use loot\'s settings to override the values it should detect.</string>
+<string name="premium_enabled_title">Premium Enabled</string>
+<string name="premium_enabled_body">Thank you for purchasing the loot premium package! :-D</string>
+<string name="premium_disabled_title">Premium Disabled</string>
+<string name="premium_disabled_body">You must purchase the loot premium package in order to access these settings.</string>
 </resources>

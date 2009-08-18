@@ -4,6 +4,8 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Currency;
 
+import net.gumbercules.loot.R;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
