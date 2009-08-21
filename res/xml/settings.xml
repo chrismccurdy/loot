@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+<PreferenceScreen android:summary="About Loot, contact info, etc." android:key="about" android:title="About">
+<intent android:action="android.intent.action.VIEW" android:data="http://gumbercules.net/loot/about.html"/>
+
+</PreferenceScreen><CheckBoxPreference android:defaultValue="false" android:title="Colors" android:key="color" android:summary="Display transactions in color based on type."></CheckBoxPreference><PreferenceCategory android:title="Security" android:key="cat_security">
+<CheckBoxPreference android:key="security" android:title="Security" android:defaultValue="false" android:disableDependentsState="false" android:summary="Use a PIN to access accounts."></CheckBoxPreference>
+<EditTextPreference android:dialogTitle="PIN" android:title="PIN" android:key="pin" android:positiveButtonText="Set" android:negativeButtonText="Cancel" android:defaultValue="0000" android:dependency="security" android:summary="Password to access accounts." android:dialogMessage="Enter new PIN:"></EditTextPreference></PreferenceCategory>
+<PreferenceCategory android:title="Transaction Purging" android:key="cat_purge"><CheckBoxPreference android:key="purge" android:title="Auto Purge" android:defaultValue="false" android:disableDependentsState="false" android:summary="Automatically purge posted transactions."></CheckBoxPreference><EditTextPreference android:dialogTitle="Auto Purge" android:dialogMessage="Purge posted transactions after how many days?" android:key="purge_days" android:positiveButtonText="Set" android:negativeButtonText="Cancel" android:defaultValue="90" android:dependency="purge" android:title="Purge Days" android:summary="Number of days before purging."></EditTextPreference></PreferenceCategory>
+
+
+<PreferenceCategory android:title="Repeating Transactions" android:key="cat_repeat"><CheckBoxPreference android:key="repeat" android:defaultValue="true" android:title="Show Repeats Early" android:disableDependentsState="false" android:summary="Show repeating transactions before the recorded day."></CheckBoxPreference><EditTextPreference android:dialogTitle="Early Days" android:dialogMessage="Show transactions how many days before the transaction date?" android:positiveButtonText="Set" android:negativeButtonText="Cancel" android:key="repeat_days" android:title="Days Before Display" android:dependency="repeat" android:defaultValue="2" android:summary="Days before the repeated transaction is shown."></EditTextPreference>
+</PreferenceCategory>
+
+
+
+
+
+
+<PreferenceCategory android:title="Locale" android:key="cat_locale"><CheckBoxPreference android:title="Override Locale Settings" android:key="override_locale" android:summary="Set locale independently of your global settings." android:defaultValue="false"></CheckBoxPreference>
+
+
+
+
+<ListPreference android:key="locale_list" android:summary="Locale to use instead of the system-detected one." android:title="Locale" android:dependency="override_locale" android:defaultValue="0"></ListPreference>
+</PreferenceCategory>
+</PreferenceScreen>
