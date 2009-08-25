@@ -2,6 +2,7 @@ package net.gumbercules.loot;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
@@ -10,6 +11,7 @@ import net.gumbercules.loot.R;
 import net.gumbercules.loot.TransactionAdapter.TransactionFilter;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,7 +40,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.MultiAutoCompleteTextView.Tokenizer;
 
 public class TransactionActivity extends ListActivity
@@ -63,6 +67,7 @@ public class TransactionActivity extends ListActivity
 	public static final int CONTEXT_COPY	= Menu.FIRST + 1;
 	public static final int CONTEXT_POST	= Menu.FIRST + 2;
 	public static final int CONTEXT_DEL		= Menu.FIRST + 3;
+	public static final int CONTEXT_REPEAT	= Menu.FIRST + 4;
 	
 	private static ArrayList<Transaction> mTransList;
 	private static Account mAcct;
@@ -188,20 +193,26 @@ public class TransactionActivity extends ListActivity
     {
     	boolean result = super.onCreateOptionsMenu(menu);
     	menu.add(0, NEW_TRANSACT_ID, 0, R.string.new_trans)
+    		.setShortcut('1', 'n')
     		.setIcon(android.R.drawable.ic_menu_add);
     	
     	// only show transfers if there is more than one account
     	if (Account.getAccountIds().length > 1)
     		menu.add(0, NEW_TRANSFER_ID, 0, R.string.transfer)
+    			.setShortcut('2', 't')
     			.setIcon(android.R.drawable.ic_menu_send);
     	
     	menu.add(0, SORT_ID, 0, R.string.sort)
+    		.setShortcut('3', 'o')
     		.setIcon(android.R.drawable.ic_menu_sort_by_size);
     	menu.add(0, SEARCH_ID, 0, R.string.search)
+    		.setShortcut('4', 'e')
     		.setIcon(android.R.drawable.ic_menu_search);
     	menu.add(0, PURGE_ID, 0, R.string.purge)
+    		.setShortcut('5', 'p')
     		.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
     	menu.add(0, SETTINGS_ID, 0, R.string.settings)
+    		.setShortcut('6', 's')
     		.setIcon(android.R.drawable.ic_menu_preferences);
     	
     	return result;
@@ -484,8 +495,18 @@ public class TransactionActivity extends ListActivity
     
     private void addRepeatedTransactions()
     {
-    	int[] ids = RepeatSchedule.processDueRepetitions(new Date());
-    	mTa.add(ids);
+   		int[] ids = RepeatSchedule.processDueRepetitions(new Date());
+   		
+   		if (ids != null && ids.length != 0)
+   		{
+   			if (ids[0] == -1)
+   			{
+	   			// if there is a -1 in the id list, something went wrong processing
+	   			// the repetition, and the schedule was deleted
+	   			Toast.makeText(this, R.string.bad_repeat, Toast.LENGTH_LONG).show();
+   			}
+   	    	mTa.add(ids);
+   		}
     }
 
 	@Override
@@ -522,6 +543,27 @@ public class TransactionActivity extends ListActivity
 		postListItem(position);
 	}
 
+	private int copyListItem(int id)
+	{
+		try
+		{
+			Transaction tr = Transaction.getTransactionById(id);
+			tr.setId(-1);
+			if (tr.type == Transaction.CHECK)
+				tr.check_num = mAcct.getNextCheckNum();
+			if (tr.isPosted())
+				tr.post(false);
+			id = tr.write(mAcct.id());
+		}
+		catch (Exception e)
+		{
+			id = -1;
+			Logger.logStackTrace(e, this);
+		}
+		
+		return id;
+	}
+	
 	private void postListItem(int position)
 	{
 		// ListView.getChildAt only keeps track of visible children
@@ -559,25 +601,16 @@ public class TransactionActivity extends ListActivity
 			return true;
 			
 		case CONTEXT_COPY:
-			try
-			{
-				Transaction tr = Transaction.getTransactionById(id);
-				tr.setId(-1);
-				if (tr.type == Transaction.CHECK)
-					tr.check_num = mAcct.getNextCheckNum();
-				if (tr.isPosted())
-					tr.post(false);
-				id = tr.write(mAcct.id());
-				updateList(id, ACTIVITY_CREATE);
-			}
-			catch (Exception e)
-			{
-				Logger.logStackTrace(e, this);
-			}
+			id = copyListItem(id);
+			updateList(id, ACTIVITY_CREATE);
 			return true;
 			
 		case CONTEXT_POST:
 			postListItem(info.position);
+			return true;
+			
+		case CONTEXT_REPEAT:
+			showDialog(id);
 			return true;
 			
 		case CONTEXT_DEL:
@@ -643,12 +676,103 @@ public class TransactionActivity extends ListActivity
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_COPY, 0, R.string.copy);
 		menu.add(0, CONTEXT_POST, 0, R.string.post);
+		menu.add(0, CONTEXT_REPEAT, 0, R.string.repeat);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 	}
 	
+	@Override
+	protected Dialog onCreateDialog(int id)
+	{
+		return new RepeatDialog(this, id);
+	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog)
+	{
+		((RepeatDialog)dialog).setTransId(id);
+	}
+
 	public static void setAccountNull()
 	{
 		mAcct = null;
+	}
+	
+	private class RepeatDialog extends Dialog
+	{
+		private ArrayAdapter<String> mAdapter;
+		private int mTransId;
+		
+		public RepeatDialog(Context context, int id)
+		{
+			super(context);
+			setContentView(R.layout.repeat_list);
+			ListView lv = (ListView)findViewById(R.id.repeat_list);
+			
+			this.setTitle("Repeat");
+			
+			final ArrayList<String> repeat =
+				new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.repeat_dialog)));
+			mAdapter = new ArrayAdapter<String>(getContext(),
+					android.R.layout.simple_expandable_list_item_1, repeat);
+			lv.setAdapter(mAdapter);
+			
+			lv.setOnItemClickListener(new OnItemClickListener()
+			{
+				public void onItemClick(AdapterView<?> parent, View view, int pos, long id)
+				{
+					Transaction trans = Transaction.getTransactionById(copyListItem(mTransId));
+					if (trans == null)
+					{
+						dismiss();
+						return;
+					}
+					
+					trans.post(false);
+					trans.budget = true;
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(trans.date);
+					int cal_field = -1, cal_value = 1;
+					
+					switch (pos)
+					{
+						case 0:
+							cal_field = Calendar.DATE;
+							break;
+
+						case 2:
+							cal_value = 2;
+							
+						case 1:
+							cal_field = Calendar.WEEK_OF_YEAR;
+							break;
+							
+						case 3:
+							cal_field = Calendar.MONTH;
+							break;
+							
+						case 4:
+							cal_field = Calendar.YEAR;
+							break;
+					}
+					
+					if (cal_field != -1)
+					{
+						cal.add(cal_field, cal_value);
+						trans.date = cal.getTime();
+						mTransId = trans.write(mAcct.id());
+						updateList(mTransId, ACTIVITY_CREATE);
+					}
+					dismiss();
+				}
+			});
+			
+			mTransId = id;
+		}
+		
+		public void setTransId(int t)
+		{
+			mTransId = t;
+		}
 	}
 	
 	public static class SpaceTokenizer implements Tokenizer

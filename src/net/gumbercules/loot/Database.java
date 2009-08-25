@@ -1,6 +1,12 @@
 package net.gumbercules.loot;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import android.database.*;
 import android.database.sqlite.*;
 import android.util.Log;
@@ -395,212 +401,40 @@ public class Database
 	
 	private static boolean copyDatabase(String from, String to)
 	{
+		File fromFile = new File(from);
+		File toFile = new File(to);
+		
+		String tmpFileName = toFile.getParent() + File.separator +
+			"loot_" + System.currentTimeMillis() + ".db.tmp";
+		
+		File tmpFile = new File(tmpFileName);
+		
 		try
 		{
-			SQLiteDatabase fromDb = SQLiteDatabase.openDatabase(from, null, SQLiteDatabase.OPEN_READONLY);
-			
-			File toFile = new File(to);
-			if (toFile.exists())
-			{
-				if (!toFile.delete())
-				{
-					Log.e("copyDatabase", "log file not deleted");
-					return false;
-				}
-			}
-			else
-			{
-				new File(toFile.getParent()).mkdirs();
-			}
-			SQLiteDatabase toDb = SQLiteDatabase.openOrCreateDatabase(to, null);
-			
-			createDB(toDb);
-			String[] columns;
-			SQLiteStatement stmt;
-			
-			// accounts table
-			columns = new String[]{"id", "name", "balance", "timestamp", "purged", "priority"};
-			Cursor cur = fromDb.query("accounts", columns, null, null, null, null, null);
-			if (cur.moveToFirst())
-			{
-				stmt = toDb.compileStatement("insert into accounts (id, name, balance, " +
-						"timestamp, purged, priority) values (?,?,?,?,?,?)");
-				do
-				{
-					stmt.bindLong(1, cur.getInt(0));
-					stmt.bindString(2, cur.getString(1));
-					stmt.bindDouble(3, cur.getDouble(2));
-					stmt.bindLong(4, cur.getLong(3));
-					stmt.bindLong(5, cur.getInt(4));
-					stmt.bindLong(6, cur.getInt(5));
-					stmt.execute();
-					stmt.clearBindings();
-				} while (cur.moveToNext());
-				stmt.close();
-			}
-			cur.close();
-			cur = null;
-			stmt = null;
-			
-			// transactions table
-			columns = new String[]{"id", "posted", "account", "date", "party", "amount",
-					"check_num", "timestamp", "purged", "budget"};
-			cur = fromDb.query("transactions", columns, null, null, null, null, null);
-			if (cur.moveToFirst())
-			{
-				stmt = toDb.compileStatement("insert into transactions (id, posted, account, date, " +
-						"party, amount, check_num, timestamp, purged, budget) values (?,?,?,?,?,?,?,?,?,?)");
-				do
-				{
-					stmt.bindLong(1, cur.getInt(0));
-					stmt.bindLong(2, cur.getInt(1));
-					stmt.bindLong(3, cur.getInt(2));
-					stmt.bindLong(4, cur.getLong(3));
-					stmt.bindString(5, cur.getString(4));
-					stmt.bindDouble(6, cur.getDouble(5));
-					stmt.bindLong(7, cur.getInt(6));
-					stmt.bindLong(8, cur.getLong(7));
-					stmt.bindLong(9, cur.getInt(8));
-					stmt.bindLong(10, cur.getInt(9));
-					stmt.execute();
-					stmt.clearBindings();
-				} while (cur.moveToNext());
-				stmt.close();
-			}
-			cur.close();
-			cur = null;
-			stmt = null;
-			
-			// tags table
-			columns = new String[]{"trans_id", "name"};
-			cur = fromDb.query("tags", columns, null, null, null, null, null);
-			if (cur.moveToFirst())
-			{
-				stmt = toDb.compileStatement("insert into tags (trans_id, name) values (?,?)");
-				do
-				{
-					stmt.bindLong(1, cur.getInt(0));
-					stmt.bindString(2, cur.getString(1));
-					stmt.execute();
-					stmt.clearBindings();
-				} while (cur.moveToNext());
-				stmt.close();
-			}
-			cur.close();
-			stmt = null;
-			cur = null;
-			
-			// options table
-			// delete the pre-populated options to prevent unique constraint errors
-			toDb.delete("options", null, null);
-			
-			columns = new String[]{"option", "value"};
-			cur = fromDb.query("options", columns, null, null, null, null, null);
-			if (cur.moveToFirst())
-			{
-				String option;
-				stmt = toDb.compileStatement("insert into options (option, value) values (?,?)");
-				do
-				{
-					option = cur.getString(0);
-					
-					// don't backup the PIN
-					if (option.equals("pin"))
-						continue;
-					
-					stmt.bindString(1, option);
-					stmt.bindString(2, cur.getString(1));
-					stmt.execute();
-					stmt.clearBindings();
-					option = null;
-				} while (cur.moveToNext());
-				stmt.close();
-			}
-			cur.close();
-			stmt = null;
-			cur = null;
-			
-			// transfers table
-			columns = new String[]{"trans_id1", "trans_id2"};
-			cur = fromDb.query("transfers", columns, null, null, null, null, null);
-			if (cur.moveToFirst())
-			{
-				stmt = toDb.compileStatement("insert into transfers (trans_id1, trans_id2) values (?,?)");
-				do
-				{
-					stmt.bindLong(1, cur.getInt(0));
-					stmt.bindLong(2, cur.getLong(1));
-					stmt.execute();
-					stmt.clearBindings();
-				} while (cur.moveToNext());
-				stmt.close();
-			}
-			cur.close();
-			stmt = null;
-			cur = null;
-			
-			// repeat_pattern table
-			columns = new String[]{"id", "start_date", "due", "end_date",
-					"iterator", "frequency", "custom"};
-			cur = fromDb.query("repeat_pattern", columns, null, null, null, null, null);
-			if (cur.moveToFirst())
-			{
-				stmt = toDb.compileStatement("insert into repeat_pattern (id, start_date, due, end_date, " +
-						"iterator, frequency, custom) values (?,?,?,?,?,?,?)");
-				do
-				{
-					stmt.bindLong(1, cur.getInt(0));
-					stmt.bindLong(2, cur.getLong(1));
-					stmt.bindLong(3, cur.getLong(2));
-					stmt.bindLong(4, cur.getLong(3));
-					stmt.bindLong(5, cur.getLong(4));
-					stmt.bindLong(6, cur.getLong(5));
-					stmt.bindLong(7, cur.getLong(6));
-					stmt.execute();
-					stmt.clearBindings();
-				} while (cur.moveToNext());
-				stmt.close();
-			}
-			cur.close();
-			stmt = null;
-			cur = null;
-			
-			// repeat_transactions table
-			columns = new String[]{"trans_id", "repeat_id", "account", "date", "party",
-					"amount", "check_num", "budget", "tags", "transfer_id"};
-			cur = fromDb.query("repeat_transactions", columns, null, null, null, null, null);
-			if (cur.moveToFirst())
-			{
-				stmt = toDb.compileStatement("insert into repeat_transactions (trans_id, repeat_id, " +
-						"account, date, party, amount, check_num, budget, tags, transfer_id) values " +
-						"?,?,?,?,?,?,?,?,?,?)");
-				do
-				{
-					stmt.bindLong(1, cur.getInt(0));
-					stmt.bindLong(2, cur.getInt(1));
-					stmt.bindLong(3, cur.getInt(2));
-					stmt.bindLong(4, cur.getLong(3));
-					stmt.bindString(5, cur.getString(4));
-					stmt.bindDouble(6, cur.getDouble(5));
-					stmt.bindLong(7, cur.getInt(6));
-					stmt.bindLong(8, cur.getInt(7));
-					stmt.bindString(9, cur.getString(8));
-					stmt.bindLong(10, cur.getLong(9));
-					stmt.execute();
-					stmt.clearBindings();
-				} while (cur.moveToNext());
-				stmt.close();
-			}
-			cur.close();
-			stmt = null;
-			cur = null;
-			
-			toDb.close();
-			fromDb.close();
+			copyFile(fromFile, tmpFile);
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
-			e.printStackTrace();
+			Log.e("copyDatabase", "couldn't copy to temp file");
+			return false;
+		}
+		
+		if (toFile.exists())
+		{
+			if (!toFile.delete())
+			{
+				Log.e("copyDatabase", toFile.getName() + " not deleted");
+				return false;
+			}
+		}
+		else
+		{
+			new File(toFile.getParent()).mkdirs();
+		}
+		
+		if (!tmpFile.renameTo(toFile))
+		{
+			Log.e("copyDatabase", "couldn't rename file");
 			return false;
 		}
 		
@@ -620,5 +454,22 @@ public class Database
 	public static String getDbPath()
 	{
 		return DB_PATH;
+	}
+	
+	public static void copyFile(File from, File to) 
+		throws IOException
+	{
+		InputStream in = new FileInputStream(from);
+        OutputStream out = new FileOutputStream(to);
+    
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0)
+        {
+            out.write(buf, 0, len);
+        }
+        
+        in.close();
+        out.close();
 	}
 }

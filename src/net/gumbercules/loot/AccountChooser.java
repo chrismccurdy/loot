@@ -7,8 +7,6 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
-import net.gumbercules.loot.R;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -468,7 +466,6 @@ public class AccountChooser extends ListActivity
 	    		}
 	    		else
 	    			res = R.string.backup_failed;
-	    		fwt.stop();
 			}
 			else if (mOp == RESTORE)
 			{
@@ -496,7 +493,6 @@ public class AccountChooser extends ListActivity
 	    		}
 	    		else
 	    			res = R.string.restore_failed;
-    			fwt.stop();
 			}
     		mPd.dismiss();
     		copyInProgress = false;

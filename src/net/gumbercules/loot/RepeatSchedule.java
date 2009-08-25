@@ -493,7 +493,18 @@ implements Cloneable
 			pattern.load(id);
 			
 			// write the transaction
-			int trans_id = pattern.writeTransaction(pattern.due);
+			int trans_id = -1;
+			try
+			{
+				trans_id = pattern.writeTransaction(pattern.due);
+			}
+			catch (RepeatTransactionNotFoundException e1)
+			{
+				pattern.erase(false);
+				new_trans_ids.add(-1);
+				continue;
+			}
+			
 			if (trans_id != -1)
 			{
 				new_trans_ids.add(trans_id);
@@ -564,11 +575,12 @@ implements Cloneable
 		for ( int val : ret_list )
 			arr[i++] = val;
 		Arrays.sort(arr);
-		
+	
 		return arr;
 	}
 	
 	public int writeTransaction(Date date)
+		throws RepeatTransactionNotFoundException
 	{
 		if (date == null)
 			return -1;
@@ -578,6 +590,12 @@ implements Cloneable
 		// have to retrieve the next check num first because android sqlite api
 		// doesn't allow for the creation of sqlite functions
 		Transaction trans = this.getTransaction();
+		
+		if (trans == null)
+		{
+			throw new RepeatTransactionNotFoundException();
+		}
+		
 		int next_check_num = 0;
 		if (trans.check_num > 0)
 		{
@@ -849,5 +867,10 @@ implements Cloneable
 			return null;
 		else
 			return due;
+	}
+	
+	public class RepeatTransactionNotFoundException extends Exception
+	{
+		private static final long serialVersionUID = 5915265815710777713L;
 	}
 }

@@ -131,6 +131,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		Transaction trans;
 		for (int id : ids)
 		{
+			if (id == -1)
+				continue;
+			
 			trans = Transaction.getTransactionById(id);
 			if (trans != null && trans.account == mAcctId)
 				mOriginalList.add(trans);
