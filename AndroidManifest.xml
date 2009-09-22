@@ -19,6 +19,7 @@
 <activity android:name=".DonateActivity">
 </activity>
 
+<provider android:authorities="net.gumbercules.loot.transactionprovider" android:name="net.gumbercules.loot.TransactionProvider"></provider>
 </application>
 
 
