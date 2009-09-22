@@ -54,16 +54,16 @@ public class SettingsActivity extends PreferenceActivity
 		{
 			Class.forName("net.gumbercules.loot.Premium");
 			premium.setEnabled(false);
-			premium.setTitle(R.string.premium_enabled_title);
-			premium.setSummary(R.string.premium_enabled_body);
+			//premium.setTitle(R.string.premium_enabled_title);
+			//premium.setSummary(R.string.premium_enabled_body);
 			
 			// TODO: stuff regarding the premium settings
 		}
 		catch (ClassNotFoundException e)
 		{
 			premium.setEnabled(true);
-			premium.setTitle(R.string.premium_disabled_title);
-			premium.setSummary(R.string.premium_disabled_body);
+			//premium.setTitle(R.string.premium_disabled_title);
+			//premium.setSummary(R.string.premium_disabled_body);
 			
 			String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
 					"color_budget_deposit", "color_check", "color_budget_check", 
