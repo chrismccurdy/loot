@@ -3,6 +3,7 @@
 	<name>loot</name>
 	<comment></comment>
 	<projects>
+		<project>loot premium</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

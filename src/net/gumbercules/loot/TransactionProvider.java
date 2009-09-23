@@ -32,12 +32,9 @@ public class TransactionProvider extends ContentProvider
 		List<String> path = uri.getPathSegments();
 		int size = path.size();
 		
-		if (size > 0 && !path.get(0).equals("net.gumbercules.loot.transactionprovider"))
-			return null;
-		
 		String object = null;
-		if (size > 1)
-			object = path.get(1);
+		if (size > 0)
+			object = path.get(0);
 		else
 			return null;
 		
@@ -49,9 +46,9 @@ public class TransactionProvider extends ContentProvider
 		else
 			return null;
 		
-		if (size == 3)
+		if (size == 2)
 		{
-			object = path.get(2);
+			object = path.get(1);
 			if (Integer.getInteger(object) != null)
 			{
 				if (tag)

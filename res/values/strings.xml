@@ -57,4 +57,8 @@
 <string name="no_locale">Loot requires that you have a valid locale set in order to work properly. Please set your locale in \&quot;Settings -&gt; Locale &amp; text -&gt; Set locale\&quot; and try again, otherwise you may not be able to enter transaction amounts properly. If you\'ve set the locale and it still doesn\'t work, use loot\'s settings to override the values it should detect.</string>
 <string name="bad_repeat">An error has occurred while repeating a transaction, and the transaction could not be found. The repeat schedule has been deleted.</string>
 <string name="repeat">Repeat Once</string>
+<string name="premium_enabled_title">Premium Enabled</string>
+<string name="premium_enabled_body">Thank you for purchasing the loot premium package! :-D</string>
+<string name="premium_disabled_title">Premium Disabled</string>
+<string name="premium_disabled_body">You must purchase the loot premium package in order to access these settings.</string>
 </resources>

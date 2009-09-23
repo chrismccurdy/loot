@@ -3,9 +3,11 @@ package net.gumbercules.loot;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import net.gumbercules.loot.R;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -31,7 +33,7 @@ public class SettingsActivity extends PreferenceActivity
 			PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
 			about.setTitle("About - " + pi.versionName);
 		}
-		catch (NameNotFoundException e1)
+		catch (NameNotFoundException e)
 		{
 			about.setTitle("About - Unknown Version");
 		}
@@ -50,30 +52,32 @@ public class SettingsActivity extends PreferenceActivity
 		});
 		
 		Preference premium = (Preference)findPreference("premium_enabled");
-		try
+		ContentResolver cr = getContentResolver();
+		String type = cr.getType(Uri.parse("content://net.gumbercules.loot.premium.settingsprovider/settings"));
+		
+		String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
+				"color_budget_deposit", "color_check", "color_budget_check", 
+				"cal_enabled", "calendar_tag"};
+
+		if (type != null)
 		{
-			Class.forName("net.gumbercules.loot.Premium");
-			premium.setEnabled(false);
-			//premium.setTitle(R.string.premium_enabled_title);
-			//premium.setSummary(R.string.premium_enabled_body);
+			premium.setTitle(R.string.premium_enabled_title);
+			premium.setSummary(R.string.premium_enabled_body);
 			
-			// TODO: stuff regarding the premium settings
+			setupPremiumSettings(prefs);
 		}
-		catch (ClassNotFoundException e)
+		else
 		{
-			premium.setEnabled(true);
-			//premium.setTitle(R.string.premium_disabled_title);
-			//premium.setSummary(R.string.premium_disabled_body);
+			premium.setTitle(R.string.premium_disabled_title);
+			premium.setSummary(R.string.premium_disabled_body);
 			
-			String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
-					"color_budget_deposit", "color_check", "color_budget_check", 
-					"cal_enabled", "calendar_tag"};
 			Preference cb_pref = null;
 			for (String pref : prefs)
 			{
 				cb_pref = (Preference)findPreference(pref);
 				cb_pref.setEnabled(false);
 			}
+			
 		}
 		
 		EditTextPreference pin = (EditTextPreference)findPreference("pin");
@@ -201,5 +205,59 @@ public class SettingsActivity extends PreferenceActivity
 				return true;
 			}
 		});
+	}
+	
+	private void setupPremiumSettings(String[] prefs)
+	{
+		final String[] cr_keys = {"aw", "bw", "ad", "bd", "ac", "bc", "calendar", "tag"};
+		
+		int i = 0;
+		final ContentResolver cr = getContentResolver();
+		final String uri = "content://net.gumbercules.loot.premium.settingsprovider/";
+		for (String pref : prefs)
+		{
+			final String key = cr_keys[i];
+			if (pref.equals("calendar_tag"))
+			{
+				// set up edittext preference
+				EditTextPreference tag = (EditTextPreference)findPreference(pref);
+				tag.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+				{
+					public boolean onPreferenceChange(Preference preference, Object newValue)
+					{
+						if (newValue.equals(""))
+							return false;
+
+						ContentValues cv = new ContentValues();
+						cv.put(key, (String)newValue);
+						cr.update(Uri.parse(uri + "calendar/" + key), cv, null, null);
+						
+						return true;
+					}
+				});
+			}
+			else if (pref.equals("cal_enabled"))
+			{
+				// set up checkbox preference
+				CheckBoxPreference calendar = (CheckBoxPreference)findPreference(pref);
+				calendar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+				{
+					public boolean onPreferenceChange(Preference preference, Object newValue)
+					{
+						boolean val = new Boolean(newValue.toString());
+						ContentValues cv = new ContentValues();
+						cv.put(key, Boolean.toString(val));
+						cr.update(Uri.parse(uri + key), cv, null, null);
+						
+						return true;
+					}	
+				});
+			}
+			else
+			{
+				// set up color picker preference
+			}
+			++i;
+		}
 	}
 }

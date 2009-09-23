@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -128,15 +129,18 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		if (ids == null)
 			return;
 		
+		int last = -1;
 		Transaction trans;
 		for (int id : ids)
 		{
-			if (id == -1)
+			if (id == -1 || id == last)
 				continue;
 			
 			trans = Transaction.getTransactionById(id);
 			if (trans != null && trans.account == mAcctId)
 				mOriginalList.add(trans);
+			
+			last = id;
 		}
 		notifyDataSetChanged();
 	}
@@ -211,6 +215,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			holder.date = (TextView)convertView.findViewById(R.id.DateText);
 			holder.party = (TextView)convertView.findViewById(R.id.PartyText);
 			holder.amount = (TextView)convertView.findViewById(R.id.AmountText);
+			holder.top = (LinearLayout)convertView.findViewById(R.id.LinearLayout01);
 			
 			convertView.setTag(holder);
 		}
@@ -280,8 +285,18 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		String partyStr = "";
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean showColors = prefs.getBoolean("color", false);
+		boolean colorBackground = prefs.getBoolean("color_background", false);
+		boolean lightBackgrounds = prefs.getBoolean("color_light", false);
 		int color = Color.LTGRAY;
 		
+		final int color_budget_deposit = Color.rgb(185, 255, 185);	// light green
+		final int color_deposit = Color.GREEN;						// green
+		final int color_budget_withdraw = Color.rgb(255, 255, 185);	// light yellow
+		final int color_withdraw = Color.YELLOW;					// yellow
+		final int color_budget_check = Color.rgb(185, 255, 255);	// light cyan
+		final int color_check = Color.CYAN;							// cyan
+		
+		//TODO: fix colors based on the three settings 
 		if (trans.budget)
 		{
 			if (trans.type == Transaction.DEPOSIT)
@@ -289,6 +304,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			else
 				partyStr += "-";
 		}
+		
 		if (trans.type == Transaction.CHECK)
 		{
 			partyStr += trans.check_num;
@@ -301,7 +317,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			partyStr += "W";
 			if (trans.budget)
-				color = Color.rgb(255, 255, 185);
+				color = Color.YELLOW;
 			else
 				color = Color.rgb(255, 255, 0);
 		}
@@ -319,25 +335,46 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		TextView partyText = v.party;
 		TextView amountText = v.amount;
 		
+		if (showColors && colorBackground)
+		{
+			LinearLayout top = v.top;
+			top.setBackgroundColor(color);
+		}
+		
 		if (dateText != null)
 		{
 			if (dateStr != null)
 				dateText.setText(dateStr);
 			if (showColors)
-				dateText.setTextColor(color);
+			{
+				if (!colorBackground)
+					dateText.setTextColor(color);
+				else
+					dateText.setTextColor(Color.DKGRAY);
+			}
 		}
 		if (partyText != null)
 		{
 			partyText.setText(partyStr);
 			if (showColors)
-				partyText.setTextColor(color);
+			{
+				if (!colorBackground)
+					partyText.setTextColor(color);
+				else
+					partyText.setTextColor(Color.DKGRAY);
+			}
 		}
 		if (amountText != null)
 		{
 			if (amountStr != null)
 				amountText.setText(amountStr);
 			if (showColors)
-				amountText.setTextColor(color);
+			{
+				if (!colorBackground)
+					amountText.setTextColor(color);
+				else
+					amountText.setTextColor(Color.DKGRAY);
+			}
 		}
 	}
 	
@@ -347,6 +384,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		TextView date;
 		TextView party;
 		TextView amount;
+		LinearLayout top;
 	}
 
 	public class TransactionFilter extends Filter
