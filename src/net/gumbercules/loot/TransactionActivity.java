@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
-import net.gumbercules.loot.R;
 import net.gumbercules.loot.TransactionAdapter.TransactionFilter;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -18,6 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -82,8 +82,6 @@ public class TransactionActivity extends ListActivity
 	private static boolean showSearch = false;
 	private static String searchString = "";
 	
-	private static boolean showColors;
-	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -113,9 +111,6 @@ public class TransactionActivity extends ListActivity
     	budgetValue = (TextView)findViewById(R.id.budgetValue);
     	balanceValue = (TextView)findViewById(R.id.balanceValue);
     	postedValue = (TextView)findViewById(R.id.postedValue);
-
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		showColors = prefs.getBoolean("color", false);
 
     	// add a listener to filter the list whenever the text changes
     	searchEdit = (MultiAutoCompleteTextView)findViewById(R.id.SearchEdit);
@@ -412,32 +407,32 @@ public class TransactionActivity extends ListActivity
 		String new_currency = Database.getOptionString("override_locale");
 		if (new_currency != null && !new_currency.equals(""))
 			nf.setCurrency(Currency.getInstance(new_currency));
-		String str;
 		
-		if (posted != null)
-			str = nf.format(posted);
-		else
-			str = "Error";
-		postedValue.setText(str);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean color = prefs.getBoolean("color_balance", false);
 		
-		if (balance != null)
-			str = nf.format(balance);
-		else
-			str = "Error";
-		balanceValue.setText(str);
-		
-		if (budget != null)
-			str = nf.format(budget);
-		else
-			str = "Error";
-		budgetValue.setText(str);
+		setBalance(postedValue, posted, color, nf);
+		setBalance(balanceValue, balance, color, nf);
+		setBalance(budgetValue, budget, color, nf);
+    }
+    
+    private void setBalance(TextView view, Double bal, boolean color, NumberFormat nf)
+    {
+    	String str = "Error";
+    	if (bal != null)
+    		str = nf.format(bal);
+    	
+    	view.setText(str);
+    	
+    	if (bal < 0 && color)
+    		view.setTextColor(Color.rgb(255, 50, 50));
+    	else
+    		view.setTextColor(Color.LTGRAY);
     }
     
     private void fillList()
     {
-		//int[] transIds = mAcct.getTransactionIds();
     	addRepeatedTransactions();
-		//mTa.add(transIds);
     	mTa.add(mAcct.getTransactions());
 		mTa.sort();
 		
@@ -527,14 +522,7 @@ public class TransactionActivity extends ListActivity
 			}
 		}
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean colors = prefs.getBoolean("color", false);
-		
-		if (colors != showColors)
-		{
-			showColors = colors;
-			mTa.notifyDataSetChanged();
-		}
+		mTa.notifyDataSetChanged();
 	}
 	
 	@Override

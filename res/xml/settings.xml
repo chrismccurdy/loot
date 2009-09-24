@@ -1,40 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android">
-
-<PreferenceScreen android:summary="About Loot, contact info, etc." android:key="about" android:title="About">
-<intent android:action="android.intent.action.VIEW" android:data="http://gumbercules.net/loot/about.html"/>
-
-</PreferenceScreen>
-<PreferenceScreen android:key="loot_premium" android:summary="More settings for the Loot premium version." android:title="Extra Settings">
-<Preference android:key="premium_enabled" android:enabled="true" android:title="@string/premium_disabled_title" android:summary="@string/premium_disabled_body">
-<intent android:action="android.intent.action.VIEW" android:data="market://search?q=net.gumbercules.loot.premium"/>
-</Preference>
-<PreferenceCategory android:title="Calendar Entries" android:key="premium_calendar"><CheckBoxPreference android:key="cal_enabled" android:title="Calendar Entries" android:summary="Marks a transaction on your calendar when a special tag is entered."></CheckBoxPreference>
-<EditTextPreference android:key="calendar_tag" android:dialogMessage="Please enter the tag you'd like to use to enter a transaction into your calendar." android:summary="The tag to use to enter a transaction into your calendar." android:dependency="cal_enabled" android:title="Calendar Tag" android:dialogTitle="Calendar Tag" android:negativeButtonText="@string/cancel" android:positiveButtonText="@string/save"></EditTextPreference>
-</PreferenceCategory>
-<PreferenceCategory android:title="Custom Colors" android:key="premium_colors">
-    <net.gumbercules.loot.ColorPickerPreference android:summary="Color to paint a withdraw transaction." android:dialogTitle="Withdraw Color" android:dialogMessage="Color to paint a withdraw transaction." android:title="Withdraw Color" android:key="color_withdraw"></net.gumbercules.loot.ColorPickerPreference>
-    <net.gumbercules.loot.ColorPickerPreference android:summary="Color to paint a budgeted withdraw transaction." android:dialogTitle="Budget Withdraw Color" android:dialogMessage="Color to paint a budgeted withdraw transaction." android:title="Budget Withdraw Color" android:key="color_budget_withdraw"></net.gumbercules.loot.ColorPickerPreference>
-    <net.gumbercules.loot.ColorPickerPreference android:summary="Color to paint a deposit transaction." android:dialogTitle="Deposit Color" android:dialogMessage="Color to paint a deposit transaction." android:title="Deposit Color" android:key="color_deposit"></net.gumbercules.loot.ColorPickerPreference>
-    <net.gumbercules.loot.ColorPickerPreference android:summary="Color to paint a budgeted deposit transaction." android:dialogTitle="Budget Deposit Color" android:dialogMessage="Color to paint a budgeted deposit transaction." android:title="Budget Deposit Color" android:key="color_budget_deposit"></net.gumbercules.loot.ColorPickerPreference>
-    <net.gumbercules.loot.ColorPickerPreference android:summary="Color to paint a check transaction." android:dialogTitle="Check Color" android:dialogMessage="Color to paint a check transaction." android:title="Check Color" android:key="color_check"></net.gumbercules.loot.ColorPickerPreference>
-    <net.gumbercules.loot.ColorPickerPreference android:summary="Color to paint a budgeted check transaction." android:dialogTitle="Budget Check Color" android:dialogMessage="Color to paint a budgeted check transaction." android:title="Budget Check Color" android:key="color_budget_check"></net.gumbercules.loot.ColorPickerPreference>
-</PreferenceCategory>
-</PreferenceScreen>
-<PreferenceScreen android:key="color_cat" android:title="Colors" android:summary="Various options regarding colors.">
-<CheckBoxPreference android:defaultValue="false" android:title="Colors" android:key="color" android:summary="Display transactions in color based on type."></CheckBoxPreference>
-<CheckBoxPreference android:summary="Change the color of the background instead of the text." android:defaultValue="false" android:dependency="color" android:key="color_background" android:title="Color Backgrounds"></CheckBoxPreference>
-<CheckBoxPreference android:summaryOn="Unselect to make background colors dark, and text colors light." android:summaryOff="Select to make background colors light, and text colors dark." android:key="color_light" android:title="Color Scheme"></CheckBoxPreference>
-<CheckBoxPreference android:title="Negative Balance" android:summary="Color negative balances in account summaries." android:key="color_balance"></CheckBoxPreference>
-</PreferenceScreen>
-<PreferenceCategory android:title="Security" android:key="cat_security">
-<CheckBoxPreference android:key="security" android:title="Security" android:defaultValue="false" android:disableDependentsState="false" android:summary="Use a PIN to access accounts."></CheckBoxPreference><EditTextPreference android:dialogTitle="PIN" android:title="PIN" android:key="pin" android:positiveButtonText="Set" android:negativeButtonText="Cancel" android:defaultValue="0000" android:dependency="security" android:summary="Password to access accounts." android:dialogMessage="Enter new PIN:"></EditTextPreference></PreferenceCategory>
-<PreferenceCategory android:title="Transaction Purging" android:key="cat_purge"><CheckBoxPreference android:key="purge" android:title="Auto Purge" android:defaultValue="false" android:disableDependentsState="false" android:summary="Automatically purge posted transactions."></CheckBoxPreference><EditTextPreference android:dialogTitle="Auto Purge" android:dialogMessage="Purge posted transactions after how many days?" android:key="purge_days" android:positiveButtonText="Set" android:negativeButtonText="Cancel" android:defaultValue="90" android:dependency="purge" android:title="Purge Days" android:summary="Number of days before purging."></EditTextPreference></PreferenceCategory>
-<PreferenceCategory android:title="Repeating Transactions" android:key="cat_repeat"><CheckBoxPreference android:key="repeat" android:defaultValue="true" android:title="Show Repeats Early" android:disableDependentsState="false" android:summary="Show repeating transactions before the recorded day."></CheckBoxPreference><EditTextPreference android:dialogTitle="Early Days" android:dialogMessage="Show transactions how many days before the transaction date?" android:positiveButtonText="Set" android:negativeButtonText="Cancel" android:key="repeat_days" android:title="Days Before Display" android:dependency="repeat" android:defaultValue="2" android:summary="Days before the repeated transaction is shown."></EditTextPreference>
-</PreferenceCategory>
-<PreferenceCategory android:title="Locale" android:key="cat_locale"><CheckBoxPreference android:title="Override Locale Settings" android:key="override_locale" android:summary="Set locale independently of your global settings." android:defaultValue="false"></CheckBoxPreference>
-<ListPreference android:key="locale_list" android:summary="Locale to use instead of the system-detected one." android:title="Locale" android:dependency="override_locale" android:defaultValue="0"></ListPreference>
-</PreferenceCategory>
-
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceScreen android:summary="About Loot, contact info, etc."
+		android:key="about" android:title="About">
+		<intent android:action="android.intent.action.VIEW"
+			android:data="http://gumbercules.net/loot/about.html" />
+	</PreferenceScreen>
+	<PreferenceScreen android:key="loot_premium"
+		android:summary="More settings for the Loot premium version."
+		android:title="Extra Settings">
+		<Preference android:key="premium_enabled" android:enabled="true"
+			android:title="@string/premium_disabled_title" android:summary="@string/premium_disabled_body">
+			<intent android:action="android.intent.action.VIEW"
+				android:data="market://search?q=net.gumbercules.loot.premium" />
+		</Preference>
+		<PreferenceCategory android:title="Calendar Entries"
+			android:key="premium_calendar">
+			<CheckBoxPreference android:key="cal_enabled"
+				android:title="Calendar Entries"
+				android:summary="Marks a transaction on your calendar when a special tag is entered."></CheckBoxPreference>
+			<EditTextPreference android:key="calendar_tag"
+				android:dialogMessage="Please enter the tag you'd like to use to enter a transaction into your calendar."
+				android:summary="The tag to use to enter a transaction into your calendar."
+				android:dependency="cal_enabled" android:title="Calendar Tag"
+				android:dialogTitle="Calendar Tag" android:negativeButtonText="@string/cancel"
+				android:positiveButtonText="@string/save"></EditTextPreference>
+		</PreferenceCategory>
+		<PreferenceCategory android:title="Custom Colors"
+			android:key="premium_colors">
+			<CheckBoxPreference
+				android:summary="Use colors set here instead of the system defaults."
+				android:key="use_custom_colors" android:title="Use Custom Colors"></CheckBoxPreference>
+			<net.gumbercules.loot.ColorPickerPreference
+				android:summary="Color to paint a withdraw transaction."
+				android:dialogTitle="Withdraw Color" android:dialogMessage="Color to paint a withdraw transaction."
+				android:title="Withdraw Color" android:key="color_withdraw"></net.gumbercules.loot.ColorPickerPreference>
+			<net.gumbercules.loot.ColorPickerPreference
+				android:summary="Color to paint a budgeted withdraw transaction."
+				android:dialogTitle="Budget Withdraw Color"
+				android:dialogMessage="Color to paint a budgeted withdraw transaction."
+				android:title="Budget Withdraw Color" android:key="color_budget_withdraw"></net.gumbercules.loot.ColorPickerPreference>
+			<net.gumbercules.loot.ColorPickerPreference
+				android:summary="Color to paint a deposit transaction."
+				android:dialogTitle="Deposit Color" android:dialogMessage="Color to paint a deposit transaction."
+				android:title="Deposit Color" android:key="color_deposit"></net.gumbercules.loot.ColorPickerPreference>
+			<net.gumbercules.loot.ColorPickerPreference
+				android:summary="Color to paint a budgeted deposit transaction."
+				android:dialogTitle="Budget Deposit Color" android:dialogMessage="Color to paint a budgeted deposit transaction."
+				android:title="Budget Deposit Color" android:key="color_budget_deposit"></net.gumbercules.loot.ColorPickerPreference>
+			<net.gumbercules.loot.ColorPickerPreference
+				android:summary="Color to paint a check transaction."
+				android:dialogTitle="Check Color" android:dialogMessage="Color to paint a check transaction."
+				android:title="Check Color" android:key="color_check"></net.gumbercules.loot.ColorPickerPreference>
+			<net.gumbercules.loot.ColorPickerPreference
+				android:summary="Color to paint a budgeted check transaction."
+				android:dialogTitle="Budget Check Color" android:dialogMessage="Color to paint a budgeted check transaction."
+				android:title="Budget Check Color" android:key="color_budget_check"></net.gumbercules.loot.ColorPickerPreference>
+		</PreferenceCategory>
+	</PreferenceScreen>
+	<PreferenceScreen android:key="color_cat"
+		android:title="Colors" android:summary="Various options regarding colors.">
+		<CheckBoxPreference android:defaultValue="false"
+			android:title="Colors" android:key="color"
+			android:summary="Display transactions in color based on type."></CheckBoxPreference>
+		<CheckBoxPreference
+			android:summary="Change the color of the background instead of the text."
+			android:defaultValue="false" android:dependency="color" android:key="color_background"
+			android:title="Color Backgrounds"></CheckBoxPreference>
+		<CheckBoxPreference android:title="Negative Balance"
+			android:summary="Color negative balances in account summaries."
+			android:key="color_balance"></CheckBoxPreference>
+	</PreferenceScreen>
+	<PreferenceCategory android:title="Security"
+		android:key="cat_security">
+		<CheckBoxPreference android:key="security"
+			android:title="Security" android:defaultValue="false"
+			android:disableDependentsState="false" android:summary="Use a PIN to access accounts."></CheckBoxPreference>
+		<EditTextPreference android:dialogTitle="PIN"
+			android:title="PIN" android:key="pin" android:positiveButtonText="Set"
+			android:negativeButtonText="Cancel" android:defaultValue="0000"
+			android:dependency="security" android:summary="Password to access accounts."
+			android:dialogMessage="Enter new PIN:"></EditTextPreference>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Transaction Purging"
+		android:key="cat_purge">
+		<CheckBoxPreference android:key="purge"
+			android:title="Auto Purge" android:defaultValue="false"
+			android:disableDependentsState="false"
+			android:summary="Automatically purge posted transactions."></CheckBoxPreference>
+		<EditTextPreference android:dialogTitle="Auto Purge"
+			android:dialogMessage="Purge posted transactions after how many days?"
+			android:key="purge_days" android:positiveButtonText="Set"
+			android:negativeButtonText="Cancel" android:defaultValue="90"
+			android:dependency="purge" android:title="Purge Days"
+			android:summary="Number of days before purging."></EditTextPreference>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Repeating Transactions"
+		android:key="cat_repeat">
+		<CheckBoxPreference android:key="repeat"
+			android:defaultValue="true" android:title="Show Repeats Early"
+			android:disableDependentsState="false"
+			android:summary="Show repeating transactions before the recorded day."></CheckBoxPreference>
+		<EditTextPreference android:dialogTitle="Early Days"
+			android:dialogMessage="Show transactions how many days before the transaction date?"
+			android:positiveButtonText="Set" android:negativeButtonText="Cancel"
+			android:key="repeat_days" android:title="Days Before Display"
+			android:dependency="repeat" android:defaultValue="2"
+			android:summary="Days before the repeated transaction is shown."></EditTextPreference>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Locale"
+		android:key="cat_locale">
+		<CheckBoxPreference android:title="Override Locale Settings"
+			android:key="override_locale" android:summary="Set locale independently of your global settings."
+			android:defaultValue="false"></CheckBoxPreference>
+		<ListPreference android:key="locale_list"
+			android:summary="Locale to use instead of the system-detected one."
+			android:title="Locale" android:dependency="override_locale"
+			android:defaultValue="0"></ListPreference>
+	</PreferenceCategory>
 </PreferenceScreen>

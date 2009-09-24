@@ -7,6 +7,9 @@ import java.util.Currency;
 import net.gumbercules.loot.R;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +76,15 @@ public class AccountAdapter extends ArrayAdapter<Account>
 			else
 				text = "Error Calculating Balance";
 			AccountBal.setText(text);
+			
+			if (bal < 0)
+			{
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+				if (prefs.getBoolean("color_balance", false))
+					AccountBal.setTextColor(Color.rgb(255, 50, 50));
+			}
+			else
+				AccountBal.setTextColor(Color.LTGRAY);
 		}
 
 		return v;

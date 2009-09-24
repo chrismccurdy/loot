@@ -5,8 +5,10 @@ import java.security.NoSuchAlgorithmException;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -57,7 +59,7 @@ public class SettingsActivity extends PreferenceActivity
 		
 		String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
 				"color_budget_deposit", "color_check", "color_budget_check", 
-				"cal_enabled", "calendar_tag"};
+				"cal_enabled", "calendar_tag", "use_custom_colors"};
 
 		if (type != null)
 		{
@@ -253,6 +255,46 @@ public class SettingsActivity extends PreferenceActivity
 					}	
 				});
 			}
+			else if (pref.equals("use_custom_colors"))
+			{
+				CheckBoxPreference cb = (CheckBoxPreference)findPreference(pref);
+				cb.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+				{
+					public boolean onPreferenceChange(Preference preference, Object newValue)
+					{
+						String[] colors = {"color_withdraw", "color_budget_withdraw", "color_deposit",
+								"color_budget_deposit", "color_check", "color_budget_check"};
+						SharedPreferences.Editor editor = preference.getEditor();
+						ContentResolver cr = getContentResolver();
+						String uri = "content://net.gumbercules.loot.premium.settingsprovider/color/";
+						
+						boolean val = new Boolean(newValue.toString());
+						int j = 0;
+						Cursor cur;
+						for (String key : colors)
+						{
+							if (val)
+							{
+								cur = cr.query(Uri.parse(uri + cr_keys[j]), null, null, null, null);
+								if (cur != null)
+								{
+									if (cur.moveToFirst())
+										editor.putInt(key, cur.getInt(1));
+									cur.close();
+								}
+							}
+							else
+							{
+								editor.remove(key);
+							}
+							editor.commit();
+							++j;
+						}
+						
+						return true;
+					}
+				});
+			}
 			else
 			{
 				// set up color picker preference
@@ -260,15 +302,18 @@ public class SettingsActivity extends PreferenceActivity
 				picker.setDialogMessage("");
 				picker.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
 				{
-					@Override
 					public boolean onPreferenceChange(Preference preference, Object newValue)
 					{
-						//TODO: update settings with content resolver
+						int val = new Integer(newValue.toString());
+						ContentValues cv = new ContentValues();
+						cv.put(key, Integer.toString(val));
+						cr.update(Uri.parse(uri + "color/" + key), cv, null, null);
+						
 						return true;
 					}
 				});
+				++i;
 			}
-			++i;
 		}
 	}
 }

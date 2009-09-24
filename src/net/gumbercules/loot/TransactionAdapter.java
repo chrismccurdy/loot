@@ -286,15 +286,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean showColors = prefs.getBoolean("color", false);
 		boolean colorBackground = prefs.getBoolean("color_background", false);
-		boolean lightBackgrounds = prefs.getBoolean("color_light", false);
 		int color = Color.LTGRAY;
 		
-		final int color_budget_deposit = Color.rgb(185, 255, 185);	// light green
-		final int color_deposit = Color.GREEN;						// green
-		final int color_budget_withdraw = Color.rgb(255, 255, 185);	// light yellow
-		final int color_withdraw = Color.YELLOW;					// yellow
-		final int color_budget_check = Color.rgb(185, 255, 255);	// light cyan
-		final int color_check = Color.CYAN;							// cyan
+		final int Color_LTGREEN = Color.rgb(185, 255, 185);
+		final int Color_LTYELLOW = Color.rgb(255, 255, 185);
+		final int Color_LTCYAN = Color.rgb(185, 255, 255);
 		
 		//TODO: fix colors based on the three settings 
 		if (trans.budget)
@@ -309,25 +305,25 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			partyStr += trans.check_num;
 			if (trans.budget)
-				color = Color.rgb(185, 255, 255);
+				color = prefs.getInt("color_budget_check", Color_LTCYAN);
 			else
-				color = Color.CYAN;
+				color = prefs.getInt("color_check", Color.CYAN);
 		}
 		else if (trans.type == Transaction.WITHDRAW)
 		{
 			partyStr += "W";
 			if (trans.budget)
-				color = Color.YELLOW;
+				color = prefs.getInt("color_budget_withdraw", Color_LTYELLOW);
 			else
-				color = Color.rgb(255, 255, 0);
+				color = prefs.getInt("color_withdraw", Color.YELLOW);
 		}
 		else
 		{
 			partyStr += "D";
 			if (trans.budget)
-				color = Color.rgb(185, 255, 185);
+				color = prefs.getInt("color_budget_deposit", Color_LTGREEN);
 			else
-				color = Color.GREEN;
+				color = prefs.getInt("color_deposit", Color.GREEN);
 		}
 		partyStr += ":" + trans.party;
 		
@@ -341,40 +337,21 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			top.setBackgroundColor(color);
 		}
 		
-		if (dateText != null)
+		setText(dateText, dateStr, color, showColors, colorBackground);
+		setText(partyText, partyStr, color, showColors, colorBackground);
+		setText(amountText, amountStr, color, showColors, colorBackground);
+	}
+	
+	private void setText(TextView text, String str, int color, boolean colors, boolean bg)
+	{
+		if (text != null)
+			text.setText(str);
+		if (colors)
 		{
-			if (dateStr != null)
-				dateText.setText(dateStr);
-			if (showColors)
-			{
-				if (!colorBackground)
-					dateText.setTextColor(color);
-				else
-					dateText.setTextColor(Color.DKGRAY);
-			}
-		}
-		if (partyText != null)
-		{
-			partyText.setText(partyStr);
-			if (showColors)
-			{
-				if (!colorBackground)
-					partyText.setTextColor(color);
-				else
-					partyText.setTextColor(Color.DKGRAY);
-			}
-		}
-		if (amountText != null)
-		{
-			if (amountStr != null)
-				amountText.setText(amountStr);
-			if (showColors)
-			{
-				if (!colorBackground)
-					amountText.setTextColor(color);
-				else
-					amountText.setTextColor(Color.DKGRAY);
-			}
+			if (!bg)
+				text.setTextColor(color);
+			else
+				text.setTextColor(Color.DKGRAY);
 		}
 	}
 	

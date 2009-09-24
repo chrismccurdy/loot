@@ -10,10 +10,12 @@ import java.util.Date;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.preference.PreferenceManager;
@@ -67,6 +69,21 @@ public class AccountChooser extends ListActivity
 		AccountAdapter accounts = new AccountAdapter(this, R.layout.account_row, accountList);
 		setListAdapter(accounts);
 		fillList();
+		
+		ContentResolver cr = getContentResolver();
+
+		// remove preferences if the premium package has been removed
+		if (cr.getType(Uri.parse("content://net.gumbercules.loot.premium.settingsprovider/settings")) == null)
+		{
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = prefs.edit();
+			String[] pref_keys = {"color_withdraw", "color_budget_withdraw", "color_deposit",
+					"color_budget_deposit", "color_check", "color_budget_check", 
+					"cal_enabled", "calendar_tag"};
+			for (String key : pref_keys)
+				editor.remove(key);
+			editor.commit();
+		}
 		
 		if (Database.getOptionInt("nag_donate") < 1)
 		{

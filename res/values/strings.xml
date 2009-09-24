@@ -1,64 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="app_name">loot</string>
-<string name="search_text">Search...</string>
-<string name="new_trans">New Entry</string>
-<string name="settings">Settings</string>
-<string name="transfer">New Transfer</string>
-<string name="sort">Sort</string>
-<string name="search">Search</string>
-<string name="purge">Purge</string>
-<string name="new_account">New Account</string>
-<string name="acct_name">Account Name</string>
-<string name="acct_bal">Initial Balance</string>
-<string name="save">Save</string>
-<string name="cancel">Cancel</string>
-<string name="edit">Edit</string>
-<string name="del">Delete</string>
-<string name="yes">Yes</string>
-<string name="no">No</string>
-<string name="account_del_box">Delete Account</string>
-<string name="copy">Copy</string>
-<string name="trans_posted">Posted</string>
-<string name="trans_budget">Budget</string>
-<string name="trans_balance">Balance</string>
-<string name="sort_column">Sort Column</string>
-<string name="unlock">Unlock</string>
-<string name="pin">Please enter the PIN to unlock the accounts.</string>
-<string name="invalid">Invalid PIN</string>
-
-<string name="post">Post</string>
-<string name="acct_priority">Display Priority</string>
-
-<string name="restore_account">Restore Account</string>
-<string name="clear_account">Clear Account</string>
-<string name="clear">Clear Deleted Account</string>
-<string name="restore">Restore Deleted Account</string>
-<string name="no_deleted_accounts">There are no deleted accounts in the database.</string>
-<string name="backup_path">/sdcard/loot/LootDB.db</string>
-<string name="backup">Backup Database</string>
-<string name="restore_db">Restore Database</string>
-<string name="backup_successful">Database backed up to SD card.</string>
-<string name="backup_failed">Database could not be backed up to SD card.</string>
-<string name="restore_successful">Database restored from SD card. Application will be stopped to reload the database.</string>
-<string name="restore_failed">Database could not be restored from the SD card.</string>
-<string name="backing_up">Backing up the database. This may take a while.</string>
-<string name="restoring">Restoring the database. This may take a while.</string>
-<string name="new_version">You have upgraded to a new version of loot. If you encounter any bugs, please email me at christopher.mccurdy@gmail.com with what you were doing at the time. Also, please feel free to donate to me through PayPal. Would you like to donate now?</string>
-<string name="donate_location">You can always donate at a later time by going to \&quot;Settings\&quot;, choosing \&quot;About\&quot;, and clicking on the donation button.</string>
-<string name="donate_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=1368357</string>
-<string name="trans_amt">Amount</string>
-<string name="trans_party">Party</string>
-<string name="trans_date">Date</string>
-<string name="trans_account">Account</string>
-<string name="trans_check_num">Check #</string>
-<string name="trans_tags">Tags</string>
-<string name="trans_repeat">Repeat</string>
-<string name="no_locale">Loot requires that you have a valid locale set in order to work properly. Please set your locale in \&quot;Settings -&gt; Locale &amp; text -&gt; Set locale\&quot; and try again, otherwise you may not be able to enter transaction amounts properly. If you\'ve set the locale and it still doesn\'t work, use loot\'s settings to override the values it should detect.</string>
-<string name="bad_repeat">An error has occurred while repeating a transaction, and the transaction could not be found. The repeat schedule has been deleted.</string>
-<string name="repeat">Repeat Once</string>
-<string name="premium_enabled_title">Premium Enabled</string>
-<string name="premium_enabled_body">Thank you for purchasing the loot premium package! :-D</string>
-<string name="premium_disabled_title">Premium Disabled</string>
-<string name="premium_disabled_body">You must purchase the loot premium package in order to access these settings.</string>
+	<string name="app_name">loot</string>
+	<string name="search_text">Search...</string>
+	<string name="new_trans">New Entry</string>
+	<string name="settings">Settings</string>
+	<string name="transfer">New Transfer</string>
+	<string name="sort">Sort</string>
+	<string name="search">Search</string>
+	<string name="purge">Purge</string>
+	<string name="new_account">New Account</string>
+	<string name="acct_name">Account Name</string>
+	<string name="acct_bal">Initial Balance</string>
+	<string name="save">Save</string>
+	<string name="cancel">Cancel</string>
+	<string name="edit">Edit</string>
+	<string name="del">Delete</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+	<string name="account_del_box">Delete Account</string>
+	<string name="copy">Copy</string>
+	<string name="trans_posted">Posted</string>
+	<string name="trans_budget">Budget</string>
+	<string name="trans_balance">Balance</string>
+	<string name="sort_column">Sort Column</string>
+	<string name="unlock">Unlock</string>
+	<string name="pin">Please enter the PIN to unlock the accounts.
+	</string>
+	<string name="invalid">Invalid PIN</string>
+	<string name="post">Post</string>
+	<string name="acct_priority">Display Priority</string>
+	<string name="restore_account">Restore Account</string>
+	<string name="clear_account">Clear Account</string>
+	<string name="clear">Clear Deleted Account</string>
+	<string name="restore">Restore Deleted Account</string>
+	<string name="no_deleted_accounts">There are no deleted accounts in the database.
+	</string>
+	<string name="backup_path">/sdcard/loot/LootDB.db</string>
+	<string name="backup">Backup Database</string>
+	<string name="restore_db">Restore Database</string>
+	<string name="backup_successful">Database backed up to SD card.</string>
+	<string name="backup_failed">Database could not be backed up to SD card.
+	</string>
+	<string name="restore_successful">Database restored from SD card. Application will be
+		stopped to reload the database.</string>
+	<string name="restore_failed">Database could not be restored from the SD card.
+	</string>
+	<string name="backing_up">Backing up the database. This may take a while.
+	</string>
+	<string name="restoring">Restoring the database. This may take a while.
+	</string>
+	<string name="new_version">You have upgraded to a new version of loot. If you
+		encounter any bugs, please email me at christopher.mccurdy@gmail.com
+		with what you were doing at the time. Also, please feel free to donate
+		to me through PayPal. Would you like to donate now?</string>
+	<string name="donate_location">You can always donate at a later time by going to
+		\&quot;Settings\&quot;, choosing \&quot;About\&quot;, and clicking on
+		the donation button.</string>
+	<string name="donate_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=1368357
+	</string>
+	<string name="trans_amt">Amount</string>
+	<string name="trans_party">Party</string>
+	<string name="trans_date">Date</string>
+	<string name="trans_account">Account</string>
+	<string name="trans_check_num">Check #</string>
+	<string name="trans_tags">Tags</string>
+	<string name="trans_repeat">Repeat</string>
+	<string name="no_locale">Loot requires that you have a valid locale set in
+		order to work properly. Please set your locale in \&quot;Settings
+		-&gt; Locale &amp; text -&gt; Set locale\&quot; and try again,
+		otherwise you may not be able to enter transaction amounts properly.
+		If you\'ve set the locale and it still doesn\'t work, use loot\'s
+		settings to override the values it should detect.</string>
+	<string name="bad_repeat">An error has occurred while repeating a
+		transaction, and the transaction could not be found. The repeat
+		schedule has been deleted.</string>
+	<string name="repeat">Repeat Once</string>
+	<string name="premium_enabled_title">Premium Enabled</string>
+	<string name="premium_enabled_body">Thank you for purchasing the loot premium package!
+		:-D</string>
+	<string name="premium_disabled_title">Premium Disabled</string>
+	<string name="premium_disabled_body">You must purchase the loot premium package in order
+		to access these settings.</string>
 </resources>
