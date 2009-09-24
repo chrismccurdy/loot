@@ -92,10 +92,11 @@ public class ColorPickerPreference extends DialogPreference
 	    }
 	    
 	    @Override 
-	    protected void onDraw(Canvas canvas) {
-	        float r = CENTER_X - mPaint.getStrokeWidth()*0.5f;
+	    protected void onDraw(Canvas canvas)
+	    {
+	        float r = CENTER_X - mPaint.getStrokeWidth()*2.0f;
 	        
-	        canvas.translate(CENTER_X, CENTER_X);
+	        canvas.translate(CENTER_X, CENTER_Y );
 	        int c = mCenterPaint.getColor();
 	
 	        if (mRedrawHSV)
@@ -128,23 +129,28 @@ public class ColorPickerPreference extends DialogPreference
 	    }
 	    
 	    @Override
-	    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-	        setMeasuredDimension(CENTER_X*2, (CENTER_Y+75)*2);
+	    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	    {
+	        setMeasuredDimension(CENTER_X*2, CENTER_Y*3);
 	    }
 	    
-	    private static final int CENTER_X = 100;
-	    private static final int CENTER_Y = 100;
+	    private static final int CENTER_X = 150;
+	    private static final int CENTER_Y = 125;
 	    private static final int CENTER_RADIUS = 32;
 	
-	    private int ave(int s, int d, float p) {
+	    private int ave(int s, int d, float p)
+	    {
 	        return s + java.lang.Math.round(p * (d - s));
 	    }
 	    
-	    private int interpColor(int colors[], float unit) {
-	        if (unit <= 0) {
+	    private int interpColor(int colors[], float unit)
+	    {
+	        if (unit <= 0)
+	        {
 	            return colors[0];
 	        }
-	        if (unit >= 1) {
+	        if (unit >= 1)
+	        {
 	            return colors[colors.length - 1];
 	        }
 	        
@@ -166,26 +172,32 @@ public class ColorPickerPreference extends DialogPreference
 	    private static final float PI = 3.1415926f;
 	
 	    @Override
-	    public boolean onTouchEvent(MotionEvent event) {
+	    public boolean onTouchEvent(MotionEvent event)
+	    {
 	        float x = event.getX() - CENTER_X;
 	        float y = event.getY() - CENTER_Y;
 	        boolean inCenter = java.lang.Math.sqrt(x*x + y*y) <= CENTER_RADIUS;
 	        
-	        switch (event.getAction()) {
+	        switch (event.getAction()) 
+	        {
 	            case MotionEvent.ACTION_DOWN:
 	                mTrackingCenter = inCenter;
-	                if (inCenter) {
+	                if (inCenter)
+	                {
 	                    mHighlightCenter = true;
 	                    invalidate();
 	                    break;
 	                }
 	            case MotionEvent.ACTION_MOVE:
-	                if (mTrackingCenter) {
-	                    if (mHighlightCenter != inCenter) {
+	                if (mTrackingCenter) 
+	                {
+	                    if (mHighlightCenter != inCenter)
+	                    {
 	                        mHighlightCenter = inCenter;
 	                        invalidate();
 	                    }
-	                } else if ((x >= -100 & x <= 100) && (y <= 145 && y >= 125)) // see if we're in the hsv slider
+	                } 
+	                else if ((x >= -100 & x <= 100) && (y <= 145 && y >= 125)) // see if we're in the hsv slider
 	                {
 	                	int a, r, g, b, c0, c1;
 	                	float p;
@@ -227,8 +239,10 @@ public class ColorPickerPreference extends DialogPreference
 	                }
 	                break;
 	            case MotionEvent.ACTION_UP:
-	                if (mTrackingCenter) {
-	                    if (inCenter) {
+	                if (mTrackingCenter)
+	                {
+	                    if (inCenter) 
+	                    {
 	                        mListener.colorChanged(mCenterPaint.getColor());
 	                    }
 	                    mTrackingCenter = false;    // so we draw w/o halo
