@@ -10,12 +10,14 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.DialogPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.widget.EditText;
 
 public class SettingsActivity extends PreferenceActivity
@@ -256,6 +258,17 @@ public class SettingsActivity extends PreferenceActivity
 			else
 			{
 				// set up color picker preference
+				ColorPickerPreference picker = (ColorPickerPreference)findPreference(pref);
+				picker.setDialogMessage("");
+				picker.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+				{
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue)
+					{
+						Log.i("ON_PREFERENCE_CHANGE", newValue.toString());
+						return true;
+					}
+				});
 			}
 			++i;
 		}
