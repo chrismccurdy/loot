@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 public class AccountProvider extends ContentProvider
 {
@@ -74,16 +75,16 @@ public class AccountProvider extends ContentProvider
 			sortOrder = "priority asc";
 			
 		List<String> path = uri.getPathSegments();
-		String query = null;
+		String query = "select " + Arrays.toString(projection).replaceAll("[\\[\\]]", "") +
+				" from accounts where ";
 		if (type.equals(ACCOUNT_ITEM_MIME))
 		{
-			query = "select " + Arrays.toString(projection) + " from accounts " +
-					"where id = " + path.get(0) + " and " + selection + " order by " + sortOrder;
+			query += "id = " + path.get(0) + " and " + selection +
+					" order by " + sortOrder;
 		}
 		else if (type.equals(ACCOUNT_DIR_MIME))
 		{
-			query = "select " + Arrays.toString(projection) + " from accounts " +
-					"where " + selection + " order by " + sortOrder;
+			query += selection + " order by " + sortOrder;
 		}
 		
 		return lootDb.rawQuery(query, null);

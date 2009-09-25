@@ -98,25 +98,23 @@ public class TransactionProvider extends ContentProvider
 			sortOrder = "id asc";
 			
 		List<String> path = uri.getPathSegments();
-		String query = null;
+		String query = "select " + Arrays.toString(projection).replaceAll("[\\[\\]]", "") + " from ";
 		if (type.equals(TRANSACTION_ITEM_MIME))
 		{
-			query = "select " + Arrays.toString(projection) + " from transaction, tags " +
-					"where id = " + path.get(2) + " and trans_id = id and " + 
+			query += "transaction, tags " +	"where id = " + path.get(2) + " and trans_id = id and " + 
 					selection + " order by " + sortOrder;
 		}
 		else if (type.equals(TRANSACTION_DIR_MIME))
 		{
-			query = "select " + Arrays.toString(projection) + " from transaction, tags " +
-					"where trans_id = id and " + selection + " order by " + sortOrder;
+			query += "transaction, tags where trans_id = id and " + selection +
+					" order by " + sortOrder;
 		}
 		else if (type.equals(TAG_DIR_MIME))
 		{
 			if (sortOrder.equals("id asc"))
 				sortOrder = "name asc";
 			
-			query = "select " + Arrays.toString(projection) + " from tags " +
-					"where " + selection + " order by " + sortOrder; 
+			query += "tags where " + selection + " order by " + sortOrder; 
 		}
 		else if (type.equals(INTEGER_ITEM_MIME))
 		{
