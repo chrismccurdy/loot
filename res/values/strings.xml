@@ -81,4 +81,6 @@
 	<string name="premium_disabled_title">Premium Disabled</string>
 	<string name="premium_disabled_body">You must purchase the loot premium package in order
 		to access these settings.</string>
+	<string name="export">Export</string>
+<string name="import_">Import</string>
 </resources>

@@ -24,7 +24,7 @@
 			<EditText android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/BalanceEdit"
 				android:layout_marginLeft="10px" android:layout_weight="2"
-				android:hint="@string/acct_bal" android:inputType="numberDecimal"></EditText>
+				android:hint="@string/acct_bal" android:inputType="phone"></EditText>
 		</TableRow>
 		<TableRow android:layout_height="wrap_content"
 			android:layout_width="fill_parent" android:id="@+id/PriorityRow">
