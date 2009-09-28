@@ -292,7 +292,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		final int Color_LTYELLOW = Color.rgb(255, 255, 185);
 		final int Color_LTCYAN = Color.rgb(185, 255, 255);
 		
-		//TODO: fix colors based on the three settings 
 		if (trans.budget)
 		{
 			if (trans.type == Transaction.DEPOSIT)

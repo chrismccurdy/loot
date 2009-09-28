@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 public class TransactionProvider extends ContentProvider
 {
@@ -101,13 +102,13 @@ public class TransactionProvider extends ContentProvider
 		String query = "select " + Arrays.toString(projection).replaceAll("[\\[\\]]", "") + " from ";
 		if (type.equals(TRANSACTION_ITEM_MIME))
 		{
-			query += "transaction, tags " +	"where id = " + path.get(2) + " and trans_id = id and " + 
-					selection + " order by " + sortOrder;
+			query += "transactions left outer join tags on trans_id = id " +
+					"where id = " + path.get(2) + " and " + selection + " order by " + sortOrder;
 		}
 		else if (type.equals(TRANSACTION_DIR_MIME))
 		{
-			query += "transaction, tags where trans_id = id and " + selection +
-					" order by " + sortOrder;
+			query += "transactions left outer join tags on trans_id = id " +
+					"where " + selection + " order by " + sortOrder;
 		}
 		else if (type.equals(TAG_DIR_MIME))
 		{
@@ -118,12 +119,12 @@ public class TransactionProvider extends ContentProvider
 		}
 		else if (type.equals(INTEGER_ITEM_MIME))
 		{
-			String table = path.get(1);
-			if (table.equals("tag"))
-				table = "tags";
+			String table = path.get(1) + "s";
 			
 			query = "select count(*) from " + table + " where " + selection;
 		}
+		
+		Log.i("net.gumbercules.loot.TransactionProvider.query", query);
 		
 		return lootDb.rawQuery(query, null);
 	}
