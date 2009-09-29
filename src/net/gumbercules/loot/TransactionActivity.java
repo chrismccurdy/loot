@@ -318,7 +318,7 @@ public class TransactionActivity extends ListActivity
 				            public void onDateSet(DatePicker view, int year, int month,  int day)
 				            {
 								Calendar cal = Calendar.getInstance();
-								cal.set(Calendar.HOUR, 23);
+								cal.set(Calendar.HOUR_OF_DAY, 23);
 								cal.set(Calendar.MINUTE, 59);
 								cal.set(Calendar.SECOND, 59);
 				            	cal.set(Calendar.YEAR, year);

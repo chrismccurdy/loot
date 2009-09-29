@@ -408,6 +408,12 @@ public class Database
 			"loot_" + System.currentTimeMillis() + ".db.tmp";
 		
 		File tmpFile = new File(tmpFileName);
+		File parentFile = tmpFile.getParentFile();
+		
+		if (!parentFile.exists())
+		{
+			parentFile.mkdirs();
+		}
 		
 		try
 		{
@@ -415,7 +421,7 @@ public class Database
 		}
 		catch (IOException e)
 		{
-			Log.e("copyDatabase", "couldn't copy to temp file");
+			Log.e("copyDatabase", "couldn't copy to temp file: " + tmpFile.getName());
 			return false;
 		}
 		
@@ -427,14 +433,10 @@ public class Database
 				return false;
 			}
 		}
-		else
-		{
-			new File(toFile.getParent()).mkdirs();
-		}
 		
 		if (!tmpFile.renameTo(toFile))
 		{
-			Log.e("copyDatabase", "couldn't rename file");
+			Log.e("copyDatabase", "couldn't rename " + tmpFile.getName() + " to " + toFile.getName());
 			return false;
 		}
 		
