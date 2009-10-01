@@ -61,7 +61,8 @@ public class TransactionActivity extends ListActivity
 	public static final int SORT_ID			= Menu.FIRST + 2;
 	public static final int SEARCH_ID		= Menu.FIRST + 3;
 	public static final int PURGE_ID		= Menu.FIRST + 4;
-	public static final int SETTINGS_ID		= Menu.FIRST + 5;
+	public static final int EXPORT_ID		= Menu.FIRST + 5;
+	public static final int SETTINGS_ID		= Menu.FIRST + 6;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_COPY	= Menu.FIRST + 1;
@@ -206,9 +207,14 @@ public class TransactionActivity extends ListActivity
     	menu.add(0, PURGE_ID, 0, R.string.purge)
     		.setShortcut('5', 'p')
     		.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+    	menu.add(0, EXPORT_ID, 0, R.string.export)
+    		.setShortcut('6', 'x')
+    		.setIcon(android.R.drawable.ic_menu_upload);
     	menu.add(0, SETTINGS_ID, 0, R.string.settings)
-    		.setShortcut('6', 's')
+    		.setShortcut('7', 's')
     		.setIcon(android.R.drawable.ic_menu_preferences);
+    	
+    	//TODO: add export menu item
     	
     	return result;
     }
@@ -236,6 +242,11 @@ public class TransactionActivity extends ListActivity
     		
     	case PURGE_ID:
     		purgeDialog();
+    		return true;
+    		
+    	case EXPORT_ID:
+    		Export export = new Export(this);
+    		export.showExport(mAcct.id());
     		return true;
     		
     	case SETTINGS_ID:

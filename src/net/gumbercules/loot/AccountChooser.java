@@ -6,19 +6,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
-import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
@@ -50,6 +46,7 @@ public class AccountChooser extends ListActivity
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST + 7;
 	public static final int CONTEXT_DEL		= Menu.FIRST + 8;
+	public static final int CONTEXT_EXPORT	= Menu.FIRST + 9;
 	
 	private static boolean copyInProgress = false;
 
@@ -188,7 +185,7 @@ public class AccountChooser extends ListActivity
 			.setShortcut('5', 'r')
 			.setIcon(android.R.drawable.ic_menu_set_as);
 		menu.add(0, EXPORT_ID, 0, R.string.export)
-			.setShortcut('6', 'e')
+			.setShortcut('6', 'x')
 			.setIcon(android.R.drawable.ic_menu_upload);
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
 			.setShortcut('7', 's')
@@ -238,33 +235,11 @@ public class AccountChooser extends ListActivity
     		return true;
     		
     	case EXPORT_ID:
-    		showExport();
+    		Export export = new Export(this);
+    		export.showExport();
     	}
     	
 		return super.onOptionsItemSelected(item);
-	}
-	
-	private void showExport()
-	{
-		Intent i = new Intent("net.gumbercules.loot.premium.EXPORT", null);
-		List<ResolveInfo> apps = getPackageManager().queryIntentActivities(i, 0);
-		if (!apps.isEmpty())
-		{
-			ComponentName targetComp = new ComponentName(apps.get(0).activityInfo.applicationInfo.packageName,
-					apps.get(0).activityInfo.name);
-			i = new Intent();
-			i.setComponent(targetComp);
-		}
-		
-		try
-		{
-			startActivity(i);
-		}
-		catch (ActivityNotFoundException e)
-		{
-			i = new Intent(this, PremiumNotFoundActivity.class);
-			startActivity(i);
-		}
 	}
 
 	private Account[] findDeletedAccounts()
@@ -440,6 +415,11 @@ public class AccountChooser extends ListActivity
 			dialog.show();
 			
 			return true;
+			
+		case CONTEXT_EXPORT:
+			Export export = new Export(this);
+			export.showExport(id);
+			return true;
 		}
 		return false;
 	}
@@ -466,6 +446,7 @@ public class AccountChooser extends ListActivity
 		
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
+		menu.add(0, CONTEXT_EXPORT, 0, R.string.export);
 	}
 
 	@Override
