@@ -13,7 +13,9 @@
 			<intent android:action="android.intent.action.VIEW"
 				android:data="market://search?q=net.gumbercules.loot.premium" />
 		</Preference>
-		<PreferenceCategory android:title="Calendar Entries"
+<!--
+    // removed since the Calendar does not have a public API in the foreseeable future
+     	<PreferenceCategory android:title="Calendar Entries"
 			android:key="premium_calendar">
 			<CheckBoxPreference android:key="cal_enabled"
 				android:title="Calendar Entries"
@@ -25,6 +27,7 @@
 				android:dialogTitle="Calendar Tag" android:negativeButtonText="@string/cancel"
 				android:positiveButtonText="@string/save"></EditTextPreference>
 		</PreferenceCategory>
+-->
 		<PreferenceCategory android:title="Custom Colors"
 			android:key="premium_colors">
 			<CheckBoxPreference
