@@ -55,7 +55,8 @@
 						android:text="@string/trans_amt"></TextView>
 					<EditText android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:layout_weight="2"
-						android:id="@+id/amountEdit" android:hint="@string/trans_amt" android:inputType="phone"></EditText>
+						android:id="@+id/amountEdit" android:hint="@string/trans_amt"
+						android:inputType="phone"></EditText>
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:id="@+id/partyRow">

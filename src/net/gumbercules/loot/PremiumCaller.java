@@ -8,23 +8,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 
-public class Export
+public class PremiumCaller
 {
+	public static final String EXPORT	= "net.gumbercules.loot.premium.EXPORT";
+	public static final String CHART	= "net.gumbercules.loot.premium.CHART";
+	
 	private Context mContext;
 	
-	public Export(Context c)
+	public PremiumCaller(Context c)
 	{
 		mContext = c;
 	}
 	
-	public void showExport()
+	public void showActivity(String action)
 	{
-		showExport(-1);
+		showActivity(action, -1);
 	}
 	
-	public void showExport(int account_id)
+	public void showActivity(String action, int account_id)
 	{
-		Intent i = new Intent("net.gumbercules.loot.premium.EXPORT", null);
+		Intent i = new Intent(action, null);
 		List<ResolveInfo> apps = mContext.getPackageManager().queryIntentActivities(i, 0);
 		if (!apps.isEmpty())
 		{

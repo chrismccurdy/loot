@@ -63,6 +63,7 @@ public class TransactionActivity extends ListActivity
 	public static final int PURGE_ID		= Menu.FIRST + 4;
 	public static final int EXPORT_ID		= Menu.FIRST + 5;
 	public static final int SETTINGS_ID		= Menu.FIRST + 6;
+	public static final int CHART_ID		= Menu.FIRST + 7;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_COPY	= Menu.FIRST + 1;
@@ -210,11 +211,12 @@ public class TransactionActivity extends ListActivity
     	menu.add(0, EXPORT_ID, 0, R.string.export)
     		.setShortcut('6', 'x')
     		.setIcon(android.R.drawable.ic_menu_upload);
+    	menu.add(0, CHART_ID, 0, R.string.chart)
+    		.setShortcut('7', 'g')
+    		.setIcon(android.R.drawable.ic_menu_report_image);
     	menu.add(0, SETTINGS_ID, 0, R.string.settings)
-    		.setShortcut('7', 's')
+    		.setShortcut('8', 's')
     		.setIcon(android.R.drawable.ic_menu_preferences);
-    	
-    	//TODO: add export menu item
     	
     	return result;
     }
@@ -245,8 +247,13 @@ public class TransactionActivity extends ListActivity
     		return true;
     		
     	case EXPORT_ID:
-    		Export export = new Export(this);
-    		export.showExport(mAcct.id());
+    		PremiumCaller export = new PremiumCaller(this);
+    		export.showActivity(PremiumCaller.EXPORT, mAcct.id());
+    		return true;
+    		
+    	case CHART_ID:
+    		PremiumCaller graph = new PremiumCaller(this);
+    		graph.showActivity(PremiumCaller.CHART, mAcct.id());
     		return true;
     		
     	case SETTINGS_ID:

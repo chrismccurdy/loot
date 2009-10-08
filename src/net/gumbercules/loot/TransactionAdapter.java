@@ -347,10 +347,23 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			text.setText(str);
 		if (colors)
 		{
-			if (!bg)
-				text.setTextColor(color);
-			else
-				text.setTextColor(Color.DKGRAY);
+			if (bg)
+			{
+				int red = Color.red(color);
+				int green = Color.green(color);
+				int blue = Color.blue(color);
+				
+				int max = Math.max(red, Math.max(green, blue));
+				int min = Math.min(red, Math.min(green, blue));
+				
+				float lightness = 0.5f * (float)(max + min);
+				
+				if (lightness < 100.0f)
+					color = Color.LTGRAY;
+				else
+					color = Color.DKGRAY;
+			}
+			text.setTextColor(color);
 		}
 	}
 	

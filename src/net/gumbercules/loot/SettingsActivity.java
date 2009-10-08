@@ -59,7 +59,7 @@ public class SettingsActivity extends PreferenceActivity
 		
 		String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
 				"color_budget_deposit", "color_check", "color_budget_check", 
-				"cal_enabled", "calendar_tag", "use_custom_colors"};
+				/*"cal_enabled", "calendar_tag",*/ "use_custom_colors"};
 
 		if (type != null)
 		{
@@ -211,14 +211,14 @@ public class SettingsActivity extends PreferenceActivity
 	
 	private void setupPremiumSettings(String[] prefs)
 	{
-		final String[] cr_keys = {"aw", "bw", "ad", "bd", "ac", "bc", "calendar", "tag"};
+		final String[] cr_keys = {"aw", "bw", "ad", "bd", "ac", "bc", "calendar", "tag", "custom"};
 		
 		int i = 0;
 		final ContentResolver cr = getContentResolver();
 		final String uri = "content://net.gumbercules.loot.premium.settingsprovider/";
 		for (String pref : prefs)
 		{
-			final String key = cr_keys[i];
+			final String key = cr_keys[i++];
 			if (pref.equals("calendar_tag"))
 			{
 				// set up edittext preference
@@ -312,7 +312,6 @@ public class SettingsActivity extends PreferenceActivity
 						return true;
 					}
 				});
-				++i;
 			}
 		}
 	}

@@ -43,10 +43,12 @@ public class AccountChooser extends ListActivity
 	public static final int BACKUP_ID		= Menu.FIRST + 4;
 	public static final int BU_RESTORE_ID	= Menu.FIRST + 5;
 	public static final int EXPORT_ID		= Menu.FIRST + 6;
+	public static final int CHART_ID		= Menu.FIRST + 7;
 	
-	public static final int CONTEXT_EDIT	= Menu.FIRST + 7;
-	public static final int CONTEXT_DEL		= Menu.FIRST + 8;
-	public static final int CONTEXT_EXPORT	= Menu.FIRST + 9;
+	public static final int CONTEXT_EDIT	= Menu.FIRST + 8;
+	public static final int CONTEXT_DEL		= Menu.FIRST + 9;
+	public static final int CONTEXT_EXPORT	= Menu.FIRST + 10;
+	public static final int CONTEXT_CHART	= Menu.FIRST + 11;
 	
 	private static boolean copyInProgress = false;
 
@@ -187,8 +189,11 @@ public class AccountChooser extends ListActivity
 		menu.add(0, EXPORT_ID, 0, R.string.export)
 			.setShortcut('6', 'x')
 			.setIcon(android.R.drawable.ic_menu_upload);
+		menu.add(0, CHART_ID, 0, R.string.chart)
+			.setShortcut('7', 'g')
+			.setIcon(android.R.drawable.ic_menu_report_image);
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
-			.setShortcut('7', 's')
+			.setShortcut('8', 's')
 			.setIcon(android.R.drawable.ic_menu_preferences);
 		return result;
 	}
@@ -235,8 +240,14 @@ public class AccountChooser extends ListActivity
     		return true;
     		
     	case EXPORT_ID:
-    		Export export = new Export(this);
-    		export.showExport();
+    		PremiumCaller export = new PremiumCaller(this);
+    		export.showActivity(PremiumCaller.EXPORT);
+    		return true;
+    		
+    	case CHART_ID:
+    		PremiumCaller graph = new PremiumCaller(this);
+    		graph.showActivity(PremiumCaller.CHART);
+    		return true;
     	}
     	
 		return super.onOptionsItemSelected(item);
@@ -417,8 +428,13 @@ public class AccountChooser extends ListActivity
 			return true;
 			
 		case CONTEXT_EXPORT:
-			Export export = new Export(this);
-			export.showExport(id);
+			PremiumCaller export = new PremiumCaller(this);
+			export.showActivity(PremiumCaller.EXPORT, id);
+			return true;
+			
+		case CONTEXT_CHART:
+			PremiumCaller graph = new PremiumCaller(this);
+			graph.showActivity(PremiumCaller.CHART, id);
 			return true;
 		}
 		return false;
@@ -447,6 +463,7 @@ public class AccountChooser extends ListActivity
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 		menu.add(0, CONTEXT_EXPORT, 0, R.string.export);
+		menu.add(0, CONTEXT_CHART, 0, R.string.chart);
 	}
 
 	@Override
