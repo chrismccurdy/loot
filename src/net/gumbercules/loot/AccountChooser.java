@@ -170,7 +170,6 @@ public class AccountChooser extends ListActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		boolean result = super.onCreateOptionsMenu(menu);
 		menu.add(0, NEW_ACCT_ID, 0, R.string.new_account)
 			.setShortcut('1', 'n')
 			.setIcon(android.R.drawable.ic_menu_add);
@@ -195,7 +194,7 @@ public class AccountChooser extends ListActivity
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
 			.setShortcut('8', 's')
 			.setIcon(android.R.drawable.ic_menu_preferences);
-		return result;
+		return true;
 	}
 
 	@Override
@@ -250,7 +249,7 @@ public class AccountChooser extends ListActivity
     		return true;
     	}
     	
-		return super.onOptionsItemSelected(item);
+		return false;
 	}
 
 	private Account[] findDeletedAccounts()

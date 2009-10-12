@@ -108,7 +108,7 @@ public class ColorPickerPreference extends DialogPreference
 	        
 	        canvas.drawOval(new RectF(-r, -r, r, r), mPaint);            
 	        canvas.drawCircle(0, 0, CENTER_RADIUS, mCenterPaint);
-	        canvas.drawRect(new RectF(-100, 125, 100, 145), mHSVPaint);
+	        canvas.drawRect(new RectF(-100, 125, 100, 185), mHSVPaint);
 	        
 	        if (mTrackingCenter) {
 	            mCenterPaint.setStyle(Paint.Style.STROKE);
@@ -198,7 +198,7 @@ public class ColorPickerPreference extends DialogPreference
 	                        invalidate();
 	                    }
 	                } 
-	                else if ((x >= -100 & x <= 100) && (y <= 145 && y >= 125)) // see if we're in the hsv slider
+	                else if ((x >= -100 & x <= 100) && (y >= 125)) // see if we're in the hsv slider
 	                {
 	                	int a, r, g, b, c0, c1;
 	                	float p;
