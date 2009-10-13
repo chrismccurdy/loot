@@ -336,6 +336,15 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			top.setBackgroundColor(color);
 		}
 		
+		if (dateStr == null)
+		{
+			dateStr = v.date.getText().toString();
+		}
+		if (amountStr == null)
+		{
+			amountStr = v.amount.getText().toString();
+		}
+		
 		setText(dateText, dateStr, color, showColors, colorBackground);
 		setText(partyText, partyStr, color, showColors, colorBackground);
 		setText(amountText, amountStr, color, showColors, colorBackground);

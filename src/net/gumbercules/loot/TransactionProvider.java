@@ -16,6 +16,7 @@ public class TransactionProvider extends ContentProvider
 	public static final String TRANSACTION_ITEM_MIME = "vnd.android.cursor.item/vnd.gumbercules.transaction";
 	public static final String TRANSACTION_DIR_MIME = "vnd.android.cursor.dir/vnd.gumbercules.transaction";
 	public static final String INTEGER_ITEM_MIME = "vnd.android.cursor.item/vnd.gumbercules.integer";
+	public static final String FLOAT_ITEM_MIME = "vnd.android.cursor.item/vnd.gumbercules.float";
 	public static final String TAG_DIR_MIME = "vnd.android.cursor.dir/vnd.gumbercules.tag";
 
 	@Override
@@ -60,6 +61,8 @@ public class TransactionProvider extends ContentProvider
 			
 			if (object.equals("count"))
 				return INTEGER_ITEM_MIME;
+			else if (object.equals("sum"))
+				return FLOAT_ITEM_MIME;
 			else
 				return null;
 		}
@@ -122,6 +125,17 @@ public class TransactionProvider extends ContentProvider
 			String table = path.get(1) + "s";
 			
 			query = "select count(*) from " + table + " where " + selection;
+		}
+		else if (type.equals(FLOAT_ITEM_MIME))
+		{
+			String table = "transactions";
+			if (path.get(1).equals("tag"))
+			{
+				table += ", tags";
+				selection = "trans_id = id and " + selection;
+			}
+			
+			query = "select sum(*) from " + table + " where " + selection;
 		}
 		
 		Log.i("net.gumbercules.loot.TransactionProvider.query", query);
