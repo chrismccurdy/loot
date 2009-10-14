@@ -90,7 +90,10 @@ public class TransactionProvider extends ContentProvider
 		String type = getType(uri);
 		
 		if (type == null)
+		{
+			Log.i("net.gumbercules.loot.TransactionProvider.query", "getType() returned invalid type");
 			return null;
+		}
 		
 		if (projection == null)
 			projection = new String[] {"*"};
