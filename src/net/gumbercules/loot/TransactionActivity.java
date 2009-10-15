@@ -64,6 +64,7 @@ public class TransactionActivity extends ListActivity
 	public static final int EXPORT_ID		= Menu.FIRST + 5;
 	public static final int SETTINGS_ID		= Menu.FIRST + 6;
 	public static final int CHART_ID		= Menu.FIRST + 7;
+	public static final int IMPORT_ID		= Menu.FIRST + 8;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_COPY	= Menu.FIRST + 1;
@@ -208,14 +209,17 @@ public class TransactionActivity extends ListActivity
     	menu.add(0, PURGE_ID, 0, R.string.purge)
     		.setShortcut('5', 'p')
     		.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+    	menu.add(0, IMPORT_ID, 0, R.string.import_)
+    		.setShortcut('6', 'i')
+    		.setIcon(android.R.drawable.ic_menu_more);
     	menu.add(0, EXPORT_ID, 0, R.string.export)
-    		.setShortcut('6', 'x')
+    		.setShortcut('7', 'x')
     		.setIcon(android.R.drawable.ic_menu_upload);
     	menu.add(0, CHART_ID, 0, R.string.chart)
-    		.setShortcut('7', 'g')
+    		.setShortcut('8', 'g')
     		.setIcon(android.R.drawable.ic_menu_report_image);
     	menu.add(0, SETTINGS_ID, 0, R.string.settings)
-    		.setShortcut('8', 's')
+    		.setShortcut('9', 's')
     		.setIcon(android.R.drawable.ic_menu_preferences);
     	
     	return result;
@@ -244,6 +248,11 @@ public class TransactionActivity extends ListActivity
     		
     	case PURGE_ID:
     		purgeDialog();
+    		return true;
+    		
+    	case IMPORT_ID:
+    		PremiumCaller imp = new PremiumCaller(this);
+    		imp.showActivity(PremiumCaller.IMPORT, mAcct.id());
     		return true;
     		
     	case EXPORT_ID:

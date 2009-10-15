@@ -49,6 +49,7 @@ public class AccountChooser extends ListActivity
 	public static final int CONTEXT_DEL		= Menu.FIRST + 9;
 	public static final int CONTEXT_EXPORT	= Menu.FIRST + 10;
 	public static final int CONTEXT_CHART	= Menu.FIRST + 11;
+	public static final int CONTEXT_IMPORT	= Menu.FIRST + 12;
 	
 	private static boolean copyInProgress = false;
 
@@ -426,6 +427,11 @@ public class AccountChooser extends ListActivity
 			
 			return true;
 			
+		case CONTEXT_IMPORT:
+			PremiumCaller imp = new PremiumCaller(this);
+			imp.showActivity(PremiumCaller.IMPORT, id);
+			return true;
+			
 		case CONTEXT_EXPORT:
 			PremiumCaller export = new PremiumCaller(this);
 			export.showActivity(PremiumCaller.EXPORT, id);
@@ -461,6 +467,7 @@ public class AccountChooser extends ListActivity
 		
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
+		menu.add(0, CONTEXT_IMPORT, 0, R.string.import_);
 		menu.add(0, CONTEXT_EXPORT, 0, R.string.export);
 		menu.add(0, CONTEXT_CHART, 0, R.string.chart);
 	}
