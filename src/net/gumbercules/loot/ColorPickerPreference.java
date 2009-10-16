@@ -35,7 +35,6 @@ import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -280,21 +279,6 @@ public class ColorPickerPreference extends DialogPreference
 			editor.putInt(getKey(), mCurrentColor);
 			editor.commit();
 			callChangeListener(new Integer(mCurrentColor));
-			
-			float[] hsv = new float[3];
-			int red = Color.red(mCurrentColor);
-			int green = Color.green(mCurrentColor);
-			int blue = Color.blue(mCurrentColor);
-			Color.RGBToHSV(red, green, blue, hsv);
-			
-			Log.i("net.gumbercules.loot.ColorPickerPreference.onDialogClosed", "hue: " + hsv[0]);
-			Log.i("net.gumbercules.loot.ColorPickerPreference.onDialogClosed", "saturation: " + hsv[1]);
-			Log.i("net.gumbercules.loot.ColorPickerPreference.onDialogClosed", "value: " + hsv[2]);
-
-			int max = Math.max(red, Math.max(green, blue));
-			int min = Math.min(red, Math.min(green, blue));
-			float lightness = 0.5f * (float)(max + min);
-			Log.i("net.gumbercules.loot.ColorPickerPreference.onDialogClosed", "lightness: " + lightness);
 		}
 	}
 
@@ -316,9 +300,10 @@ public class ColorPickerPreference extends DialogPreference
 		SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
 		mInitialColor = prefs.getInt(getKey(), Color.LTGRAY);
 
-		//TODO: try to center the picker in the dialog
 		mCPView = new ColorPickerView(getContext(), l, mInitialColor);
 		builder.setView(mCPView);
+		builder.setPositiveButton(null, null);
+		builder.setNegativeButton(null, null);
 	}
 
 }

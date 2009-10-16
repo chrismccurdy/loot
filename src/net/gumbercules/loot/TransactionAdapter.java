@@ -304,25 +304,25 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			partyStr += trans.check_num;
 			if (trans.budget)
-				color = prefs.getInt("color_budget_check", Color_LTCYAN);
+				color = prefs.getInt("color_budget_check", prefs.getInt("bc_color", Color_LTCYAN));
 			else
-				color = prefs.getInt("color_check", Color.CYAN);
+				color = prefs.getInt("color_check", prefs.getInt("ac_color", Color.CYAN));
 		}
 		else if (trans.type == Transaction.WITHDRAW)
 		{
 			partyStr += "W";
 			if (trans.budget)
-				color = prefs.getInt("color_budget_withdraw", Color_LTYELLOW);
+				color = prefs.getInt("color_budget_withdraw", prefs.getInt("bw_color", Color_LTYELLOW));
 			else
-				color = prefs.getInt("color_withdraw", Color.YELLOW);
+				color = prefs.getInt("color_withdraw", prefs.getInt("aw_color", Color.YELLOW));
 		}
 		else
 		{
 			partyStr += "D";
 			if (trans.budget)
-				color = prefs.getInt("color_budget_deposit", Color_LTGREEN);
+				color = prefs.getInt("color_budget_deposit", prefs.getInt("bd_color", Color_LTGREEN));
 			else
-				color = prefs.getInt("color_deposit", Color.GREEN);
+				color = prefs.getInt("color_deposit", prefs.getInt("ad_color", Color.GREEN));
 		}
 		partyStr += ":" + trans.party;
 		

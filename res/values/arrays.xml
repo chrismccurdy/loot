@@ -30,6 +30,14 @@
 		<item>Day</item>
 		<item>Date</item>
 	</string-array>
+	<string-array name="color_schemes">
+		<item>#ffff00 #ffffb9 #00ff00 #b9ffb9 #00ffff #b9ffff</item>
+		<item>#ffff00 #ffffaa #00ff00 #aaffaa #ff9933 #ffcc99</item>
+		<item>#b1009b #d861c9 #58e000 #a0f06c #ffec00 #fff573</item>
+		<item>#ff1300 #ff7d73 #057d9f #61b7cf #9fee00 #c9f76f</item>
+		<item>#f5330b #fc7e63 #154ca2 #6798e6 #b5e90a #d6f962</item>
+		<item>#07a863 #5be8ab #f5aa0b #fccb63 #c10878 #ee5eb6</item>
+	</string-array>
 	<string-array name="currency_names">
 		<item>Afghani</item>
 		<item>Algerian dinar</item>
