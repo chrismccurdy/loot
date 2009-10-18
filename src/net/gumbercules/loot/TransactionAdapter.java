@@ -332,8 +332,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		
 		if (showColors && colorBackground)
 		{
-			LinearLayout top = v.top;
-			top.setBackgroundColor(color);
+			v.top.setBackgroundColor(color);
+		}
+		else
+		{
+			v.top.setBackgroundColor(Color.BLACK);
 		}
 		
 		if (dateStr == null)
