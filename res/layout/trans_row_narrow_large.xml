@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/LinearLayout01"
+	android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:orientation="horizontal">
+	<CheckBox android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"
+		android:focusable="false" android:focusableInTouchMode="false" />
+	<LinearLayout android:id="@+id/LinearLayout02"
+		android:layout_width="wrap_content" android:layout_height="fill_parent"
+		android:layout_weight="1" android:layout_gravity="left|center_vertical"
+		android:orientation="vertical">
+		<TextView android:layout_height="wrap_content" android:id="@+id/PartyText"
+			android:layout_width="fill_parent" android:ellipsize="end"
+			android:gravity="top|left" android:lines="1" android:maxLines="1"
+			android:text="Wilmington Trust Company" android:textSize="24px" />
+		<LinearLayout android:id="@+id/LinearLayout03"
+			android:layout_height="wrap_content" android:layout_width="fill_parent"
+			android:layout_marginTop="-5px">
+			<TextView android:layout_height="wrap_content" android:text="2008-10-01"
+				android:id="@+id/DateText" android:layout_gravity="left|center_vertical"
+				android:layout_width="wrap_content" android:layout_weight="2"
+				android:textSize="16px" />
+			<TextView android:layout_width="wrap_content" android:text="215.00"
+				android:gravity="right" android:id="@+id/AmountText"
+				android:layout_height="fill_parent" android:paddingRight="7px"
+				android:singleLine="false" android:maxLines="1" android:lines="1"
+				android:layout_weight="1" android:textSize="16px" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

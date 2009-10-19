@@ -26,10 +26,10 @@ import android.widget.TextView;
 
 public class TransactionAdapter extends ArrayAdapter<Transaction> implements Filterable
 {
-	private ArrayList<Transaction> transList;
+	private ArrayList<Transaction> mTransList;
 	private ArrayList<Transaction> mOriginalList;
-	private int rowResId;
-	private Context context;
+	private int mRowResId;
+	private Context mContext;
 	private LayoutInflater mInflater;
 	private static CharSequence mConstraint;
 	private int mAcctId;
@@ -39,10 +39,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
 	{
 		super(con, 0);
-		this.transList = tr;
+		this.mTransList = tr;
 		this.mOriginalList = tr;
-		this.rowResId = row;
-		this.context = con;
+		this.mRowResId = row;
+		this.mContext = con;
 		this.mAcctId = acct_id;
 		this.mDf = DateFormat.getDateInstance();
 		mNf = NumberFormat.getCurrencyInstance();
@@ -51,18 +51,18 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 				!new_currency.equals(mNf.getCurrency().getCurrencyCode()))
 			mNf.setCurrency(Currency.getInstance(new_currency));
 		
-		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	public void setContext(Context con)
 	{
-		this.context = con;
+		this.mContext = con;
 	}
 	
 	@Override
 	public int getCount()
 	{
-		return transList.size();
+		return mTransList.size();
 	}
 
 	@Override
@@ -70,20 +70,20 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	{
 		if (position == -1)
 			return null;
-		return transList.get(position);
+		return mTransList.get(position);
 	}
 
 	@Override
 	public long getItemId(int position)
 	{
-		return transList.get(position).id();
+		return mTransList.get(position).id();
 	}
 	
 	public int findItemById(int id)
 	{
-		for (int i = 0; i < transList.size(); ++i)
+		for (int i = 0; i < mTransList.size(); ++i)
 		{
-			if (transList.get(i).id() == id)
+			if (mTransList.get(i).id() == id)
 				return i;
 		}
 		
@@ -92,7 +92,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 
 	public void setResource(int row)
 	{
-		this.rowResId = row;
+		this.mRowResId = row;
 	}
 	
 	public void setList(ArrayList<Transaction> trans)
@@ -104,7 +104,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	
 	public ArrayList<Transaction> getList()
 	{
-		return transList;
+		return mTransList;
 	}
 	
 	public void sort()
@@ -208,7 +208,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		
 		if (convertView == null)
 		{
-			convertView = mInflater.inflate(rowResId, parent, false);
+			convertView = mInflater.inflate(mRowResId, parent, false);
 			
 			holder = new ViewHolder();
 			holder.check = (CheckBox)convertView.findViewById(R.id.PostedCheckBox);
@@ -225,7 +225,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 
 		// bail early if the transaction doesn't exist, isn't for this account, or is not currently visible
-		final Transaction trans = transList.get(position);
+		final Transaction trans = mTransList.get(position);
 		if (trans == null || trans.account == 0)
 			return convertView;
 		
@@ -245,7 +245,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 				{
 					boolean budget = trans.budget;
 					trans.post(isChecked);
-					TransactionActivity ta = (TransactionActivity) context;
+					TransactionActivity ta = (TransactionActivity) mContext;
 					ta.setBalances();
 					
 					// only need to update the view if it changed from budget to posted
@@ -283,7 +283,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private void setViewData(Transaction trans, ViewHolder v, String amountStr, String dateStr)
 	{
 		String partyStr = "";
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		boolean showColors = prefs.getBoolean("color", false);
 		boolean colorBackground = prefs.getBoolean("color_background", false);
 		int color = Color.LTGRAY;
@@ -356,7 +356,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private void setText(TextView text, String str, int color, boolean colors, boolean bg)
 	{
 		if (text != null)
+		{
 			text.setText(str);
+		}
+
 		if (colors)
 		{
 			if (bg)
@@ -463,7 +466,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		@Override
 		protected void publishResults(CharSequence constraint, FilterResults results)
 		{
-			transList = (ArrayList<Transaction>)results.values;
+			mTransList = (ArrayList<Transaction>)results.values;
 			notifyDataSetChanged();
 		}
 	}

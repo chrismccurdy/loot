@@ -78,6 +78,8 @@
 			android:summary="Color negative balances in account summaries."
 			android:key="color_balance" />
 	</PreferenceScreen>
+	<CheckBoxPreference android:summary="Enables fonts larger than default for most text."
+		android:key="large_fonts" android:title="Large Fonts" />
 	<PreferenceCategory android:title="Security"
 		android:key="cat_security">
 		<CheckBoxPreference android:key="security"

@@ -18,51 +18,58 @@ import android.widget.TextView;
 
 public class AccountAdapter extends ArrayAdapter<Account>
 {
-	private ArrayList<Account> accountList;
-	private int rowResId;
-	private Context context;
+	private ArrayList<Account> mAccountList;
+	private int mRowResId;
+	private Context mContext;
 	private LayoutInflater mInflater;
 
 	public AccountAdapter(Context con, int row, ArrayList<Account> acl)
 	{
 		super(con, 0);
-		this.accountList = acl;
-		this.rowResId = row;
-		this.context = con;
+		mAccountList = acl;
+		mRowResId = row;
+		mContext = con;
 		
-		mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	}
+	
+	public void setResource(int resource)
+	{
+		mRowResId = resource;
 	}
 	
 	@Override
 	public int getCount()
 	{
-		return accountList.size();
+		return mAccountList.size();
 	}
 
 	@Override
 	public Account getItem(int position)
 	{
-		return accountList.get(position);
+		return mAccountList.get(position);
 	}
 
 	@Override
 	public long getItemId(int position)
 	{
-		return accountList.get(position).id();
+		return mAccountList.get(position).id();
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		Account acct = accountList.get(position);
-		View v = createViewFromResource(convertView, parent, rowResId);
+		Account acct = mAccountList.get(position);
+		View v = createViewFromResource(convertView, parent, mRowResId);
 
 		// find and retrieve the widgets
 		TextView AccountName = (TextView)v.findViewById(R.id.AccountName);
 		TextView AccountBal = (TextView)v.findViewById(R.id.AccountBalance);
 		
 		if (AccountName != null)
+		{
 			AccountName.setText(acct.name);
+		}
 		if (AccountBal != null)
 		{
 			NumberFormat nf = NumberFormat.getCurrencyInstance();
@@ -79,7 +86,7 @@ public class AccountAdapter extends ArrayAdapter<Account>
 			
 			if (bal < 0)
 			{
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 				if (prefs.getBoolean("color_balance", false))
 					AccountBal.setTextColor(Color.rgb(255, 50, 50));
 			}

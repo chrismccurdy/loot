@@ -85,21 +85,54 @@ public class TransactionActivity extends ListActivity
 	private static boolean showSearch = false;
 	private static String searchString = "";
 	
+	private boolean mCreating;
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
     	super.onCreate(savedInstanceState);
-    	setContentView(R.layout.main);
-        
-    	Bundle bun = getIntent().getExtras();
-    	int acct_id = bun.getInt(Account.KEY_ID);
-    	boolean new_account = false;
-    	if (mAcct == null || acct_id != mAcct.id())
-    	{
-    		new_account = true;
-    		mAcct = Account.getAccountById(acct_id);
-    	}
-    	setTitle("loot :: " + mAcct.name);
+
+    	mCreating = true;
+    }
+    
+    @Override
+	protected void onResume()
+	{
+		super.onResume();
+
+		int layoutResId = setContent();
+
+    	budgetValue = (TextView)findViewById(R.id.budgetValue);
+    	balanceValue = (TextView)findViewById(R.id.balanceValue);
+    	postedValue = (TextView)findViewById(R.id.postedValue);
+
+		if (mCreating)
+		{
+	    	Bundle bun = getIntent().getExtras();
+	    	int acct_id = bun.getInt(Account.KEY_ID);
+	    	boolean new_account = false;
+	    	if (mAcct == null || acct_id != mAcct.id())
+	    	{
+	    		new_account = true;
+	    		mAcct = Account.getAccountById(acct_id);
+	    	}
+	    	setTitle("loot :: " + mAcct.name);
+
+	    	if (new_account)
+	    	{
+		    	mTransList = new ArrayList<Transaction>();
+			    mTa = new TransactionAdapter(this, layoutResId, mTransList, mAcct.id());
+		        setListAdapter(mTa);
+		        fillList();
+	    	}
+	    	else
+	    	{
+	    		mTa.setContext(this);
+	    		setListAdapter(mTa);
+	    		setBalances();
+	    	}
+	    }
+		mTa.setResource(layoutResId);
     	
     	int auto_purge = (int)Database.getOptionInt("auto_purge_days");
     	if (auto_purge > 0)
@@ -111,10 +144,6 @@ public class TransactionActivity extends ListActivity
     			mTa.remove(ids);
     	}
     	
-    	budgetValue = (TextView)findViewById(R.id.budgetValue);
-    	balanceValue = (TextView)findViewById(R.id.balanceValue);
-    	postedValue = (TextView)findViewById(R.id.postedValue);
-
     	// add a listener to filter the list whenever the text changes
     	searchEdit = (MultiAutoCompleteTextView)findViewById(R.id.SearchEdit);
     	
@@ -127,27 +156,7 @@ public class TransactionActivity extends ListActivity
 				searchEdit.setText("");
 			}
     	});
-    	
-    	// find current orientation and send proper layout to constructor
-    	int layoutResId = R.layout.trans_row_narrow;
-    	if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-    		layoutResId = R.layout.trans_row_wide;
-    	
-    	if (new_account)
-    	{
-	    	mTransList = new ArrayList<Transaction>();
-		    mTa = new TransactionAdapter(this, layoutResId, mTransList, mAcct.id());
-	        setListAdapter(mTa);
-	        fillList();
-    	}
-    	else
-    	{
-    		mTa.setResource(layoutResId);
-    		mTa.setContext(this);
-    		setListAdapter(mTa);
-    		setBalances();
-    	}
-        
+
     	TextWatcher searchChanged = new TextWatcher()
     	{
     		// we only care what the end result is
@@ -184,6 +193,43 @@ public class TransactionActivity extends ListActivity
 			searchEdit.setText(searchString);
 			f.publish(searchString, f.filtering(searchString));
     	}
+	}
+
+	private int setContent()
+    {
+    	// find current orientation and send proper layout to constructor
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    	int orientation = getResources().getConfiguration().orientation;
+    	int layoutResId;
+    	
+    	if (prefs.getBoolean("large_fonts", false))
+    	{
+    		setContentView(R.layout.main_large);
+    		
+        	if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+        	{
+        		layoutResId = R.layout.trans_row_wide_large;
+        	}
+        	else
+        	{
+        		layoutResId = R.layout.trans_row_narrow_large;
+        	}
+    	}
+    	else
+    	{
+    		setContentView(R.layout.main);
+
+    		if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+        	{
+        		layoutResId = R.layout.trans_row_wide;
+        	}
+        	else
+        	{
+        		layoutResId = R.layout.trans_row_narrow;
+        	}
+    	}
+    	
+    	return layoutResId;
     }
     
     @Override

@@ -65,22 +65,20 @@ public class AccountChooser extends ListActivity
 		// required to prevent last-used from jumping back to this spot
 		@SuppressWarnings("unused")
 		Bundle bun = getIntent().getExtras();
-		
+
 		setContentView(R.layout.accounts);
 		getListView().setOnCreateContextMenuListener(this);
 		
 		TransactionActivity.setAccountNull();
 		accountList = new ArrayList<Account>();
-		AccountAdapter accounts = new AccountAdapter(this, R.layout.account_row, accountList);
-		setListAdapter(accounts);
-		fillList();
-		
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
 		ContentResolver cr = getContentResolver();
 
 		// remove preferences if the premium package has been removed
 		if (cr.getType(Uri.parse("content://net.gumbercules.loot.premium.settingsprovider/settings")) == null)
 		{
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			SharedPreferences.Editor editor = prefs.edit();
 			String[] pref_keys = {"color_withdraw", "color_budget_withdraw", "color_deposit",
 					"color_budget_deposit", "color_check", "color_budget_check", 
@@ -372,7 +370,6 @@ public class AccountChooser extends ListActivity
 		fillList();
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void fillList()
 	{
 		int[] acctIds = Account.getAccountIds();
@@ -381,7 +378,7 @@ public class AccountChooser extends ListActivity
 		if (acctIds != null)
 			for ( int id : acctIds )
 				accountList.add(Account.getAccountById(id));
-		((ArrayAdapter<Account>)getListAdapter()).notifyDataSetChanged();
+		((AccountAdapter)getListAdapter()).notifyDataSetChanged();
 	}
 
 	@Override
@@ -479,6 +476,16 @@ public class AccountChooser extends ListActivity
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if (!prefs.getBoolean(PinActivity.SHOW_ACCOUNTS, true))
 			finish();
+		
+		int row_res = R.layout.account_row;
+		if (prefs.getBoolean("large_fonts", false))
+		{
+			row_res = R.layout.account_row_large;
+		}
+
+		AccountAdapter accounts = new AccountAdapter(this, row_res, accountList);
+		setListAdapter(accounts);
+		fillList();
 	}
 
 	private class CopyThread extends Thread
