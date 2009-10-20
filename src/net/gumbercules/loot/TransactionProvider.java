@@ -1,6 +1,7 @@
 package net.gumbercules.loot;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentProvider;
@@ -73,7 +74,37 @@ public class TransactionProvider extends ContentProvider
 	@Override
 	public Uri insert(Uri uri, ContentValues values)
 	{
-		return null;
+		if (getType(uri) != TRANSACTION_DIR_MIME)
+			return null;
+		
+		Transaction trans = new Transaction();
+		trans.account = values.getAsInteger("account");
+		trans.check_num = values.getAsInteger("check_num");
+		trans.amount = values.getAsDouble("amount");
+		if (trans.amount < 0.0)
+		{
+			trans.amount = -trans.amount;
+			if (trans.check_num > 0)
+			{
+				trans.type = Transaction.CHECK;
+			}
+			else
+			{
+				trans.type = Transaction.WITHDRAW;
+			}
+		}
+		else
+		{
+			trans.type = Transaction.DEPOSIT;
+		}
+				
+		trans.party = values.getAsString("party");
+		trans.date = new Date(values.getAsLong("date"));
+		trans.addTags(values.getAsString("tags"));
+		
+		int id = trans.write(trans.account);
+		
+		return uri.buildUpon().appendPath(new Integer(id).toString()).build();
 	}
 
 	@Override
