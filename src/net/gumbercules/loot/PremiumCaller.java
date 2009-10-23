@@ -40,6 +40,7 @@ public class PremiumCaller
 			if (account_id >= 0)
 			{
 				Account acct = Account.getAccountById(account_id);
+				i.putExtra("id", account_id);
 				i.putExtra("name", acct.name);
 			}
 		}
