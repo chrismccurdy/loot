@@ -79,7 +79,16 @@ public class TransactionProvider extends ContentProvider
 		
 		Transaction trans = new Transaction();
 		trans.account = values.getAsInteger("account");
-		trans.check_num = values.getAsInteger("check_num");
+		
+		if (values.containsKey("check_num"))
+		{
+			trans.check_num = values.getAsInteger("check_num");
+		}
+		else
+		{
+			trans.check_num = -1;
+		}
+		
 		trans.amount = values.getAsDouble("amount");
 		if (trans.amount < 0.0)
 		{
@@ -100,7 +109,11 @@ public class TransactionProvider extends ContentProvider
 				
 		trans.party = values.getAsString("party");
 		trans.date = new Date(values.getAsLong("date"));
-		trans.addTags(values.getAsString("tags"));
+		
+		if (values.containsKey("tags"))
+		{
+			trans.addTags(values.getAsString("tags"));
+		}
 		
 		int id = trans.write(trans.account);
 		
