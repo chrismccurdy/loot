@@ -187,7 +187,7 @@ public class TransactionProvider extends ContentProvider
 		
 		Log.i("net.gumbercules.loot.TransactionProvider.query", query);
 		
-		return lootDb.rawQuery(query, null);
+		return lootDb.rawQuery(query, selectionArgs);
 	}
 
 	@Override

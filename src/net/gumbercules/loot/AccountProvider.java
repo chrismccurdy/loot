@@ -86,7 +86,7 @@ public class AccountProvider extends ContentProvider
 			query += selection + " order by " + sortOrder;
 		}
 		
-		return lootDb.rawQuery(query, null);
+		return lootDb.rawQuery(query, selectionArgs);
 	}
 
 	@Override
