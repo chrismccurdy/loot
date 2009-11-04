@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout android:id="@+id/FrameLayout01" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="fill_parent" android:layout_width="fill_parent"><LinearLayout android:id="@+id/repeat_none" android:layout_width="fill_parent" android:layout_height="fill_parent" android:orientation="vertical"><TextView android:id="@+id/TextView01" android:layout_width="fill_parent" android:gravity="top|center_horizontal" android:text="This transaction will not repeat." android:layout_height="wrap_content"></TextView>
+<LinearLayout android:id="@+id/LinearLayout07" android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/neverSaveButton" android:layout_weight="1" android:text="@string/save" android:layout_gravity="bottom"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/neverCancelButton" android:layout_weight="1" android:text="@string/cancel" android:layout_gravity="bottom"></Button>
+</LinearLayout>
+</LinearLayout>
+<LinearLayout android:id="@+id/repeat_daily" android:layout_height="fill_parent" android:layout_width="fill_parent" android:orientation="vertical">
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent">
+<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Every:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/dayEdit" android:maxWidth="150px" android:text="1" android:inputType="number"></EditText>
+
+<TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:paddingLeft="5px" android:text="Day(s)"></TextView>
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="End On:" android:layout_gravity="center_vertical"></TextView>
+<Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/daySpinner"></Spinner>
+</LinearLayout>
+<LinearLayout android:id="@+id/LinearLayout07" android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/daySaveButton" android:layout_weight="1" android:text="@string/save" android:layout_gravity="bottom"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/dayCancelButton" android:layout_weight="1" android:text="@string/cancel" android:layout_gravity="bottom"></Button>
+</LinearLayout></LinearLayout>
+<ScrollView android:id="@+id/repeat_weekly" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="0">
+<LinearLayout android:layout_width="fill_parent" android:id="@+id/layout_weekly" android:orientation="vertical" android:layout_height="fill_parent">
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Every:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/weekEdit" android:maxWidth="150px" android:text="1" android:inputType="number"></EditText>
+
+<TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:paddingLeft="5px" android:text="Week(s)"></TextView>
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="End On:" android:layout_gravity="center_vertical"></TextView>
+<Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/weekSpinner"></Spinner>
+
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView05" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Repeat On:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
+<LinearLayout android:id="@+id/LinearLayout04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical">
+<LinearLayout android:id="@+id/LinearLayout05" android:layout_height="wrap_content" android:layout_width="fill_parent">
+<ToggleButton android:id="@+id/ToggleButton01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+</LinearLayout>
+<LinearLayout android:id="@+id/LinearLayout06" android:layout_height="wrap_content" android:layout_width="fill_parent"><ToggleButton android:id="@+id/ToggleButton04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton05" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton06" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+<ToggleButton android:id="@+id/ToggleButton07" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></ToggleButton>
+</LinearLayout>
+</LinearLayout>
+</LinearLayout>
+<TextView android:id="@+id/TextView06" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView><LinearLayout android:id="@+id/LinearLayout07" android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/weekSaveButton" android:layout_weight="1" android:text="@string/save" android:layout_gravity="bottom"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/weekCancelButton" android:layout_weight="1" android:text="@string/cancel" android:layout_gravity="bottom"></Button>
+</LinearLayout>
+</LinearLayout></ScrollView>
+
+<LinearLayout android:id="@+id/repeat_monthly" android:layout_height="fill_parent" android:layout_width="fill_parent" android:orientation="vertical"><LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent">
+<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Every:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/monthEdit" android:maxWidth="150px" android:text="1" android:inputType="number"></EditText>
+
+<TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:text="Month(s)" android:paddingLeft="5px"></TextView>
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="End On:" android:layout_gravity="center_vertical"></TextView>
+<Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/monthSpinner"></Spinner>
+
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView05" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:layout_gravity="center_vertical" android:text="Repeat By:"></TextView>
+
+<Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/repeatBySpinner"></Spinner>
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout07" android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/monthSaveButton" android:layout_weight="1" android:text="@string/save" android:layout_gravity="bottom"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/monthCancelButton" android:layout_weight="1" android:text="@string/cancel" android:layout_gravity="bottom"></Button>
+</LinearLayout></LinearLayout>
+<LinearLayout android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/repeat_yearly" android:orientation="vertical"><LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent">
+<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Every:" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/yearEdit" android:maxWidth="150px" android:text="1" android:inputType="number"></EditText>
+
+<TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:paddingLeft="5px" android:text="Year(s)"></TextView>
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="End On:" android:layout_gravity="center_vertical"></TextView>
+<Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/yearSpinner"></Spinner>
+
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout07" android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="fill_parent"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/yearSaveButton" android:layout_weight="1" android:text="@string/save" android:layout_gravity="bottom"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/yearCancelButton" android:layout_weight="1" android:text="@string/cancel" android:layout_gravity="bottom"></Button>
+</LinearLayout></LinearLayout>
+
+
+
+
+</FrameLayout>
