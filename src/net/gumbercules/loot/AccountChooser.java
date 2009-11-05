@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
@@ -26,7 +27,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
@@ -53,6 +56,8 @@ public class AccountChooser extends ListActivity
 	private static boolean copyInProgress = false;
 
 	private ArrayList<Account> accountList;
+	private TextView mTotalBalance;
+	private LinearLayout mTbLayout;
 	
 	private CharSequence[] acct_names;
 	
@@ -64,15 +69,13 @@ public class AccountChooser extends ListActivity
 		// required to prevent last-used from jumping back to this spot
 		@SuppressWarnings("unused")
 		Bundle bun = getIntent().getExtras();
-
-		setContentView(R.layout.accounts);
+		
 		getListView().setOnCreateContextMenuListener(this);
 		
 		TransactionActivity.setAccountNull();
 		accountList = new ArrayList<Account>();
-
+		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
 		ContentResolver cr = getContentResolver();
 
 		// remove preferences if the premium package has been removed
@@ -378,6 +381,7 @@ public class AccountChooser extends ListActivity
 			for ( int id : acctIds )
 				accountList.add(Account.getAccountById(id));
 		((AccountAdapter)getListAdapter()).notifyDataSetChanged();
+		setTotalBalance();
 	}
 
 	@Override
@@ -482,9 +486,65 @@ public class AccountChooser extends ListActivity
 			row_res = R.layout.account_row_large;
 		}
 
+		setContent();
+		
+		registerForContextMenu(getListView());
 		AccountAdapter accounts = new AccountAdapter(this, row_res, accountList);
 		setListAdapter(accounts);
 		fillList();
+	}
+	
+	private void setContent()
+	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		int content_res = R.layout.accounts;
+		if (prefs.getBoolean("large_fonts", false))
+		{
+			content_res = R.layout.accounts_large;
+		}
+		
+		setContentView(content_res);
+		mTbLayout = (LinearLayout)findViewById(R.id.total_balance_layout);
+		mTotalBalance = (TextView)findViewById(R.id.total_balance);
+	}
+	
+	private void setTotalBalance()
+	{	
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if (prefs.getBoolean("total_balance", true))
+		{
+			NumberFormat nf = NumberFormat.getCurrencyInstance();
+			String new_currency = Database.getOptionString("override_locale");
+			if (new_currency != null && !new_currency.equals(""))
+				nf.setCurrency(Currency.getInstance(new_currency));
+			Double bal = Account.getTotalBalance();
+			String text;
+			if (bal != null)
+			{
+				text = nf.format(bal);
+			}
+			else
+			{
+				text = "Error Calculating Balance";
+			}
+			mTotalBalance.setText(text);
+			
+			if (bal < 0.0)
+			{
+				if (prefs.getBoolean("color_balance", false))
+					mTotalBalance.setTextColor(Color.rgb(255, 50, 50));
+			}
+			else
+			{
+				mTotalBalance.setTextColor(Color.LTGRAY);
+			}
+
+			mTbLayout.setVisibility(LinearLayout.VISIBLE);
+		}
+		else
+		{
+			mTbLayout.setVisibility(LinearLayout.GONE);
+		}
 	}
 
 	private class CopyThread extends Thread

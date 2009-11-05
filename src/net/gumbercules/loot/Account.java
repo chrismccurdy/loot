@@ -185,6 +185,36 @@ public class Account
 		return true;
 	}
 	
+	public static Double getTotalBalance()
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		String query = "select sum(t.amount) from transactions t, accounts a where " +
+				"t.account = a.id and a.purged = 0 and t.purged = 0 and t.budget = 0"; 
+		Cursor cur = lootDB.rawQuery(query, null);
+		
+		Double bal = null;
+		if (cur.moveToFirst())
+		{
+			bal = cur.getDouble(0);
+		}
+		cur.close();
+		
+		query = "select sum(balance) from accounts";
+		cur = lootDB.rawQuery(query, null);
+		
+		if (cur.moveToFirst())
+		{
+			bal += cur.getDouble(0);
+		}
+		else
+		{
+			bal = null;
+		}
+		cur.close();
+		
+		return bal;
+	}
+	
 	private Double calculateBalance(String clause)
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();

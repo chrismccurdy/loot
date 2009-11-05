@@ -82,6 +82,7 @@
 	<string name="premium_disabled_body">You must purchase the loot premium package in order
 		to access these settings.</string>
 	<string name="export">Export</string>
-    <string name="import_">Import</string>
-    <string name="chart">Chart</string>
+	<string name="import_">Import</string>
+	<string name="chart">Chart</string>
+	<string name="total_balance">Total Balance:</string>
 </resources>

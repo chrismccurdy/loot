@@ -84,7 +84,7 @@ public class AccountAdapter extends ArrayAdapter<Account>
 				text = "Error Calculating Balance";
 			AccountBal.setText(text);
 			
-			if (bal < 0)
+			if (bal < 0.0)
 			{
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 				if (prefs.getBoolean("color_balance", false))
