@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent"
+	android:orientation="vertical">
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:text="@string/p_features"
+		android:textSize="21px" />
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:textSize="18px"
+		android:text="@string/p_charts" android:layout_marginLeft="15px" />
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:textSize="18px"
+		android:layout_marginLeft="15px" android:text="@string/p_colors" />
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:textSize="18px"
+		android:layout_marginLeft="15px" android:text="@string/p_importing" />
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:textSize="18px"
+		android:layout_marginLeft="15px" android:text="@string/p_more" />
+	<LinearLayout android:layout_height="wrap_content"
+		android:orientation="horizontal" android:layout_width="wrap_content"
+		android:gravity="center_horizontal" android:layout_gravity="center_horizontal">
+		<ImageView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:src="@drawable/color_picker_small" />
+		<ImageView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+	<Button android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:layout_gravity="bottom|center_horizontal"
+		android:layout_marginTop="25px" android:text="@string/buy_now"
+		android:textSize="18px" android:textStyle="bold" android:id="@+id/buy" />
+</LinearLayout>

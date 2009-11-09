@@ -85,4 +85,13 @@
 	<string name="import_">Import</string>
 	<string name="chart">Chart</string>
 	<string name="total_balance">Total Balance:</string>
+	<string name="p_features">Features in Loot Premium include:</string>
+	<string name="p_importing">&#8226; Importing and exporting CSV and Quicken
+		files</string>
+	<string name="p_colors">&#8226; Custom color schemes</string>
+	<string name="p_charts">&#8226; Charting across all accounts</string>
+	<string name="p_more">&#8226; And more features planned for the future!
+	</string>
+	<string name="buy_now">Buy it now!</string>
+	<string name="no_market">Market is not available</string>
 </resources>
