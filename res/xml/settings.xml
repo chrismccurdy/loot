@@ -2,8 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceScreen android:summary="About Loot, contact info, etc."
 		android:key="about" android:title="About">
-		<intent android:action="android.intent.action.VIEW"
-			android:data="http://gumbercules.net/loot/about.html" />
+		<intent android:action="net.gumbercules.loot.intent.action.ABOUT" />
 	</PreferenceScreen>
 	<PreferenceScreen android:key="loot_premium"
 		android:summary="More settings for the Loot premium version."

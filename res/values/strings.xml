@@ -94,4 +94,21 @@
 	</string>
 	<string name="buy_now">Buy it now!</string>
 	<string name="no_market">Market is not available</string>
+	<string name="about">About Loot</string>
+	<string name="created_by">Created by Christopher McCurdy</string>
+	<string name="donate">Please feel free to donate to support the continued
+		development of free software. I would like to thank everyone who has
+		donated so far for your support.</string>
+	<string name="comments">If you have any comments, questions, suggestions,
+		or have discovered any bugs, please feel free to let me know at
+		christopher.mccurdy@gmail.com.</string>
+	<string name="javacsv">Portions of loot may be using JavaCSV. JavaCSV is
+		provided for free under the LGPL license. The source code and
+		licensing details are available at
+		http://sourceforge.net/projects/javacsv</string>
+	<string name="flot">Portions of loot may be using flot, which is
+		provided for free under the MIT license. The source code and licensing
+		details are available at http://code.google.com/p/flot/</string>
+	<string name="paypal">Donate @ Paypal</string>
+	<string name="checkout">Donate @ Google Checkout</string>
 </resources>
