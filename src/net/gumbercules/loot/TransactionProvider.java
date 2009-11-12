@@ -163,7 +163,7 @@ public class TransactionProvider extends ContentProvider
 		else if (type.equals(TAG_DIR_MIME))
 		{
 			if (sortOrder.equals("id asc"))
-				sortOrder = "name asc";
+				sortOrder = "trans_id asc";
 			
 			query += "tags where " + selection + " order by " + sortOrder; 
 		}
