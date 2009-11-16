@@ -25,19 +25,27 @@ public class AccountProvider extends ContentProvider
 	public String getType(Uri uri)
 	{
 		if (!uri.getScheme().equals("content"))
+		{
 			return null;
+		}
 		
 		List<String> path = uri.getPathSegments();
 		int size = path.size();
 		
 		String object = null;
 		if (size > 0)
+		{
 			object = path.get(0);
+		}
 		else
+		{
 			return ACCOUNT_DIR_MIME;
+		}
 		
-		if (Integer.getInteger(object) != null)
+		if (Integer.valueOf(object) != null)
+		{
 			return ACCOUNT_ITEM_MIME;
+		}
 		
 		return null;
 	}
@@ -62,16 +70,24 @@ public class AccountProvider extends ContentProvider
 		String type = getType(uri);
 		
 		if (type == null)
+		{
 			return null;
+		}
 		
 		if (projection == null)
+		{
 			projection = new String[] {"*"};
+		}
 			
 		if (selection == null)
+		{	
 			selection = "1=1";
+		}
 		
 		if (sortOrder == null)
+		{
 			sortOrder = "priority asc";
+		}
 			
 		List<String> path = uri.getPathSegments();
 		String query = "select " + Arrays.toString(projection).replaceAll("[\\[\\]]", "") +

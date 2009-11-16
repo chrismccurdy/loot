@@ -30,29 +30,41 @@ public class TransactionProvider extends ContentProvider
 	public String getType(Uri uri)
 	{
 		if (!uri.getScheme().equals("content"))
+		{
 			return null;
+		}
 		
 		List<String> path = uri.getPathSegments();
 		int size = path.size();
 		
 		String object = null;
 		if (size > 0)
+		{
 			object = path.get(0);
+		}
 		else
+		{
 			return null;
+		}
 		
 		boolean tag = false;
 		if (object.equals("transaction"))
+		{
 			tag = false;
+		}
 		else if (object.equals("tag"))
+		{
 			tag = true;
+		}
 		else
+		{
 			return null;
+		}
 		
 		if (size == 2)
 		{
 			object = path.get(1);
-			if (Integer.getInteger(object) != null)
+			if (Integer.valueOf(object) != null)
 			{
 				if (tag)
 					return null;
@@ -61,11 +73,17 @@ public class TransactionProvider extends ContentProvider
 			}
 			
 			if (object.equals("count"))
+			{
 				return INTEGER_ITEM_MIME;
+			}
 			else if (object.equals("sum"))
+			{
 				return FLOAT_ITEM_MIME;
+			}
 			else
+			{
 				return null;
+			}
 		}
 		
 		return (tag ? TAG_DIR_MIME : TRANSACTION_DIR_MIME);
@@ -75,7 +93,9 @@ public class TransactionProvider extends ContentProvider
 	public Uri insert(Uri uri, ContentValues values)
 	{
 		if (getType(uri) != TRANSACTION_DIR_MIME)
+		{
 			return null;
+		}
 		
 		Transaction trans = new Transaction();
 		trans.account = values.getAsInteger("account");
@@ -140,13 +160,19 @@ public class TransactionProvider extends ContentProvider
 		}
 		
 		if (projection == null)
+		{
 			projection = new String[] {"*"};
+		}
 			
 		if (selection == null)
+		{
 			selection = "1=1";
+		}
 		
 		if (sortOrder == null)
+		{
 			sortOrder = "id asc";
+		}
 			
 		List<String> path = uri.getPathSegments();
 		String query = "select " + Arrays.toString(projection).replaceAll("[\\[\\]]", "") + " from ";
@@ -163,7 +189,9 @@ public class TransactionProvider extends ContentProvider
 		else if (type.equals(TAG_DIR_MIME))
 		{
 			if (sortOrder.equals("id asc"))
+			{
 				sortOrder = "trans_id asc";
+			}
 			
 			query += "tags where " + selection + " order by " + sortOrder; 
 		}
