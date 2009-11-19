@@ -397,10 +397,9 @@ public class AccountChooser extends ListActivity
 			}
 			aa = new AccountAdapter(this, row_res, accountList);
 			setListAdapter(aa);
+			setContent();
 			
 			Log.i(TAG + ".fillList()", "i used to crash here, but now i don't");
-			// TODO: remove before packaging
-			Toast.makeText(this, "I USED TO CRASH HERE, BUT NOW I DON'T. YAAAAY ME!", Toast.LENGTH_LONG).show();
 		}
 		aa.notifyDataSetChanged();
 		setTotalBalance();
