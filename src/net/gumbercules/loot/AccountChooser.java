@@ -53,7 +53,8 @@ public class AccountChooser extends ListActivity
 	public static final int CONTEXT_CHART	= Menu.FIRST + 11;
 	public static final int CONTEXT_IMPORT	= Menu.FIRST + 12;
 	
-	private static boolean copyInProgress = false;
+	private static final String TAG			= "net.gumbercules.loot.AccountChooser"; 
+	private static boolean copyInProgress	= false;
 
 	private ArrayList<Account> accountList;
 	private TextView mTotalBalance;
@@ -378,9 +379,30 @@ public class AccountChooser extends ListActivity
 		accountList.clear();
 		
 		if (acctIds != null)
+		{
 			for ( int id : acctIds )
+			{
 				accountList.add(Account.getAccountById(id));
-		((AccountAdapter)getListAdapter()).notifyDataSetChanged();
+			}
+		}
+		AccountAdapter aa = (AccountAdapter)getListAdapter();
+		if (aa == null)
+		{
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			
+			int row_res = R.layout.account_row;
+			if (prefs.getBoolean("large_fonts", false))
+			{
+				row_res = R.layout.account_row_large;
+			}
+			aa = new AccountAdapter(this, row_res, accountList);
+			setListAdapter(aa);
+			
+			Log.i(TAG + ".fillList()", "i used to crash here, but now i don't");
+			// TODO: remove before packaging
+			Toast.makeText(this, "I USED TO CRASH HERE, BUT NOW I DON'T. YAAAAY ME!", Toast.LENGTH_LONG).show();
+		}
+		aa.notifyDataSetChanged();
 		setTotalBalance();
 	}
 
@@ -586,7 +608,9 @@ public class AccountChooser extends ListActivity
 	    			mPd.setProgress(100);
 	    		}
 	    		else
+	    		{
 	    			res = R.string.backup_failed;
+	    		}
 			}
 			else if (mOp == RESTORE)
 			{
@@ -613,13 +637,17 @@ public class AccountChooser extends ListActivity
 	    			}.start();
 	    		}
 	    		else
+	    		{
 	    			res = R.string.restore_failed;
+	    		}
 			}
     		mPd.dismiss();
     		copyInProgress = false;
     		
     		if (res != 0)
+    		{
     			Toast.makeText(mContext, res, Toast.LENGTH_LONG).show();
+    		}
     		
     		Looper.loop();
 		}

@@ -199,7 +199,7 @@ public class Account
 		}
 		cur.close();
 		
-		query = "select sum(balance) from accounts";
+		query = "select sum(balance) from accounts where purged = 0";
 		cur = lootDB.rawQuery(query, null);
 		
 		if (cur.moveToFirst())
