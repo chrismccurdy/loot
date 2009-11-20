@@ -86,6 +86,9 @@ public class TransactionActivity extends ListActivity
 	private static String searchString = "";
 	
 	private boolean mCreating;
+	private boolean mResuming;
+	
+	private Bundle mCurrentBundle;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -192,6 +195,22 @@ public class TransactionActivity extends ListActivity
 			TransactionFilter f = (TransactionFilter)mTa.getFilter();
 			searchEdit.setText(searchString);
 			f.publish(searchString, f.filtering(searchString));
+    	}
+    	
+    	if (mResuming)
+    	{
+			try
+			{
+				Bundle extras = mCurrentBundle;
+				updateList(extras.getInt(Transaction.KEY_ID), extras.getInt(TransactionActivity.KEY_REQ));
+			}
+			catch (Exception e)
+			{
+				Logger.logStackTrace(e, this);
+			}
+
+			mCurrentBundle = null;
+			mResuming = false;
     	}
 	}
 
@@ -584,15 +603,8 @@ public class TransactionActivity extends ListActivity
 		
 		if (resultCode == RESULT_OK && data != null)
 		{
-			try
-			{
-				Bundle extras = data.getExtras();
-				updateList(extras.getInt(Transaction.KEY_ID), extras.getInt(TransactionActivity.KEY_REQ));
-			}
-			catch (Exception e)
-			{
-				Logger.logStackTrace(e, this);
-			}
+			mResuming = true;
+			mCurrentBundle = data.getExtras();
 		}
 		
 		mTa.notifyDataSetChanged();

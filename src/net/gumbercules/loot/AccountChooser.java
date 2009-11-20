@@ -366,13 +366,6 @@ public class AccountChooser extends ListActivity
 		startActivityForResult(i, 0);
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		super.onActivityResult(requestCode, resultCode, data);
-		fillList();
-	}
-	
 	private void fillList()
 	{
 		int[] acctIds = Account.getAccountIds();
@@ -499,7 +492,9 @@ public class AccountChooser extends ListActivity
 		super.onResume();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if (!prefs.getBoolean(PinActivity.SHOW_ACCOUNTS, true))
+		{
 			finish();
+		}
 		
 		int row_res = R.layout.account_row;
 		if (prefs.getBoolean("large_fonts", false))
