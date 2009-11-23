@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -227,17 +228,23 @@ public class AccountChooser extends ListActivity
     		return true;
     		
     	case BACKUP_ID:
-    		ct = new CopyThread(CopyThread.BACKUP, pd, this);
-    		pd.setMessage(getResources().getText(R.string.backing_up));
-    		pd.show();
-    		ct.start();
+    		if (MemoryStatus.checkMemoryStatus(this, true))
+    		{
+	    		ct = new CopyThread(CopyThread.BACKUP, pd, this);
+	    		pd.setMessage(getResources().getText(R.string.backing_up));
+	    		pd.show();
+	    		ct.start();
+    		}
     		return true;
     		
     	case BU_RESTORE_ID:
-    		ct = new CopyThread(CopyThread.RESTORE, pd, this);
-    		pd.setMessage(getResources().getText(R.string.restoring));
-    		pd.show();
-    		ct.start();
+    		if (MemoryStatus.checkMemoryStatus(this, false))
+    		{
+	    		ct = new CopyThread(CopyThread.RESTORE, pd, this);
+	    		pd.setMessage(getResources().getText(R.string.restoring));
+	    		pd.show();
+	    		ct.start();
+    		}
     		return true;
     		
     	case EXPORT_ID:
@@ -592,7 +599,8 @@ public class AccountChooser extends ListActivity
     		int res = 0;
     		if (mOp == BACKUP)
 			{
-    			String backup_path = getResources().getString(R.string.backup_path);
+    			String backup_path = Environment.getExternalStorageDirectory().getPath() + 
+    					getResources().getString(R.string.backup_path);
     			FileWatcherThread fwt = new FileWatcherThread(Database.getDbPath(), backup_path, mPd);
     			fwt.start();
     			
@@ -608,7 +616,8 @@ public class AccountChooser extends ListActivity
 			}
 			else if (mOp == RESTORE)
 			{
-    			String backup_path = getResources().getString(R.string.backup_path);
+    			String backup_path = Environment.getExternalStorageDirectory().getPath() + 
+						getResources().getString(R.string.backup_path);
     			FileWatcherThread fwt = new FileWatcherThread(backup_path, Database.getDbPath(), mPd);
     			fwt.start();
 

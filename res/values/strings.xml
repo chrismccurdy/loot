@@ -35,7 +35,7 @@
 	<string name="restore">Restore Deleted Account</string>
 	<string name="no_deleted_accounts">There are no deleted accounts in the database.
 	</string>
-	<string name="backup_path">/sdcard/loot/LootDB.db</string>
+	<string name="backup_path">/loot/LootDB.db</string>
 	<string name="backup">Backup Database</string>
 	<string name="restore_db">Restore Database</string>
 	<string name="backup_successful">Database backed up to SD card.</string>
@@ -111,4 +111,9 @@
 		details are available at http://code.google.com/p/flot/</string>
 	<string name="paypal">Donate @ Paypal</string>
 	<string name="checkout">Donate @ Google Checkout</string>
+	<string name="no_external_storage">External storage is not available. This operation
+		will not function properly.</string>
+	<string name="low_external_memory">There is less than 1% total available memory on the
+		external storage device. This operation may fail if it runs out of
+		storage space.</string>
 </resources>

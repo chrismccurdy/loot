@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.Date;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,7 +14,7 @@ public class Logger
 {
 	public static boolean logStackTrace(Exception e, Context c)
 	{
-		return logStackTrace(e, c, "/sdcard/loot");
+		return logStackTrace(e, c, Environment.getExternalStorageDirectory().getPath() + "/loot");
 	}
 	
 	public static boolean logStackTrace(Exception ex, Context c, String path)
