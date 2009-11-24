@@ -38,6 +38,49 @@
 		<item>#f5330b #fc7e63 #154ca2 #6798e6 #b5e90a #d6f962</item>
 		<item>#07a863 #5be8ab #f5aa0b #fccb63 #c10878 #ee5eb6</item>
 	</string-array>
+	<string-array name="changelog">
+	    <item>* Fixed force-close on return from entering transaction\n
+	        * Improved Quicken import and export methods (Premium)\n
+	        * Added messages when no or low external storage is available\n
+	        * Added message to tell user how many rows were imported (Premium)\n
+	        * Fixed date entries when going back and creating another chart (Premium)
+	    </item>
+		<item>* Fixed total balance calculation\n
+			* Fixed force-close on open
+    	</item>
+		<item>* Added import and export of CSV and Quicken files (Premium)\n
+			* Added custom colors for transactions (Premium)\n
+			* Added charting across multiple accounts (Premium)\n
+			* Added support for large fonts\n
+			* Added new color schemes\n
+			* Added option to color backgrounds instead of text\n
+			* Added option to color negative balances in red\n
+			* Added option to display total balance
+	    </item>
+		<item>* Fixed database backup issue where the parent directory wasn’t being created
+		</item>
+		<item>* Removed app-based update checking\n
+			* Fixed bug in database backup which destroyed repeat schedules\n
+			* Improved database backup procedure\n
+			* Added on-demand repeat feature as a context menu item for transactions\n
+			* Added shortcut keys for transaction menu
+		</item>
+		<item>* Fixed bug regarding scheduling repeating transactions.\n
+			* Fixed bug regarding PIN screen being bypassed when launched from the
+			recent applications menu.
+		</item>
+		<item>* improved database backup procedure.
+		</item>
+	</string-array>
+	<string-array name="versions">
+	    <item>2.0.2</item>
+	    <item>2.0.1</item>
+	    <item>2.0.0</item>
+	    <item>1.4.5</item>
+	    <item>1.4.4</item>
+	    <item>1.4.3</item>
+	    <item>1.4.1</item>
+	</string-array>
 	<string-array name="currency_names">
 		<item>Afghani</item>
 		<item>Algerian dinar</item>

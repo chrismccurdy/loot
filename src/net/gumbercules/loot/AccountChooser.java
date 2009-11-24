@@ -47,12 +47,13 @@ public class AccountChooser extends ListActivity
 	public static final int BU_RESTORE_ID	= Menu.FIRST + 5;
 	public static final int EXPORT_ID		= Menu.FIRST + 6;
 	public static final int CHART_ID		= Menu.FIRST + 7;
+	public static final int CHANGELOG_ID	= Menu.FIRST + 8;
 	
-	public static final int CONTEXT_EDIT	= Menu.FIRST + 8;
-	public static final int CONTEXT_DEL		= Menu.FIRST + 9;
-	public static final int CONTEXT_EXPORT	= Menu.FIRST + 10;
-	public static final int CONTEXT_CHART	= Menu.FIRST + 11;
-	public static final int CONTEXT_IMPORT	= Menu.FIRST + 12;
+	public static final int CONTEXT_EDIT	= Menu.FIRST;
+	public static final int CONTEXT_DEL		= Menu.FIRST + 1;
+	public static final int CONTEXT_EXPORT	= Menu.FIRST + 2;
+	public static final int CONTEXT_CHART	= Menu.FIRST + 3;
+	public static final int CONTEXT_IMPORT	= Menu.FIRST + 4;
 	
 	private static final String TAG			= "net.gumbercules.loot.AccountChooser"; 
 	private static boolean copyInProgress	= false;
@@ -194,8 +195,11 @@ public class AccountChooser extends ListActivity
 		menu.add(0, CHART_ID, 0, R.string.chart)
 			.setShortcut('7', 'g')
 			.setIcon(android.R.drawable.ic_menu_report_image);
+		menu.add(0, CHANGELOG_ID, 0, R.string.changelog)
+			.setShortcut('8', 'l')
+			.setIcon(android.R.drawable.ic_menu_agenda);
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
-			.setShortcut('8', 's')
+			.setShortcut('9', 's')
 			.setIcon(android.R.drawable.ic_menu_preferences);
 		return true;
 	}
@@ -256,9 +260,18 @@ public class AccountChooser extends ListActivity
     		PremiumCaller graph = new PremiumCaller(this);
     		graph.showActivity(PremiumCaller.CHART);
     		return true;
+    		
+    	case CHANGELOG_ID:
+    		showChangeLog();
+    		return true;
     	}
     	
 		return false;
+	}
+
+	private void showChangeLog()
+	{
+		new ChangeLogDialog(this).show();
 	}
 
 	private Account[] findDeletedAccounts()

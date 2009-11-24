@@ -116,4 +116,5 @@
 	<string name="low_external_memory">There is less than 1% total available memory on the
 		external storage device. This operation may fail if it runs out of
 		storage space.</string>
+	<string name="changelog">Change Log</string>
 </resources>
