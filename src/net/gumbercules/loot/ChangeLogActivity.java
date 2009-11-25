@@ -1,37 +1,33 @@
 package net.gumbercules.loot;
 
-import android.app.Dialog;
+import android.app.ListActivity;
 import android.content.Context;
-import android.util.Log;
+import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ChangeLogDialog extends Dialog
+public class ChangeLogActivity extends ListActivity
 {
-	private ListView mListView;
-	
-	protected ChangeLogDialog(Context context)
+	@Override
+	public void onCreate(Bundle savedInstanceState)
 	{
-		super(context);
+		super.onCreate(savedInstanceState);
 		
 		setTitle(R.string.changelog);
-		mListView = new ListView(context);
-		mListView.setAdapter(new ChangeLogAdapter(context));
-		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-			{
-				public void onItemClick(AdapterView<?> adapter, View view, int pos, long id)
-				{
-					((ChangeLogAdapter)adapter.getAdapter()).toggle(pos);
-				}
-			});
-		setContentView(mListView);
+		setListAdapter(new ChangeLogAdapter(this));
 	}
 	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id)
+	{
+		((ChangeLogAdapter)l.getAdapter()).toggle(position);
+	}
+
 	public class ChangeLogAdapter extends BaseAdapter
 	{
 		private String[] mVersions;
@@ -55,7 +51,7 @@ public class ChangeLogDialog extends Dialog
 
 		public Object getItem(int position)
 		{
-			return mLogs[position];
+			return position;
 		}
 
 		public long getItemId(int position)
@@ -85,7 +81,6 @@ public class ChangeLogDialog extends Dialog
         public void toggle(int position)
         {
             mExpanded[position] = !mExpanded[position];
-            Log.i("TEEEEEEEEEEEEEEEEEEEEST", mLogs[position]);
             notifyDataSetChanged();
         }
 	}
@@ -99,17 +94,21 @@ public class ChangeLogDialog extends Dialog
 		{
 			super(context);
 			
+			setOrientation(VERTICAL);
+			
 			mTitle = new TextView(context);
 			mTitle.setText(title);
+			mTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
             addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 
             		LayoutParams.WRAP_CONTENT));
 			
 			mLog = new TextView(context);
 			mLog.setText(log);
+			mLog.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             addView(mLog, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 
             		LayoutParams.WRAP_CONTENT));
             
-            mLog.setVisibility(expanded ? VISIBLE : GONE);
+            setExpanded(expanded);
 		}
 		
         public void setTitle(String title)

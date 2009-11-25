@@ -271,7 +271,8 @@ public class AccountChooser extends ListActivity
 
 	private void showChangeLog()
 	{
-		new ChangeLogDialog(this).show();
+		Intent i = new Intent(this, ChangeLogActivity.class);
+		startActivity(i);
 	}
 
 	private Account[] findDeletedAccounts()
