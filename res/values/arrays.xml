@@ -40,6 +40,8 @@
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n
+&#8226; Returning from import now shows imported transactions properly (Premium)</item>
+	    <item>\n
 &#8226; Fixed force-close on return from entering transaction\n
 &#8226; Improved Quicken import and export methods (Premium)\n
 &#8226; Added messages when no or low external storage is available\n
@@ -79,6 +81,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
+	    <item>2.0.3</item>
 	    <item>2.0.2</item>
 	    <item>2.0.1</item>
 	    <item>2.0.0</item>

@@ -2,9 +2,9 @@ package net.gumbercules.loot;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 
@@ -14,22 +14,27 @@ public class PremiumCaller
 	public static final String EXPORT	= "net.gumbercules.loot.premium.EXPORT";
 	public static final String CHART	= "net.gumbercules.loot.premium.CHART";
 	
-	private Context mContext;
+	private Activity mActivity;
 	
-	public PremiumCaller(Context c)
+	public PremiumCaller(Activity a)
 	{
-		mContext = c;
+		mActivity = a;
 	}
 	
 	public void showActivity(String action)
 	{
-		showActivity(action, -1);
+		showActivity(action, -1, -1);
 	}
 	
 	public void showActivity(String action, int account_id)
 	{
+		showActivity(action, account_id, -1);
+	}
+	
+	public void showActivity(String action, int account_id, int request)
+	{
 		Intent i = new Intent(action, null);
-		List<ResolveInfo> apps = mContext.getPackageManager().queryIntentActivities(i, 0);
+		List<ResolveInfo> apps = mActivity.getPackageManager().queryIntentActivities(i, 0);
 		if (!apps.isEmpty())
 		{
 			ComponentName targetComp = new ComponentName(apps.get(0).activityInfo.applicationInfo.packageName,
@@ -47,12 +52,12 @@ public class PremiumCaller
 		
 		try
 		{
-			mContext.startActivity(i);
+			mActivity.startActivityForResult(i, request);
 		}
 		catch (ActivityNotFoundException e)
 		{
-			i = new Intent(mContext, PremiumNotFoundActivity.class);
-			mContext.startActivity(i);
+			i = new Intent(mActivity, PremiumNotFoundActivity.class);
+			mActivity.startActivity(i);
 		}
 	}
 }

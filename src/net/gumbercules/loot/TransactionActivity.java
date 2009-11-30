@@ -48,11 +48,14 @@ import android.widget.MultiAutoCompleteTextView.Tokenizer;
 public class TransactionActivity extends ListActivity
 {
 	public static final String KEY_REQ		= "t_req";
+	public static final String KEY_CHANGES	= "t_changes";
+	public static final String KEY_IDS		= "t_ids";
+	public static final String KEY_TYPE		= "t_type";
+	
 	public static final int ACTIVITY_CREATE	= 0;
 	public static final int ACTIVITY_EDIT	= 1;
 	public static final int ACTIVITY_DEL	= 2;
 	
-	public static final String KEY_TYPE		= "t_type";
 	public static final int TRANSACTION		= 0;
 	public static final int TRANSFER		= 1;
 	
@@ -202,7 +205,23 @@ public class TransactionActivity extends ListActivity
 			try
 			{
 				Bundle extras = mCurrentBundle;
-				updateList(extras.getInt(Transaction.KEY_ID), extras.getInt(TransactionActivity.KEY_REQ));
+				if (extras.containsKey(Transaction.KEY_ID))
+				{
+					updateList(extras.getInt(Transaction.KEY_ID), extras.getInt(KEY_REQ));
+				}
+				else if (extras.containsKey(KEY_CHANGES))
+				{
+					if (extras.getBoolean(KEY_CHANGES))
+					{
+						ArrayList<Integer> list = extras.getIntegerArrayList(KEY_IDS);
+						int[] array = new int[list.size()];
+						for (int i = list.size() - 1; i >= 0; --i)
+						{
+							array[i] = list.get(i);
+						}
+						updateList(array, ACTIVITY_CREATE);
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -317,7 +336,7 @@ public class TransactionActivity extends ListActivity
     		
     	case IMPORT_ID:
     		PremiumCaller imp = new PremiumCaller(this);
-    		imp.showActivity(PremiumCaller.IMPORT, mAcct.id());
+    		imp.showActivity(PremiumCaller.IMPORT, mAcct.id(), ACTIVITY_CREATE);
     		return true;
     		
     	case EXPORT_ID:
@@ -522,13 +541,25 @@ public class TransactionActivity extends ListActivity
     		view.setTextColor(Color.LTGRAY);
     }
     
-    private void fillList()
+    private void fillList(boolean repeat)
     {
-    	addRepeatedTransactions();
+    	mTa.clear();
+    	
+    	if (repeat)
+    	{
+    		addRepeatedTransactions();
+    	}
+
     	mTa.add(mAcct.getTransactions());
 		mTa.sort();
+		mTa.notifyDataSetChanged();
 		
 		setBalances();
+    }
+
+    private void fillList()
+    {
+    	fillList(true);
     }
     
     private void updateList(int trans_id, int request)
