@@ -247,7 +247,7 @@ public class TransactionEdit extends Activity
 				String num = nf.format(trans.amount);
 				StringBuilder sb = new StringBuilder();
 				sb.append(mCurrencyWatcher.getAcceptedChars());
-				String accepted = "[^" + sb.toString() + "]";
+				String accepted = "[^\\Q" + sb.toString() + "\\E]";
 				num = num.replaceAll(accepted, "");
 
 				amountEdit.setText(num);

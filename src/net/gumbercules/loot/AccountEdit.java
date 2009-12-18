@@ -4,8 +4,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Currency;
 
-import net.gumbercules.loot.R;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
@@ -105,7 +103,7 @@ public class AccountEdit extends Activity
 				String num = nf.format(acct.initialBalance);
 				StringBuilder sb = new StringBuilder();
 				sb.append(mCurrencyWatcher.getAcceptedChars());
-				String accepted = "[^" + sb.toString() + "]";
+				String accepted = "[^\\Q" + sb.toString() + "\\E]";
 				num = num.replaceAll(accepted, "");
 				
 				mBalanceEdit.setText(num);

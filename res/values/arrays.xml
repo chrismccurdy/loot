@@ -40,6 +40,10 @@
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n
+&#8226; Fixed issue with account balances not updating after initial balance was changed
+&#8226; Improved monetary entry methods, fixed locale detection parts
+&#8226; Fixed premium activities to allow for widescreen view (Premium)</item>
+	    <item>\n
 &#8226; Returning from import now shows imported transactions properly (Premium)</item>
 	    <item>\n
 &#8226; Fixed force-close on return from entering transaction\n
@@ -81,6 +85,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
+	    <item>2.0.4</item>
 	    <item>2.0.3</item>
 	    <item>2.0.2</item>
 	    <item>2.0.1</item>
