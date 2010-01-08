@@ -40,6 +40,7 @@ public class CurrencyWatcher implements TextWatcher
 		mSeparator = dfs.getMonetaryDecimalSeparator();
 		mFractionDigits = cur.getDefaultFractionDigits();
 		mAccepted = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', mSeparator};
+		Log.i(TAG + ".CurrencyWatcher()", "Separator: " + mSeparator);
 	}
 	
 	protected char[] getAcceptedChars()
@@ -55,14 +56,16 @@ public class CurrencyWatcher implements TextWatcher
 
 	public void afterTextChanged(Editable s)
 	{
-		String str = s.toString();
+		String str = s.toString();		
 		if (mChanged)
 		{
 			mChanged = false;
 			mOld = str;
 			return;
 		}
-		
+
+		Log.i(TAG + ".afterTextChanged()", "Attempting input: " + str);
+
 		final ArrayList<Character> accepted = new ArrayList<Character>(Arrays.asList(mAccepted));
 		for (char c : str.toCharArray())
 		{
