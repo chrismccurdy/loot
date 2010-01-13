@@ -336,7 +336,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 		else
 		{
-			v.top.setBackgroundColor(Color.BLACK);
+			v.top.setBackgroundColor(v.top.getRootView().getDrawingCacheBackgroundColor());
 		}
 		
 		if (dateStr == null)

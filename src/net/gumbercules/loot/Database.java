@@ -28,22 +28,35 @@ public class Database
 		// if the database is already set, we don't need to open it again
 		if ( lootDB != null )
 			return;
-		
+
 		try
 		{
 			lootDB = SQLiteDatabase.openDatabase( DB_PATH, null, SQLiteDatabase.OPEN_READWRITE );
 			if ( lootDB.needUpgrade( DB_VERSION ) )
+			{
 				if ( !this.upgradeDB( DB_VERSION ) )
+				{
 					lootDB = null;
+					throw new SQLiteException();
+				}
+			}
 		}
 		// catch SQLiteException if the database doesn't exist, then create it
 		catch (SQLiteException sqle)
 		{
+			File f = new File(DB_PATH);
+			if (f.exists())
+			{
+				f.delete();
+			}
+			
 			try
 			{
 				lootDB = SQLiteDatabase.openOrCreateDatabase( DB_PATH, null);
 				if ( !createDB(lootDB) )
+				{
 					lootDB = null;
+				}
 			}
 			// something went wrong creating the database
 			catch ( SQLiteException e )
@@ -401,6 +414,17 @@ public class Database
 	
 	private static boolean copyDatabase(String from, String to)
 	{
+		try
+		{
+			SQLiteDatabase db = SQLiteDatabase.openDatabase(from, null, SQLiteDatabase.OPEN_READONLY);
+			db.close();
+		}
+		catch (SQLiteException e)
+		{
+			Log.e("copyDatabase", "source file does not exist or is not a valid database");
+			return false;
+		}
+		
 		File fromFile = new File(from);
 		File toFile = new File(to);
 		

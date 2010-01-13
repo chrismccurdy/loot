@@ -67,13 +67,16 @@ public class CurrencyWatcher implements TextWatcher
 		Log.i(TAG + ".afterTextChanged()", "Attempting input: " + str);
 
 		final ArrayList<Character> accepted = new ArrayList<Character>(Arrays.asList(mAccepted));
+		int pos = 0;
 		for (char c : str.toCharArray())
 		{
 			if (!accepted.contains(c))
 			{
-				s.replace(0, s.length(), mOld);
+				s.replace(pos, pos + 1, "", 0, 0);
+				Log.i(TAG + ".afterTextChanged()", "Input rejected because of invalid character: " + c);
 				return;
 			}
+			++pos;
 		}
 		
 		int separator_count = 0;
