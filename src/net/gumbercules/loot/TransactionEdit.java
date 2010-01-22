@@ -15,10 +15,13 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -36,6 +39,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class TransactionEdit extends Activity
 {
 	public static final String KEY_TRANSFER = "te_transfer";
+	private static final String TAG = "net.gumbercules.loot.TransactionEdit";
 	
 	private Transaction mTrans;
 	private RepeatSchedule mRepeat;
@@ -292,6 +296,15 @@ public class TransactionEdit extends Activity
 			}
 		}
 		
+		amountEdit.setOnFocusChangeListener(new OnFocusChangeListener()
+		{
+			public void onFocusChange(View v, boolean hasFocus)
+			{
+				setInputType(v);
+			}
+		});
+		setInputType(amountEdit);
+		
 		repeatSpinner.setSelection(mDefaultRepeatValue);
 		repeatSpinner.setOnItemSelectedListener(mRepeatSpinnerListener);
 		
@@ -312,6 +325,24 @@ public class TransactionEdit extends Activity
 				finish();
 			}
 		});
+	}
+	
+	private void setInputType(View v)
+	{
+		Configuration c = v.getContext().getResources().getConfiguration();
+		if (c.keyboard != Configuration.KEYBOARD_NOKEYS && 
+				c.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES)
+		{
+			Log.i(TAG + ".populateFields$onFocusChange",
+				"Hardware keyboard not hidden, dropping input type");
+			((EditText)v).setInputType(InputType.TYPE_NULL);
+		}
+		else
+		{
+			Log.i(TAG + ".populateFields$onFocusChange",
+				"Hardware keyboard hidden (or not present), setting input type");
+			((EditText)v).setInputType(InputType.TYPE_CLASS_PHONE);
+		}
 	}
 
 	private OnItemSelectedListener mRepeatSpinnerListener = new Spinner.OnItemSelectedListener()
