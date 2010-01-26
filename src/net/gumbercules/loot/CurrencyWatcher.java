@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
 
+import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,6 +20,13 @@ public class CurrencyWatcher implements TextWatcher
 	private boolean mChanged;
 	private final int mFractionDigits;
 	private Character[] mAccepted;
+	
+	// these phones seem to have issues with replacing periods with commas on the hard keyboard
+	private static final String[] mBadPhones = 
+	{
+		"MB200",
+		"SPH-M900"
+	};
 	
 	public CurrencyWatcher()
 	{
@@ -56,7 +64,7 @@ public class CurrencyWatcher implements TextWatcher
 
 	public void afterTextChanged(Editable s)
 	{
-		String str = s.toString();		
+		String str = s.toString();
 		if (mChanged)
 		{
 			mChanged = false;
@@ -64,6 +72,14 @@ public class CurrencyWatcher implements TextWatcher
 			return;
 		}
 
+		ArrayList<String> bad = new ArrayList<String>(Arrays.asList(mBadPhones)); 
+		if (str.contains(",") && mSeparator == '.' && bad.contains(Build.MODEL))
+		{
+			s.clear();
+			str = str.replace(',', '.');
+			s.append(str);
+		}
+		
 		Log.i(TAG + ".afterTextChanged()", "Attempting input: " + str);
 
 		final ArrayList<Character> accepted = new ArrayList<Character>(Arrays.asList(mAccepted));
