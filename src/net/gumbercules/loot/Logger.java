@@ -60,7 +60,9 @@ public class Logger
 				Log.e(Logger.class.toString(), "PrintWriter had an error");
 				return false;
 			}
-			Toast.makeText(c, "Error logged to " + logFile, Toast.LENGTH_LONG).show();
+			String msg = "Error logged to " + logFile;
+			Log.i(Logger.class.toString(), msg);
+			Toast.makeText(c, msg, Toast.LENGTH_LONG).show();
 		}
 		catch (Exception e)
 		{

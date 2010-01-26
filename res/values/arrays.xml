@@ -40,6 +40,10 @@
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n
+&#8226; Fixed currency entry issues with CLIQ and Moment physical keyboards\n
+&#8226; Improved transaction list screen\n
+	    </item>
+	    <item>\n
 &#8226; Improved currency entry method\n
 &#8226; Fixed an error with restoring databases\n
 &#8226; Improved Quicken import methods (Premium)\n
@@ -93,6 +97,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
+	    <item>2.0.6</item>
 	    <item>2.0.5</item>
 	    <item>2.0.4</item>
 	    <item>2.0.3</item>

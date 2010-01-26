@@ -88,8 +88,7 @@ public class TransactionActivity extends ListActivity
 	private static boolean showSearch = false;
 	private static String searchString = "";
 	
-	private boolean mCreating;
-	private boolean mResuming;
+	private boolean mLargeFonts;
 	
 	private Bundle mCurrentBundle;
 	
@@ -98,48 +97,23 @@ public class TransactionActivity extends ListActivity
     {
     	super.onCreate(savedInstanceState);
 
-    	mCreating = true;
+    	createContent();
     }
     
-    @Override
-	protected void onResume()
-	{
-		super.onResume();
-
+    private void createContent()
+    {
 		int layoutResId = setContent();
+		
+		Bundle bun = getIntent().getExtras();
+    	int acct_id = bun.getInt(Account.KEY_ID);
+    	boolean new_account = false;
+    	if (mAcct == null || acct_id != mAcct.id())
+    	{
+    		new_account = true;
+    		mAcct = Account.getAccountById(acct_id);
+    	}
+    	setTitle("loot :: " + mAcct.name);
 
-    	budgetValue = (TextView)findViewById(R.id.budgetValue);
-    	balanceValue = (TextView)findViewById(R.id.balanceValue);
-    	postedValue = (TextView)findViewById(R.id.postedValue);
-
-		if (mCreating)
-		{
-	    	Bundle bun = getIntent().getExtras();
-	    	int acct_id = bun.getInt(Account.KEY_ID);
-	    	boolean new_account = false;
-	    	if (mAcct == null || acct_id != mAcct.id())
-	    	{
-	    		new_account = true;
-	    		mAcct = Account.getAccountById(acct_id);
-	    	}
-	    	setTitle("loot :: " + mAcct.name);
-
-	    	if (new_account)
-	    	{
-		    	mTransList = new ArrayList<Transaction>();
-			    mTa = new TransactionAdapter(this, layoutResId, mTransList, mAcct.id());
-		        setListAdapter(mTa);
-		        fillList();
-	    	}
-	    	else
-	    	{
-	    		mTa.setContext(this);
-	    		setListAdapter(mTa);
-	    		setBalances();
-	    	}
-	    }
-		mTa.setResource(layoutResId);
-    	
     	int auto_purge = (int)Database.getOptionInt("auto_purge_days");
     	if (auto_purge > 0)
     	{
@@ -149,7 +123,11 @@ public class TransactionActivity extends ListActivity
     		if (ids != null && mTa != null && !mTa.isEmpty())
     			mTa.remove(ids);
     	}
-    	
+
+		budgetValue = (TextView)findViewById(R.id.budgetValue);
+		balanceValue = (TextView)findViewById(R.id.balanceValue);
+		postedValue = (TextView)findViewById(R.id.postedValue);
+
     	// add a listener to filter the list whenever the text changes
     	searchEdit = (MultiAutoCompleteTextView)findViewById(R.id.SearchEdit);
     	
@@ -162,6 +140,21 @@ public class TransactionActivity extends ListActivity
 				searchEdit.setText("");
 			}
     	});
+
+		if (new_account)
+    	{
+	    	mTransList = new ArrayList<Transaction>();
+		    mTa = new TransactionAdapter(this, layoutResId, mTransList, mAcct.id());
+	        setListAdapter(mTa);
+	        fillList();
+    	}
+    	else
+    	{
+    		mTa.setResource(layoutResId);
+    		mTa.setContext(this);
+    		setListAdapter(mTa);
+    		setBalances();
+    	}
 
     	TextWatcher searchChanged = new TextWatcher()
     	{
@@ -186,7 +179,7 @@ public class TransactionActivity extends ListActivity
 			public void onTextChanged(CharSequence s, int start, int before, int count) { }
     	};
     	searchEdit.addTextChangedListener(searchChanged);
-
+    	
     	ListView view = getListView();
         registerForContextMenu(view);
         view.setStackFromBottom(true);
@@ -199,8 +192,21 @@ public class TransactionActivity extends ListActivity
 			searchEdit.setText(searchString);
 			f.publish(searchString, f.filtering(searchString));
     	}
-    	
-    	if (mResuming)
+    }
+    
+    @Override
+	protected void onResume()
+	{
+		super.onResume();
+		
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    	boolean new_large_fonts = prefs.getBoolean("large_fonts", false); 
+    	if (mLargeFonts != new_large_fonts)
+    	{
+    		createContent();
+    	}
+
+    	if (mCurrentBundle != null)
     	{
 			try
 			{
@@ -227,10 +233,9 @@ public class TransactionActivity extends ListActivity
 			{
 				Logger.logStackTrace(e, this);
 			}
-
-			mCurrentBundle = null;
-			mResuming = false;
     	}
+
+		mCurrentBundle = null;
 	}
 
 	private int setContent()
@@ -242,6 +247,7 @@ public class TransactionActivity extends ListActivity
     	
     	if (prefs.getBoolean("large_fonts", false))
     	{
+    		mLargeFonts = true;
     		setContentView(R.layout.main_large);
     		
         	if (orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -255,6 +261,7 @@ public class TransactionActivity extends ListActivity
     	}
     	else
     	{
+    		mLargeFonts = false;
     		setContentView(R.layout.main);
 
     		if (orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -634,7 +641,6 @@ public class TransactionActivity extends ListActivity
 		
 		if (resultCode == RESULT_OK && data != null)
 		{
-			mResuming = true;
 			mCurrentBundle = data.getExtras();
 		}
 		
