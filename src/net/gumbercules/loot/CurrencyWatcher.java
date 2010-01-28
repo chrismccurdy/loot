@@ -25,7 +25,8 @@ public class CurrencyWatcher implements TextWatcher
 	private static final String[] mBadPhones = 
 	{
 		"MB200",
-		"SPH-M900"
+		"SPH-M900",
+		"sdk"		// not actually bad, but useful for testing purposes
 	};
 	
 	public CurrencyWatcher()
@@ -49,6 +50,9 @@ public class CurrencyWatcher implements TextWatcher
 		mFractionDigits = cur.getDefaultFractionDigits();
 		mAccepted = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', mSeparator};
 		Log.i(TAG + ".CurrencyWatcher()", "Separator: " + mSeparator);
+		Log.i(TAG + ".CurrencyWatcher()", "Model: " + Build.MODEL);
+		Log.i(TAG + ".CurrencyWatcher()", "Bad model?: " + 
+				new ArrayList<String>(Arrays.asList(mBadPhones)).contains(Build.MODEL));
 	}
 	
 	protected char[] getAcceptedChars()
@@ -72,9 +76,10 @@ public class CurrencyWatcher implements TextWatcher
 			return;
 		}
 
-		ArrayList<String> bad = new ArrayList<String>(Arrays.asList(mBadPhones)); 
+		ArrayList<String> bad = new ArrayList<String>(Arrays.asList(mBadPhones));
 		if (str.contains(",") && mSeparator == '.' && bad.contains(Build.MODEL))
 		{
+			Log.i(TAG + ".afterTextChanged()", "Replacing commas in string \"" + str + "\"");
 			s.clear();
 			str = str.replace(',', '.');
 			s.append(str);
