@@ -88,7 +88,7 @@ public class AccountEdit extends Activity
 		{
 			Log.i(TAG + ".setInputType",
 				"Hardware keyboard not hidden, dropping input type");
-			((EditText)v).setInputType(InputType.TYPE_NULL);
+			((EditText)v).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		}
 		else
 		{
