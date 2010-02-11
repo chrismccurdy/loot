@@ -7,10 +7,13 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
 
+import android.content.res.Configuration;
 import android.os.Build;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
 
 public class CurrencyWatcher implements TextWatcher
 {
@@ -128,4 +131,22 @@ public class CurrencyWatcher implements TextWatcher
 	}
 
 	public void onTextChanged(CharSequence s, int start, int before, int count) { }	
+	
+	public static void setInputType(EditText e)
+	{
+		Configuration c = e.getContext().getResources().getConfiguration();
+		if (c.keyboard != Configuration.KEYBOARD_NOKEYS && 
+				c.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES)
+		{
+			Log.i(TAG + ".setInputType",
+				"Hardware keyboard not hidden, changing input type");
+			e.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		}
+		else
+		{
+			Log.i(TAG + ".setInputType",
+				"Hardware keyboard hidden (or not present), setting input type");
+			e.setInputType(InputType.TYPE_CLASS_PHONE);
+		}
+	}
 }

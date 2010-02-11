@@ -5,11 +5,8 @@ import java.text.NumberFormat;
 import java.util.Currency;
 
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.method.DigitsKeyListener;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
@@ -17,6 +14,7 @@ import android.widget.EditText;
 
 public class AccountEdit extends Activity
 {
+	@SuppressWarnings("unused")
 	private static final String TAG = "net.gumbercules.loot.AccountEdit";
 	
 	private EditText mNameEdit;
@@ -48,10 +46,13 @@ public class AccountEdit extends Activity
 		{
 			public void onFocusChange(View v, boolean hasFocus)
 			{
-				setInputType(v);
+				if (v instanceof EditText)
+				{
+					CurrencyWatcher.setInputType((EditText)v);
+				}
 			}
 		});
-		setInputType(mBalanceEdit);
+		CurrencyWatcher.setInputType(mBalanceEdit);
 		
 		mRowId = savedInstanceState != null ? savedInstanceState.getInt(Account.KEY_ID) : 0;
 		if (mRowId == 0)
@@ -79,25 +80,6 @@ public class AccountEdit extends Activity
 			}
 		});
 	}
-
-	private void setInputType(View v)
-	{
-		Configuration c = v.getContext().getResources().getConfiguration();
-		if (c.keyboard != Configuration.KEYBOARD_NOKEYS && 
-				c.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES)
-		{
-			Log.i(TAG + ".setInputType",
-				"Hardware keyboard not hidden, dropping input type");
-			((EditText)v).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-		}
-		else
-		{
-			Log.i(TAG + ".setInputType",
-				"Hardware keyboard hidden (or not present), setting input type");
-			((EditText)v).setInputType(InputType.TYPE_CLASS_PHONE);
-		}
-	}
-
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState)
