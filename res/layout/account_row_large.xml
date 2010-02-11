@@ -3,8 +3,8 @@
 	android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:orientation="vertical">
 	<TextView android:layout_height="wrap_content" android:id="@+id/AccountName"
-		android:layout_width="fill_parent" android:textSize="30px"></TextView>
+		android:layout_width="fill_parent" android:textSize="30dip" />
 	<TextView android:layout_height="wrap_content" android:id="@+id/AccountBalance"
-		android:layout_width="fill_parent" android:layout_marginLeft="10px"
-		android:textSize="20px"></TextView>
+		android:layout_width="fill_parent" android:layout_marginLeft="10dip"
+		android:textSize="20dip" />
 </LinearLayout>

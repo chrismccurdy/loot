@@ -6,8 +6,8 @@
 		android:layout_height="fill_parent" android:orientation="vertical"
 		android:layout_weight="100">
 		<ListView android:layout_height="wrap_content" android:id="@android:id/list"
-			android:layout_width="fill_parent" android:paddingRight="5px" />
-		<TextView android:id="@android:id/empty" android:textSize="24px"
+			android:layout_width="fill_parent" android:paddingRight="5dip" />
+		<TextView android:id="@android:id/empty" android:textSize="24dip"
 			android:text="Use the menu to add new accounts." android:gravity="center"
 			android:layout_height="fill_parent" android:layout_width="fill_parent" />
 	</LinearLayout>
@@ -16,9 +16,11 @@
 		android:orientation="horizontal" android:layout_weight="1">
 		<TextView android:id="@+id/total_balance_text"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="@string/total_balance" android:layout_weight="1" android:textSize="20px"/>
+			android:text="@string/total_balance" android:layout_weight="1"
+			android:textSize="20dip" />
 		<TextView android:id="@+id/total_balance"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_weight="1" android:gravity="right" android:text="$0.00" android:textSize="20px"/>
+			android:layout_weight="1" android:gravity="right" android:text="$0.00"
+			android:textSize="20dip" />
 	</LinearLayout>
 </LinearLayout>

@@ -31,10 +31,10 @@
 				android:layout_weight="1" android:layout_gravity="center_vertical" />
 			<EditText android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/dayEdit"
-				android:maxWidth="150px" android:text="1" android:inputType="number" />
+				android:maxWidth="150dip" android:text="1" android:inputType="number" />
 			<TextView android:id="@+id/TextView03" android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_gravity="center_vertical"
-				android:paddingLeft="5px" android:text="Day(s)" />
+				android:paddingLeft="5dip" android:text="Day(s)" />
 		</LinearLayout>
 		<LinearLayout android:id="@+id/LinearLayout02"
 			android:layout_height="wrap_content" android:layout_width="fill_parent">
@@ -72,11 +72,11 @@
 					android:layout_gravity="center_vertical" />
 				<EditText android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:id="@+id/weekEdit"
-					android:maxWidth="150px" android:text="1" android:inputType="number" />
+					android:maxWidth="150dip" android:text="1" android:inputType="number" />
 
 				<TextView android:id="@+id/TextView03"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_gravity="center_vertical" android:paddingLeft="5px"
+					android:layout_gravity="center_vertical" android:paddingLeft="5dip"
 					android:text="Week(s)" />
 			</LinearLayout>
 			<LinearLayout android:id="@+id/LinearLayout02"
@@ -153,10 +153,10 @@
 				android:layout_weight="1" android:layout_gravity="center_vertical" />
 			<EditText android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/monthEdit"
-				android:maxWidth="150px" android:text="1" android:inputType="number" />
+				android:maxWidth="150dip" android:text="1" android:inputType="number" />
 			<TextView android:id="@+id/TextView03" android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_gravity="center_vertical"
-				android:text="Month(s)" android:paddingLeft="5px" />
+				android:text="Month(s)" android:paddingLeft="5dip" />
 		</LinearLayout>
 		<LinearLayout android:id="@+id/LinearLayout02"
 			android:layout_height="wrap_content" android:layout_width="fill_parent">
@@ -197,10 +197,10 @@
 				android:layout_weight="1" android:layout_gravity="center_vertical" />
 			<EditText android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/yearEdit"
-				android:maxWidth="150px" android:text="1" android:inputType="number" />
+				android:maxWidth="150dip" android:text="1" android:inputType="number" />
 			<TextView android:id="@+id/TextView03" android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_gravity="center_vertical"
-				android:paddingLeft="5px" android:text="Year(s)" />
+				android:paddingLeft="5dip" android:text="Year(s)" />
 		</LinearLayout>
 		<LinearLayout android:id="@+id/LinearLayout02"
 			android:layout_height="wrap_content" android:layout_width="fill_parent">

@@ -7,7 +7,7 @@
 		android:layout_weight="10">
 		<LinearLayout android:orientation="vertical"
 			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:paddingRight="5px">
+			android:paddingRight="5dip">
 			<LinearLayout android:id="@+id/LinearLayout01"
 				android:layout_height="wrap_content" android:layout_width="fill_parent"
 				android:orientation="horizontal">
@@ -17,14 +17,14 @@
 					<RadioButton android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:text="Deposit"
 						android:layout_weight="1" android:id="@+id/depositRadio"
-						android:checked="false"></RadioButton>
+						android:checked="false" />
 					<RadioButton android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:text="Withdraw"
 						android:layout_weight="1" android:id="@+id/withdrawRadio"
-						android:checked="true"></RadioButton>
+						android:checked="true" />
 					<RadioButton android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:text="Check"
-						android:layout_weight="1" android:id="@+id/checkRadio"></RadioButton>
+						android:layout_weight="1" android:id="@+id/checkRadio" />
 				</RadioGroup>
 			</LinearLayout>
 			<TableLayout android:id="@+id/TableLayout01"
@@ -33,7 +33,7 @@
 					android:layout_width="fill_parent" android:id="@+id/dateRow">
 					<TextView android:layout_width="wrap_content"
 						android:layout_height="fill_parent" android:gravity="left|center_vertical"
-						android:id="@+id/dateLabel" android:minWidth="65px" android:text="@string/trans_date"></TextView>
+						android:id="@+id/dateLabel" android:minWidth="65dip" android:text="@string/trans_date" />
 					<LinearLayout android:id="@+id/LinearLayout02"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_weight="2">
@@ -41,76 +41,76 @@
 							android:layout_height="wrap_content" android:state_enabled="false"
 							android:layout_weight="1" android:id="@+id/dateEdit"
 							android:inputType="date" android:focusable="false"
-							android:focusableInTouchMode="false" android:clickable="false"></EditText>
+							android:focusableInTouchMode="false" android:clickable="false" />
 						<ImageButton android:layout_width="wrap_content"
 							android:layout_height="wrap_content" android:id="@+id/datePickerButton"
-							android:scaleType="matrix" android:src="@drawable/ic_menu_today"></ImageButton>
+							android:scaleType="matrix" android:src="@drawable/ic_menu_today" />
 					</LinearLayout>
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:id="@+id/amountRow">
 					<TextView android:layout_width="wrap_content"
 						android:layout_height="fill_parent" android:gravity="left|center_vertical"
-						android:id="@+id/amountLabel" android:minWidth="65px"
-						android:text="@string/trans_amt"></TextView>
+						android:id="@+id/amountLabel" android:minWidth="65dip"
+						android:text="@string/trans_amt" />
 					<EditText android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:layout_weight="2"
 						android:id="@+id/amountEdit" android:hint="@string/trans_amt"
-						android:inputType="phone"></EditText>
+						android:inputType="phone" />
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:id="@+id/partyRow">
 					<TextView android:layout_width="wrap_content"
 						android:layout_height="fill_parent" android:gravity="left|center_vertical"
-						android:id="@+id/partyLabel" android:minWidth="65px"
-						android:text="@string/trans_party"></TextView>
+						android:id="@+id/partyLabel" android:minWidth="65dip"
+						android:text="@string/trans_party" />
 					<AutoCompleteTextView android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:layout_weight="2"
 						android:id="@+id/partyEdit" android:inputType="text|textCapWords|textAutoComplete"
-						android:hint="@string/trans_party"></AutoCompleteTextView>
+						android:hint="@string/trans_party" />
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:visibility="gone"
 					android:id="@+id/accountRow">
 					<TextView android:layout_width="wrap_content"
 						android:layout_height="fill_parent" android:gravity="left|center_vertical"
-						android:id="@+id/accountLabel" android:minWidth="65px"
-						android:text="@string/trans_account"></TextView>
+						android:id="@+id/accountLabel" android:minWidth="65dip"
+						android:text="@string/trans_account" />
 					<Spinner android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:layout_weight="2"
-						android:id="@+id/accountSpinner"></Spinner>
+						android:id="@+id/accountSpinner" />
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:id="@+id/checkRow">
 					<TextView android:layout_width="wrap_content"
 						android:layout_height="fill_parent" android:gravity="left|center_vertical"
-						android:id="@+id/checkLabel" android:minWidth="65px"
-						android:text="@string/trans_check_num"></TextView>
+						android:id="@+id/checkLabel" android:minWidth="65dip"
+						android:text="@string/trans_check_num" />
 					<EditText android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:layout_weight="2"
 						android:id="@+id/checkEdit" android:state_enabled="false"
 						android:cursorVisible="true" android:inputType="number"
-						android:hint="@string/trans_check_num"></EditText>
+						android:hint="@string/trans_check_num" />
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:id="@+id/tagsRow">
 					<TextView android:layout_width="wrap_content"
 						android:layout_height="fill_parent" android:gravity="left|center_vertical"
-						android:id="@+id/tagsLabel" android:minWidth="65px" android:text="@string/trans_tags"></TextView>
+						android:id="@+id/tagsLabel" android:minWidth="65dip" android:text="@string/trans_tags" />
 					<MultiAutoCompleteTextView
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_weight="2" android:id="@+id/tagsEdit"
-						android:inputType="text|textAutoComplete" android:hint="@string/trans_tags"></MultiAutoCompleteTextView>
+						android:inputType="text|textAutoComplete" android:hint="@string/trans_tags" />
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:id="@+id/repeatRow">
 					<TextView android:layout_width="wrap_content"
 						android:layout_height="fill_parent" android:gravity="left|center_vertical"
-						android:id="@+id/repeatLabel" android:minWidth="65px"
-						android:text="@string/trans_repeat"></TextView>
+						android:id="@+id/repeatLabel" android:minWidth="65dip"
+						android:text="@string/trans_repeat" />
 					<Spinner android:layout_width="wrap_content"
 						android:layout_height="wrap_content" android:layout_weight="2"
-						android:id="@+id/repeatSpinner"></Spinner>
+						android:id="@+id/repeatSpinner" />
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:id="@+id/budgetRow">
@@ -120,10 +120,10 @@
 						android:layout_weight="1" android:checkedButton="@+id/ActualRadio">
 						<RadioButton android:layout_width="wrap_content"
 							android:layout_height="wrap_content" android:text="Actual"
-							android:layout_weight="1" android:id="@+id/ActualRadio"></RadioButton>
+							android:layout_weight="1" android:id="@+id/ActualRadio" />
 						<RadioButton android:layout_height="wrap_content"
 							android:text="Budget" android:layout_width="wrap_content"
-							android:layout_weight="1" android:id="@+id/BudgetRadio"></RadioButton>
+							android:layout_weight="1" android:id="@+id/BudgetRadio" />
 					</RadioGroup>
 				</TableRow>
 			</TableLayout>
@@ -134,9 +134,9 @@
 		android:layout_weight="1">
 		<Button android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:text="Save"
-			android:layout_weight="1" android:id="@+id/saveButton"></Button>
+			android:layout_weight="1" android:id="@+id/saveButton" />
 		<Button android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:text="Cancel"
-			android:layout_weight="1" android:id="@+id/cancelButton"></Button>
+			android:layout_weight="1" android:id="@+id/cancelButton" />
 	</LinearLayout>
 </LinearLayout>

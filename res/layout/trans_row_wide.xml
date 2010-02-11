@@ -4,7 +4,7 @@
 	android:orientation="horizontal" android:id="@+id/LinearLayout01">
 	<CheckBox android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"
-		android:layout_marginTop="-5px" android:layout_marginBottom="-10px"
+		android:layout_marginTop="-5dip" android:layout_marginBottom="-10dip"
 		android:focusable="false" android:focusableInTouchMode="false"></CheckBox>
 	<LinearLayout android:id="@+id/LinearLayout02"
 		android:layout_width="wrap_content" android:layout_height="fill_parent"
@@ -14,21 +14,21 @@
 			<TextView android:layout_width="wrap_content" android:text="Wilmington Trust Company"
 				android:id="@+id/PartyText" android:gravity="left"
 				android:layout_gravity="left|center_vertical" android:maxLines="1"
-				android:lines="1" android:ellipsize="end" android:maxWidth="250px"
+				android:lines="1" android:ellipsize="end" android:maxWidth="250dip"
 				android:layout_height="fill_parent"></TextView>
 		</LinearLayout>
 		<LinearLayout android:id="@+id/LinearLayout03"
 			android:layout_height="wrap_content" android:layout_width="fill_parent">
 			<TextView android:layout_width="wrap_content" android:text="2008-10-01"
 				android:id="@+id/DateText" android:ellipsize="end"
-				android:layout_gravity="left|center_vertical" android:paddingRight="0px"
-				android:minWidth="100px" android:maxWidth="100px"
+				android:layout_gravity="left|center_vertical" android:paddingRight="0dip"
+				android:minWidth="100dip" android:maxWidth="100dip"
 				android:layout_height="fill_parent"></TextView>
 			<TextView android:text="215.00" android:gravity="right"
-				android:id="@+id/AmountText" android:paddingRight="5px"
+				android:id="@+id/AmountText" android:paddingRight="5dip"
 				android:layout_gravity="right|center_vertical"
 				android:layout_weight="1" android:layout_height="fill_parent"
-				android:minWidth="100px" android:layout_width="wrap_content"></TextView>
+				android:minWidth="100dip" android:layout_width="wrap_content"></TextView>
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

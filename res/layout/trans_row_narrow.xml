@@ -5,7 +5,7 @@
 	<CheckBox android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"
 		android:focusable="false" android:focusableInTouchMode="false"
-		android:layout_marginTop="-5px" android:layout_marginBottom="-8px"></CheckBox>
+		android:layout_marginTop="-5dip" android:layout_marginBottom="-8dip"></CheckBox>
 	<LinearLayout android:id="@+id/LinearLayout02"
 		android:layout_width="wrap_content" android:layout_height="fill_parent"
 		android:layout_weight="1" android:layout_gravity="left|center_vertical"
@@ -13,16 +13,16 @@
 		<TextView android:layout_height="wrap_content" android:id="@+id/PartyText"
 			android:layout_width="fill_parent" android:ellipsize="end"
 			android:gravity="top|left" android:lines="1" android:maxLines="1"
-			android:text="Wilmington Trust Company" android:textSize="18px"></TextView>
+			android:text="Wilmington Trust Company" android:textSize="18dip"></TextView>
 		<LinearLayout android:id="@+id/LinearLayout03"
 			android:layout_height="wrap_content" android:layout_width="fill_parent"
-			android:layout_marginTop="-5px">
+			android:layout_marginTop="-5dip">
 			<TextView android:layout_height="wrap_content" android:text="2008-10-01"
 				android:id="@+id/DateText" android:layout_gravity="left|center_vertical"
 				android:layout_width="wrap_content" android:layout_weight="2"></TextView>
 			<TextView android:layout_width="wrap_content" android:text="215.00"
 				android:gravity="right" android:id="@+id/AmountText"
-				android:layout_height="fill_parent" android:paddingRight="7px"
+				android:layout_height="fill_parent" android:paddingRight="7dip"
 				android:singleLine="false" android:maxLines="1" android:lines="1"
 				android:layout_weight="1"></TextView>
 		</LinearLayout>

@@ -40,6 +40,10 @@
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n
+&#8226; Improved display for devices with larger/denser screens\n
+&#8226; Fixed currency entry issues with 3-row physical keyboards\n
+	    </item>
+	    <item>\n
 &#8226; Fixed currency entry issues with CLIQ and Moment physical keyboards\n
 &#8226; Improved transaction list screen\n
 &#8226; Added support for more QIF import cases (Premium)\n
@@ -98,6 +102,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
+	    <item>2.0.7</item>
 	    <item>2.0.6</item>
 	    <item>2.0.5</item>
 	    <item>2.0.4</item>
