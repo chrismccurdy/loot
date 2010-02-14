@@ -117,4 +117,10 @@
 		external storage device. This operation may fail if it runs out of
 		storage space.</string>
 	<string name="changelog">Change Log</string>
+	<string name="primary">Toggle Primary Account</string>
+	<string name="primary_not_set">Please set an account to the primary by
+		long-clicking and choosing \'Toggle Primary Account\' or editing the
+		account and choosing that option. Otherwise, you may want to turn the
+		option off.</string>
+	<string name="primary_label">Primary Account</string>
 </resources>

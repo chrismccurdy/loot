@@ -15,7 +15,7 @@ public class Database
 {
 	private final static String DB_NAME		= "LootDB";
 	private final static String DB_PATH		= "/data/data/net.gumbercules.loot/" + DB_NAME + ".db";
-	private final static int DB_VERSION		= 4;
+	private final static int DB_VERSION		= 5;
 	private static SQLiteDatabase lootDB	= null;
 	
 	public Database()
@@ -83,7 +83,8 @@ public class Database
 					"	balance real default 0.0,\n" + 
 					"	timestamp integer default 0,\n" +
 					"	purged bool default 0,\n" +
-					"	priority integer default 1)";
+					"	priority integer default 1,\n" +
+					"	primary_account bool default 0)";
 
 		createSQL[1] = "create table transactions(\n" +
 					"	id integer primary key autoincrement,\n" +
@@ -232,6 +233,26 @@ public class Database
 			
 			lootDB.setVersion(4);
 			current_version = 4;
+		}
+		if (current_version < 5)
+		{
+			lootDB.beginTransaction();
+			try
+			{
+				lootDB.execSQL("alter table accounts add column primary_account bool default 0");
+				lootDB.setTransactionSuccessful();
+			}
+			catch (SQLException e)
+			{
+				return false;
+			}
+			finally
+			{
+				lootDB.endTransaction();
+			}
+			
+			lootDB.setVersion(5);
+			current_version = 5;
 		}
 		
 		if ( current_version == max_version )

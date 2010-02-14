@@ -57,6 +57,38 @@ public class AccountAdapter extends ArrayAdapter<Account>
 	}
 
 	@Override
+	public void add(Account object)
+	{
+		mAccountList.add(object);
+	}
+
+	@Override
+	public void insert(Account object, int index)
+	{
+		mAccountList.add(index, object);
+	}
+
+	public void remove(int index)
+	{
+		mAccountList.remove(index);
+	}
+	
+	public void setPrimary(int index, boolean set)
+	{
+		for (int i = 0; i < mAccountList.size(); ++i)
+		{
+			if (i == index)
+			{
+				mAccountList.get(i).primary = set;
+			}
+			else
+			{
+				mAccountList.get(i).primary = false;
+			}
+		}
+	}
+
+	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		Account acct = mAccountList.get(position);
@@ -65,6 +97,7 @@ public class AccountAdapter extends ArrayAdapter<Account>
 		// find and retrieve the widgets
 		TextView AccountName = (TextView)v.findViewById(R.id.AccountName);
 		TextView AccountBal = (TextView)v.findViewById(R.id.AccountBalance);
+		View star = (View)v.findViewById(R.id.star_image);
 		
 		if (AccountName != null)
 		{
@@ -75,13 +108,19 @@ public class AccountAdapter extends ArrayAdapter<Account>
 			NumberFormat nf = NumberFormat.getCurrencyInstance();
 			String new_currency = Database.getOptionString("override_locale");
 			if (new_currency != null && !new_currency.equals(""))
+			{
 				nf.setCurrency(Currency.getInstance(new_currency));
+			}
 			Double bal = acct.calculateActualBalance();
 			String text;
 			if (bal != null)
+			{
 				text = nf.format(bal);
+			}
 			else
+			{
 				text = "Error Calculating Balance";
+			}
 			AccountBal.setText(text);
 			
 			if (bal < 0.0)
@@ -91,8 +130,17 @@ public class AccountAdapter extends ArrayAdapter<Account>
 					AccountBal.setTextColor(Color.rgb(255, 50, 50));
 			}
 			else
+			{
 				AccountBal.setTextColor(Color.LTGRAY);
+			}
 		}
+		
+		int visibility = View.GONE;
+		if (acct.isPrimary())
+		{
+			visibility = View.VISIBLE;
+		}
+		star.setVisibility(visibility);
 
 		return v;
 	}

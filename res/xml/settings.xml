@@ -82,6 +82,10 @@
 		android:defaultValue="true" />
 	<CheckBoxPreference android:summary="Enables fonts larger than default for most text."
 		android:key="large_fonts" android:title="Large Fonts" />
+	<CheckBoxPreference
+		android:summary="Automatically starts in the account set as the primary."
+		android:title="Default to Primary" android:key="primary_default"
+		android:defaultValue="false" />
 	<PreferenceCategory android:title="Security"
 		android:key="cat_security">
 		<CheckBoxPreference android:key="security"

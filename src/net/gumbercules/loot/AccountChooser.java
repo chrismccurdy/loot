@@ -54,6 +54,7 @@ public class AccountChooser extends ListActivity
 	public static final int CONTEXT_EXPORT	= Menu.FIRST + 2;
 	public static final int CONTEXT_CHART	= Menu.FIRST + 3;
 	public static final int CONTEXT_IMPORT	= Menu.FIRST + 4;
+	public static final int CONTEXT_PRIMARY	= Menu.FIRST + 5;
 	
 	private static final String TAG			= "net.gumbercules.loot.AccountChooser"; 
 	private static boolean copyInProgress	= false;
@@ -119,7 +120,9 @@ public class AccountChooser extends ListActivity
 		// if we're not overriding locale, check to see if the detected one is valid
 		String locale = Database.getOptionString("override_locale");
 		if (locale == null || locale.equals(""))
+		{
 			checkLocale();
+		}
 
 		// automatically purge transactions on load if this option is set
 		int purge_days = (int)Database.getOptionInt("auto_purge_days");
@@ -131,6 +134,23 @@ public class AccountChooser extends ListActivity
 			for (Account acct : accountList)
 			{
 				acct.purgeTransactions(date);
+			}
+		}
+		
+		if (prefs.getBoolean("primary_default", false))
+		{
+			Account acct = Account.getPrimaryAccount();
+			if (acct == null)
+			{
+				new AlertDialog.Builder(this)
+					.setMessage(R.string.primary_not_set)
+					.show();
+			}
+			else
+			{
+				Intent in = new Intent(this, TransactionActivity.class);
+				in.putExtra(Account.KEY_ID, acct.id());
+				startActivityForResult(in, 0);
 			}
 		}
 	}
@@ -445,6 +465,8 @@ public class AccountChooser extends ListActivity
 		}
 		
 		int id = (int)getListAdapter().getItemId(info.position);
+		final Account acct = Account.getAccountById(id);
+		
 		switch (item.getItemId())
 		{
 		case CONTEXT_EDIT:
@@ -452,7 +474,6 @@ public class AccountChooser extends ListActivity
 			return true;
 			
 		case CONTEXT_DEL:
-			final Account acct = Account.getAccountById(id);
 			AlertDialog dialog = new AlertDialog.Builder(this)
 				.setTitle(R.string.account_del_box)
 				.setMessage("Are you sure you wish to delete " + acct.name + "?")
@@ -471,6 +492,14 @@ public class AccountChooser extends ListActivity
 				.create();
 			dialog.show();
 			
+			return true;
+			
+		case CONTEXT_PRIMARY:
+			boolean set = !acct.isPrimary();
+			acct.setPrimary(set);
+			AccountAdapter aa = (AccountAdapter)getListAdapter();
+			aa.setPrimary(info.position, set);
+			aa.notifyDataSetChanged();
 			return true;
 			
 		case CONTEXT_IMPORT:
@@ -513,6 +542,7 @@ public class AccountChooser extends ListActivity
 		
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
+		menu.add(0, CONTEXT_PRIMARY, 0, R.string.primary);
 		menu.add(0, CONTEXT_IMPORT, 0, R.string.import_);
 		menu.add(0, CONTEXT_EXPORT, 0, R.string.export);
 		menu.add(0, CONTEXT_CHART, 0, R.string.chart);

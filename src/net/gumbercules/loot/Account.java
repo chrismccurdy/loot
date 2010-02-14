@@ -16,6 +16,7 @@ public class Account
 	String name;
 	double initialBalance;
 	int priority;
+	boolean primary;
 	private static int currentAccount;
 	private double actual_balance;
 	private double posted_balance;
@@ -32,6 +33,7 @@ public class Account
 		this.name = name;
 		this.initialBalance = initialBalance;
 		this.priority = 1;
+		this.primary = false;
 	}
 	
 	public int id()
@@ -50,9 +52,10 @@ public class Account
 	private int newAccount()
 	{
 		// insert the new row into the database
-		String insert = "insert into accounts (name,balance,timestamp,priority) " +
+		String insert = "insert into accounts (name,balance,timestamp,priority,primary_account) " +
 				"values (?,?,strftime('%s','now'),?)";
-		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Long(this.priority)};
+		Object[] bindArgs = {this.name, new Double(this.initialBalance),
+				new Long(this.priority), new Boolean(this.primary)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -86,9 +89,9 @@ public class Account
 	{
 		// update the row in the database
 		String update = "update accounts set name = ?, balance = ?, priority = ?, " +
-						"timestamp = strftime('%s','now') where id = ?";
+						"primary_account = ?, timestamp = strftime('%s','now') where id = ?";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Long(this.priority),
-				new Integer(this.id)};
+				new Boolean(this.primary), new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -300,7 +303,7 @@ public class Account
 		if (get_purged)
 			purged = 1;
 		
-		String[] columns = {"id", "name", "balance", "priority"};
+		String[] columns = {"id", "name", "balance", "priority", "primary_account"};
 		String[] sArgs = {Integer.toString(id), Integer.toString(purged)};
 		Cursor cur = lootDB.query("accounts", columns, "id = ? and purged = ?", sArgs,
 				null, null, null, "1");
@@ -314,6 +317,7 @@ public class Account
 		this.name = cur.getString(1);
 		this.initialBalance = cur.getDouble(2);
 		this.priority = cur.getInt(3);
+		this.primary = Database.getBoolean(cur.getInt(4));
 		cur.close();
 		
 		return true;
@@ -831,6 +835,56 @@ public class Account
 			lootDB.endTransaction();
 		}
 		
+		return true;
+	}
+	
+	public static Account getPrimaryAccount()
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		Cursor cur = lootDB.query("accounts", new String[]{"id"}, "primary_account = 1",
+				null, null, null, null);
+		
+		Account primary = null;
+		if (cur.moveToFirst())
+		{
+			int id = cur.getInt(0);
+			primary = getAccountById(id);
+		}
+		
+		return primary;
+	}
+	
+	public boolean isPrimary()
+	{
+		return primary;
+	}
+	
+	public boolean setPrimary(boolean p)
+	{
+		SQLiteDatabase lootDB = Database.getDatabase();
+		lootDB.beginTransaction();
+
+		int set = (p ? 1 : 0);
+		
+		try
+		{
+			if (p)
+			{
+				lootDB.execSQL("update accounts set primary_account = 0");
+			}
+			lootDB.execSQL("update accounts set primary_account = " + set + " where id = " + id);
+			lootDB.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		finally
+		{
+			lootDB.endTransaction();
+		}
+		
+		primary = p;
 		return true;
 	}
 }

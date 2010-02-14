@@ -10,6 +10,7 @@ import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 public class AccountEdit extends Activity
@@ -20,6 +21,7 @@ public class AccountEdit extends Activity
 	private EditText mNameEdit;
 	private EditText mBalanceEdit;
 	private EditText mPriorityEdit;
+	private CheckBox mPrimaryCheckBox;
 	private int mRowId;
 	private int mFinishIntent;
 	private CurrencyWatcher mCurrencyWatcher;
@@ -39,6 +41,7 @@ public class AccountEdit extends Activity
 		mBalanceEdit.addTextChangedListener(mCurrencyWatcher);
 		mPriorityEdit = (EditText)findViewById(R.id.PriorityEdit);
 		mPriorityEdit.setKeyListener(new DigitsKeyListener());
+		mPrimaryCheckBox = (CheckBox)findViewById(R.id.PrimaryCheckBox);
 		Button SaveButton = (Button)findViewById(R.id.SaveButton);
 		Button CancelButton = (Button)findViewById(R.id.CancelButton);
 		
@@ -128,6 +131,10 @@ public class AccountEdit extends Activity
 			{
 				mPriorityEdit.setText(Integer.toString(acct.priority));
 			}
+			if (mPrimaryCheckBox != null)
+			{
+				mPrimaryCheckBox.setChecked(acct.isPrimary());
+			}
 		}
 	}
 	
@@ -145,6 +152,7 @@ public class AccountEdit extends Activity
 		acct.name = mNameEdit.getText().toString();
 		String balText = mBalanceEdit.getText().toString();
 		String priText = mPriorityEdit.getText().toString();
+		boolean primary = mPrimaryCheckBox.isChecked();
 		
 		if (acct.name == "" || balText == "")
 		{
@@ -179,6 +187,9 @@ public class AccountEdit extends Activity
 		int id = acct.write();
 
 		if (id != -1)
+		{
+			acct.setPrimary(primary);
 			mRowId = id;
+		}
 	}
 }

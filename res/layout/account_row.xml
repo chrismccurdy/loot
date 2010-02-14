@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/LinearLayout01"
+<RelativeLayout android:id="@+id/relative_layout"
 	android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:orientation="vertical">
-	<TextView android:layout_height="wrap_content" android:id="@+id/AccountName"
-		android:layout_width="fill_parent" android:textSize="24dip" />
-	<TextView android:layout_height="wrap_content" android:id="@+id/AccountBalance"
-		android:layout_width="fill_parent" android:layout_marginLeft="10dip"
-		android:textSize="16dip" />
-</LinearLayout>
+	<AbsoluteLayout android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:id="@+id/relative_layout"
+		android:layout_alignParentRight="true" android:layout_marginTop="5dip">
+		<ImageView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:scaleType="fitXY"
+			android:id="@+id/star_image" android:src="@drawable/star" />
+	</AbsoluteLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:orientation="vertical">
+		<TextView android:layout_height="wrap_content" android:id="@+id/AccountName"
+			android:layout_width="fill_parent" android:textSize="24dip" />
+		<TextView android:layout_height="wrap_content" android:id="@+id/AccountBalance"
+			android:layout_width="fill_parent" android:layout_marginLeft="10dip"
+			android:textSize="16dip" />
+	</LinearLayout>
+</RelativeLayout>
