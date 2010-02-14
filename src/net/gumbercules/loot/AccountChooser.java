@@ -541,11 +541,11 @@ public class AccountChooser extends ListActivity
 		menu.setHeaderTitle(acct.name);
 		
 		menu.add(0, CONTEXT_EDIT, 0, R.string.edit);
-		menu.add(0, CONTEXT_DEL, 0, R.string.del);
-		menu.add(0, CONTEXT_PRIMARY, 0, R.string.primary);
 		menu.add(0, CONTEXT_IMPORT, 0, R.string.import_);
 		menu.add(0, CONTEXT_EXPORT, 0, R.string.export);
 		menu.add(0, CONTEXT_CHART, 0, R.string.chart);
+		menu.add(0, CONTEXT_PRIMARY, 0, R.string.primary);
+		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 	}
 
 	@Override
