@@ -38,10 +38,19 @@
 		<item>#f5330b #fc7e63 #154ca2 #6798e6 #b5e90a #d6f962</item>
 		<item>#07a863 #5be8ab #f5aa0b #fccb63 #c10878 #ee5eb6</item>
 	</string-array>
+	<string-array name="input_type_name">
+	    <item>Phone Keypad</item>
+	    <item>Number Keyboard</item>
+	</string-array>
+	<string-array name="input_type">
+	    <item>PHONE</item>
+	    <item>NUMBER</item>
+	</string-array>
 	<string-array name="changelog">
 	    <item>\n
 &#8226; Added option for a primary account which bypasses the account screen\n
 &#8226; Changed order of items for account context menus\n
+&#8226; Added option to change on-screen keyboard input type\n
 	    </item>
 	    <item>\n
 &#8226; Improved display for devices with larger/denser screens\n

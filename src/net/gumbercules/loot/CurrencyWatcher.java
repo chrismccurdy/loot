@@ -7,8 +7,10 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -17,7 +19,10 @@ import android.widget.EditText;
 
 public class CurrencyWatcher implements TextWatcher
 {
-	private static final String TAG	= "net.gumbercules.loot.CurrencyWatcher";
+	private static final String TAG			= "net.gumbercules.loot.CurrencyWatcher";
+	private static final String PHONE_TYPE	= "PHONE";
+	private static final String NUMBER_TYPE	= "NUMBER";
+	
 	private String mOld;
 	private final char mSeparator;
 	private boolean mChanged;
@@ -144,9 +149,18 @@ public class CurrencyWatcher implements TextWatcher
 		}
 		else
 		{
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(e.getContext());
+			String type = prefs.getString("key_input_type", PHONE_TYPE);
+			int input_type = InputType.TYPE_CLASS_PHONE;
+			
+			if (type.equals(NUMBER_TYPE))
+			{
+				input_type = InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
+			}
+			
 			Log.i(TAG + ".setInputType",
 				"Hardware keyboard hidden (or not present), setting input type");
-			e.setInputType(InputType.TYPE_CLASS_PHONE);
+			e.setInputType(input_type);
 		}
 	}
 }

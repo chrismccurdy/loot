@@ -86,6 +86,9 @@
 		android:summary="Automatically starts in the account set as the primary."
 		android:title="Default to Primary" android:key="primary_default"
 		android:defaultValue="false" />
+	<ListPreference android:key="key_input_type"
+		android:title="@string/keyboard_style" android:summary="@string/keyboard_style_message" 
+		android:entries="@array/input_type_name" android:entryValues="@array/input_type" />
 	<PreferenceCategory android:title="Security"
 		android:key="cat_security">
 		<CheckBoxPreference android:key="security"

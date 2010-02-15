@@ -123,4 +123,6 @@
 		account and choosing that option. Otherwise, you may want to turn the
 		option off.</string>
 	<string name="primary_label">Primary Account</string>
+	<string name="keyboard_style">On-Screen Keyboard Style</string>
+	<string name="keyboard_style_message">Choose the style of the on-screen keyboard.</string>
 </resources>
