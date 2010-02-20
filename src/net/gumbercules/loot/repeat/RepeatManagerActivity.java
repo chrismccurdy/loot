@@ -1,9 +1,13 @@
 package net.gumbercules.loot.repeat;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.transaction.TransactionEdit;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -91,22 +95,22 @@ public class RepeatManagerActivity extends ListActivity
 				
 			case CONTEXT_DELETE:
 				AlertDialog dialog = new AlertDialog.Builder(this)
-				.setMessage("Are you sure you wish to delete this repeat schedule?")
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int which)
+					.setMessage("Are you sure you wish to delete this repeat schedule?")
+					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 					{
-						rs.erase(true);
-						fillRepeatList();
-					}
-				})
-				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int which) { }
-				})
-				.create();
-			dialog.show();
-			break;
+						public void onClick(DialogInterface dialog, int which)
+						{
+							rs.erase(true);
+							fillRepeatList();
+						}
+					})
+					.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int which) { }
+					})
+					.create();
+				dialog.show();
+				break;
 		}
 		
 		return true;
@@ -138,6 +142,21 @@ public class RepeatManagerActivity extends ListActivity
 	
 	private void editRepeat(int id)
 	{
-		// TODO: open new activity to edit this repeat
+		ContentResolver cr = getContentResolver();
+		String type = cr.getType(Uri.parse("content://net.gumbercules.loot.premium.settingsprovider/settings"));
+		
+		if (type == null)
+		{
+			new AlertDialog.Builder(this)
+				.setMessage("Editing is only available with the purchase of Loot Premium.")
+				.setPositiveButton(android.R.string.ok, null)
+				.show();
+		}
+		else
+		{
+	    	Intent i = new Intent(this, TransactionEdit.class);
+	    	i.putExtra(RepeatSchedule.KEY_ID, id);
+	    	startActivityForResult(i, 0);
+		}
 	}
 }

@@ -39,6 +39,7 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class TransactionEdit extends Activity
@@ -50,6 +51,7 @@ public class TransactionEdit extends Activity
 	private Transaction mTrans;
 	private RepeatSchedule mRepeat;
 	private int mTransId;
+	private int mRepeatId;
 	private int mFinishIntent;
 	private int mRequest;
 	private int mType;
@@ -73,6 +75,7 @@ public class TransactionEdit extends Activity
 	private MultiAutoCompleteTextView tagsEdit;
 	
 	private Spinner accountSpinner;
+	private Spinner repeatAccountSpinner;
 	private Spinner repeatSpinner;
 	private ArrayAdapter<String> mRepeatAdapter;
 	
@@ -84,7 +87,6 @@ public class TransactionEdit extends Activity
 	
 	private boolean restarted;
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -98,7 +100,7 @@ public class TransactionEdit extends Activity
 		restarted = false;
 
 		ArrayList<String> repeat =
-			new ArrayList(Arrays.asList(getResources().getStringArray(R.array.repeat)));
+			new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.repeat)));
 		mRepeatAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, repeat);
         mRepeatAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
@@ -130,6 +132,7 @@ public class TransactionEdit extends Activity
 			mType = extras.getInt(TransactionActivity.KEY_TYPE);
 			mTransId = extras.getInt(Transaction.KEY_ID);
 			mAccountId = extras.getInt(Account.KEY_ID);
+			mRepeatId = extras.getInt(RepeatSchedule.KEY_ID);
 		}
 	}
 	
@@ -175,7 +178,7 @@ public class TransactionEdit extends Activity
 
 		// load the transaction if mTransId > 0
         Transaction trans = null;
-		if (mTransId == 0)
+		if (mTransId == 0 && mRepeatId == 0)
 		{
 			mTrans = new Transaction();
 			if (mRepeat == null)
@@ -188,7 +191,16 @@ public class TransactionEdit extends Activity
 		}
 		else
 		{
-			mTrans = Transaction.getTransactionById(mTransId);
+			if (mTransId != 0)
+			{
+				mTrans = Transaction.getTransactionById(mTransId);
+			}
+			else
+			{
+				mRepeat = RepeatSchedule.getSchedule(mRepeatId);
+				mTrans = mRepeat.getTransaction();
+				mAccountId = mTrans.account;
+			}
 			trans = mTrans;
 			
 			if (!restarted)
@@ -221,10 +233,21 @@ public class TransactionEdit extends Activity
 						mType = TransactionActivity.TRANSACTION;
 					}
 					else
+					{
 						mType = TransactionActivity.TRANSFER;
+					}
 				}
 				else
-					mType = TransactionActivity.TRANSACTION;
+				{
+					if (mRepeat.getTransferId() > 0)
+					{
+						mType = TransactionActivity.TRANSFER;
+					}
+					else
+					{
+						mType = TransactionActivity.TRANSACTION;
+					}
+				}
 				
 				if (trans.type == Transaction.WITHDRAW)
 				{
@@ -316,6 +339,27 @@ public class TransactionEdit extends Activity
 		
 		repeatSpinner.setSelection(mDefaultRepeatValue);
 		repeatSpinner.setOnItemSelectedListener(mRepeatSpinnerListener);
+		
+		// show the second account spinner if we're editing from the repeat manager
+		if (mRepeatId != 0)
+		{
+			TableRow row = (TableRow)findViewById(R.id.repeatAccountRow);
+			row.setVisibility(View.VISIBLE);
+			
+			TextView text = (TextView)findViewById(R.id.repeatAccountLabel);
+			text.setText(R.string.trans_account);
+			text = (TextView)findViewById(R.id.accountLabel);
+			text.setText(R.string.trans);
+			
+			repeatAccountSpinner = (Spinner)findViewById(R.id.repeatAccountSpinner);
+			
+			String[] names = Account.getAccountNames();
+			
+			ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
+					android.R.layout.simple_spinner_item, names);
+	        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	        repeatAccountSpinner.setAdapter(adapter);
+		}
 		
 		saveButton.setOnClickListener(new View.OnClickListener()
 		{
@@ -674,7 +718,9 @@ public class TransactionEdit extends Activity
 		
 		int id = -1;
 		if (mType == TransactionActivity.TRANSACTION)
+		{
 			id = trans.write(mAccountId);
+		}
 		else
 		{
 			trans.account = mAccountId;
@@ -775,9 +821,17 @@ public class TransactionEdit extends Activity
 		outState.putInt(TransactionActivity.KEY_REQ, mRequest);
 		outState.putInt(TransactionActivity.KEY_TYPE, mType);
 		if (mAccountId > 0)
+		{
 			outState.putInt(Account.KEY_ID, mAccountId);
+		}
 		if (mTransId > 0)
+		{
 			outState.putInt(Transaction.KEY_ID, mTransId);
+		}
+		if (mRepeatId > 0)
+		{
+			outState.putInt(RepeatSchedule.KEY_ID, mRepeatId);
+		}
 		
 		setRepeat();
 		outState.putInt(RepeatSchedule.KEY_ITER, mRepeat.iter);
@@ -787,8 +841,12 @@ public class TransactionEdit extends Activity
 		outState.putLong(RepeatSchedule.KEY_DATE, end);
 		
 		if (mDate != null)
+		{
 			outState.putLong(Transaction.KEY_DATE, mDate.getTime());
+		}
 		if (mType == TransactionActivity.TRANSFER)
+		{
 			outState.putInt(TransactionEdit.KEY_TRANSFER, accountSpinner.getSelectedItemPosition());
+		}
 	}
 }
