@@ -1,4 +1,4 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.backend;
 
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -63,7 +63,7 @@ public class CurrencyWatcher implements TextWatcher
 				new ArrayList<String>(Arrays.asList(mBadPhones)).contains(Build.MODEL));
 	}
 	
-	protected char[] getAcceptedChars()
+	public char[] getAcceptedChars()
 	{
 		int len = mAccepted.length;
 		char[] accepted = new char[len];

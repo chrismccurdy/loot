@@ -1,7 +1,10 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.preferences;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.Database;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;

@@ -1,7 +1,9 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.account;
 
 import java.util.Arrays;
 import java.util.List;
+
+import net.gumbercules.loot.backend.Database;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

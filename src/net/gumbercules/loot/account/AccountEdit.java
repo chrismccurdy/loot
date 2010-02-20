@@ -1,8 +1,12 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.account;
 
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Currency;
+
+import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.CurrencyWatcher;
+import net.gumbercules.loot.backend.Database;
 
 import android.app.Activity;
 import android.os.Bundle;

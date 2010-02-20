@@ -1,4 +1,4 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.repeat;
 
 import java.text.DateFormat;
 import java.util.ArrayList;

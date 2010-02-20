@@ -1,4 +1,4 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.transaction;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -7,7 +7,13 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
-import net.gumbercules.loot.TransactionAdapter.TransactionFilter;
+import net.gumbercules.loot.R;
+import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.Database;
+import net.gumbercules.loot.backend.Logger;
+import net.gumbercules.loot.preferences.SettingsActivity;
+import net.gumbercules.loot.premium.PremiumCaller;
+import net.gumbercules.loot.repeat.RepeatSchedule;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -162,7 +168,7 @@ public class TransactionActivity extends ListActivity
 			public void afterTextChanged(Editable s)
 			{
 				searchString = s.toString();
-				TransactionFilter f = (TransactionFilter)mTa.getFilter();
+				TransactionAdapter.TransactionFilter f = (TransactionAdapter.TransactionFilter)mTa.getFilter();
 				f.publish(searchString, f.filtering(searchString));
 			}
 
@@ -171,7 +177,7 @@ public class TransactionActivity extends ListActivity
 				if (after == 0)
 				{
 					searchString = "";
-					TransactionFilter f = (TransactionFilter)mTa.getFilter();
+					TransactionAdapter.TransactionFilter f = (TransactionAdapter.TransactionFilter)mTa.getFilter();
 					f.publish(searchString, f.filtering(searchString));
 				}
 			}
@@ -188,7 +194,7 @@ public class TransactionActivity extends ListActivity
     	if (showSearch)
     	{
     		toggleSearch();
-			TransactionFilter f = (TransactionFilter)mTa.getFilter();
+    		TransactionAdapter.TransactionFilter f = (TransactionAdapter.TransactionFilter)mTa.getFilter();
 			searchEdit.setText(searchString);
 			f.publish(searchString, f.filtering(searchString));
     	}

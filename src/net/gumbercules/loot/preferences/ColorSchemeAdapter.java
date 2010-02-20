@@ -1,6 +1,8 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.preferences;
 
 import java.util.ArrayList;
+
+import net.gumbercules.loot.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;

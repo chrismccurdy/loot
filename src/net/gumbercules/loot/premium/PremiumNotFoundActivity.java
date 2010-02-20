@@ -1,5 +1,6 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.premium;
 
+import net.gumbercules.loot.R;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;

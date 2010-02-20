@@ -21,7 +21,7 @@
  * Changes made by Christopher McCurdy, 2009.
  */
 
-package net.gumbercules.loot;
+package net.gumbercules.loot.preferences;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;

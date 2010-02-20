@@ -1,9 +1,13 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.repeat;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
+
+import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.Database;
+import net.gumbercules.loot.transaction.Transaction;
 
 import android.content.ContentValues;
 import android.database.*;
@@ -38,13 +42,13 @@ implements Cloneable
 	public static final int DAY			= 0;
 	public static final int DATE		= 1;
 	
-	int iter;			// repetition iterator type
-	int freq;			// number between repetitions
-	int custom;			// used only for custom types
-	Date start;			// start date
-	Date end;			// end date
-	private Date due;	// date of the next repetition
-	private int id;		// id of the database repeat_pattern, if available
+	public int iter;		// repetition iterator type
+	public int freq;		// number between repetitions
+	public int custom;		// used only for custom types
+	public Date start;		// start date
+	public Date end;		// end date
+	private Date due;		// date of the next repetition
+	private int id;			// id of the database repeat_pattern, if available
 	
 	public RepeatSchedule()
 	{

@@ -1,6 +1,8 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.premium;
 
 import java.util.List;
+
+import net.gumbercules.loot.account.Account;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;

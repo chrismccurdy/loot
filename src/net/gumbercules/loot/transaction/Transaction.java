@@ -1,8 +1,12 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.transaction;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
+
+import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.Database;
+import net.gumbercules.loot.repeat.RepeatSchedule;
 import android.database.*;
 import android.database.sqlite.*;
 import android.util.Log;
@@ -25,11 +29,11 @@ public class Transaction
 	public static final String KEY_DATE		= "t_date";
 		
 	private int id;
-	int account;
+	public int account;
 	private boolean posted;
 	boolean budget;
 	int type;				// DEPOSIT, WITHDRAW, CHECK
-	int check_num;
+	public int check_num;
 	Date date; 
 	String party;
 	double amount;
@@ -753,7 +757,7 @@ public class Transaction
 		return removeTransfer(trans2);
 	}
 	
-	protected boolean linkTransfer(int id1, int id2)
+	public boolean linkTransfer(int id1, int id2)
 	{
 		if (!removeTransfer(Transaction.getTransactionById(id2)) || id1 == -1 || id2 == -1)
 		{

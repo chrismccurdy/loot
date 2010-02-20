@@ -1,4 +1,4 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.transaction;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Currency;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.Database;
 
 import android.content.Context;
 import android.content.SharedPreferences;

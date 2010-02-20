@@ -1,10 +1,11 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.account;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Currency;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.Database;
 
 import android.content.Context;
 import android.content.SharedPreferences;

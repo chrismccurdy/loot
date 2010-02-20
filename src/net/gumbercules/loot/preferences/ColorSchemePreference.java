@@ -1,4 +1,4 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.preferences;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;

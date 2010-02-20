@@ -1,4 +1,4 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.account;
 
 import java.io.File;
 import java.text.NumberFormat;
@@ -6,6 +6,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+
+import net.gumbercules.loot.ChangeLogActivity;
+import net.gumbercules.loot.DonateActivity;
+import net.gumbercules.loot.PinActivity;
+import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.Database;
+import net.gumbercules.loot.backend.MemoryStatus;
+import net.gumbercules.loot.preferences.SettingsActivity;
+import net.gumbercules.loot.premium.PremiumCaller;
+import net.gumbercules.loot.transaction.TransactionActivity;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;

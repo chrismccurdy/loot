@@ -1,10 +1,13 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.account;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import android.database.*;
 import android.database.sqlite.*;
+
+import net.gumbercules.loot.backend.Database;
+import net.gumbercules.loot.transaction.Transaction;
 
 public class Account
 {
@@ -13,8 +16,8 @@ public class Account
 	public static final String KEY_ID	= "a_id";
 	
 	private int id;
-	String name;
-	double initialBalance;
+	public String name;
+	public double initialBalance;
 	int priority;
 	boolean primary;
 	private static int currentAccount;

@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.account.AccountChooser;
+import net.gumbercules.loot.backend.Database;
 
 import android.app.Activity;
 import android.content.Intent;

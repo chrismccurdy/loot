@@ -1,15 +1,19 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.backend;
 
 import java.io.File;
+
+import net.gumbercules.loot.R;
 
 import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
+import android.util.Log;
 import android.widget.Toast;
 
 public class MemoryStatus
 {
 	public static final int MEMORY_ERROR	= -1;
+	private static final String TAG			= "net.gumbercules.loot.backend.MemoryStatus";
 	
 	public static boolean externalMemoryAvailable()
 	{
@@ -23,7 +27,13 @@ public class MemoryStatus
 		{
 			File path = Environment.getExternalStorageDirectory();
 			StatFs stat = new StatFs(path.getPath());
-			available = stat.getBlockSize() * stat.getAvailableBlocks();
+			available = (long)stat.getBlockSize() * (long)stat.getAvailableBlocks();
+
+			Log.i(TAG + ".getAvailableExternalMemory()", "External Memory available: " + available);
+		}
+		else
+		{
+			Log.e(TAG + ".getAvailableExternalMemory()", "External Memory not available");
 		}
 		
 		return available;
@@ -36,7 +46,13 @@ public class MemoryStatus
 		{
 			File path = Environment.getExternalStorageDirectory();
 			StatFs stat = new StatFs(path.getPath());
-			total = stat.getBlockSize() * stat.getBlockCount();
+			total = (long)stat.getBlockSize() * (long)stat.getBlockCount();
+
+			Log.i(TAG + ".getAvailableExternalMemory()", "External Memory total: " + total);
+		}
+		else
+		{
+			Log.e(TAG + ".getTotalExternalMemory()", "External Memory not available");
 		}
 		
 		return total;

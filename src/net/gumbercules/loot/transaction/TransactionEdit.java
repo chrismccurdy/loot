@@ -1,4 +1,4 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.transaction;
 
 import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
@@ -9,6 +9,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+
+import net.gumbercules.loot.R;
+import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.CurrencyWatcher;
+import net.gumbercules.loot.backend.Database;
+import net.gumbercules.loot.backend.Logger;
+import net.gumbercules.loot.repeat.RepeatActivity;
+import net.gumbercules.loot.repeat.RepeatSchedule;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;

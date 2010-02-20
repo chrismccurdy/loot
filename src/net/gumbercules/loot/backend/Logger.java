@@ -1,4 +1,4 @@
-package net.gumbercules.loot;
+package net.gumbercules.loot.backend;
 
 import java.io.File;
 import java.io.FileWriter;
