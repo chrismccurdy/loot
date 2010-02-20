@@ -49,6 +49,7 @@ implements Cloneable
 	public Date end;		// end date
 	private Date due;		// date of the next repetition
 	private int id;			// id of the database repeat_pattern, if available
+	public Transaction trans; // optional transaction
 	
 	public RepeatSchedule()
 	{
@@ -369,6 +370,11 @@ implements Cloneable
 		return getId("transfer_id", "repeat_id = " + this.id, null);
 	}
 	
+	public void loadTransaction()
+	{
+		trans = getTransaction();
+	}
+	
 	public Transaction getTransaction()
 	{
 		String[] columns = {"account", "date", "party", "amount", "check_num", "budget", "tags"};
@@ -380,7 +386,7 @@ implements Cloneable
 		if (cur.moveToFirst())
 		{
 			int type, check_num = cur.getInt(4);
-			double amount = cur.getInt(3);
+			double amount = cur.getDouble(3);
 			boolean budget = Database.getBoolean(cur.getInt(5));
 			Date date = new Date(cur.getLong(1));
 			

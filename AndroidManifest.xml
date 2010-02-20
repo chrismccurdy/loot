@@ -32,6 +32,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:name="net.gumbercules.loot.ChangeLogActivity" />
+		<activity android:name="net.gumbercules.loot.repeat.RepeatManagerActivity" />
 	</application>
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-sdk android:minSdkVersion="3" />

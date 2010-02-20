@@ -15,6 +15,7 @@ import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.MemoryStatus;
 import net.gumbercules.loot.preferences.SettingsActivity;
 import net.gumbercules.loot.premium.PremiumCaller;
+import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.transaction.TransactionActivity;
 
 import android.app.AlertDialog;
@@ -58,6 +59,7 @@ public class AccountChooser extends ListActivity
 	public static final int EXPORT_ID		= Menu.FIRST + 6;
 	public static final int CHART_ID		= Menu.FIRST + 7;
 	public static final int CHANGELOG_ID	= Menu.FIRST + 8;
+	public static final int RMANAGER_ID		= Menu.FIRST + 9;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_DEL		= Menu.FIRST + 1;
@@ -219,17 +221,20 @@ public class AccountChooser extends ListActivity
 		menu.add(0, BU_RESTORE_ID, 0, R.string.restore_db)
 			.setShortcut('5', 'r')
 			.setIcon(android.R.drawable.ic_menu_set_as);
+		menu.add(0, RMANAGER_ID, 0, R.string.repeat_manager)
+			.setShortcut('6', 'm')
+			.setIcon(android.R.drawable.ic_menu_recent_history);
 		menu.add(0, EXPORT_ID, 0, R.string.export)
-			.setShortcut('6', 'x')
+			.setShortcut('7', 'x')
 			.setIcon(android.R.drawable.ic_menu_upload);
 		menu.add(0, CHART_ID, 0, R.string.chart)
-			.setShortcut('7', 'g')
+			.setShortcut('8', 'g')
 			.setIcon(android.R.drawable.ic_menu_report_image);
 		menu.add(0, CHANGELOG_ID, 0, R.string.changelog)
-			.setShortcut('8', 'l')
+			.setShortcut('9', 'l')
 			.setIcon(android.R.drawable.ic_menu_agenda);
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
-			.setShortcut('9', 's')
+			.setShortcut('0', 's')
 			.setIcon(android.R.drawable.ic_menu_preferences);
 		return true;
 	}
@@ -294,11 +299,21 @@ public class AccountChooser extends ListActivity
     	case CHANGELOG_ID:
     		showChangeLog();
     		return true;
+    		
+    	case RMANAGER_ID:
+    		showRepeatManager();
+    		return true;
     	}
     	
 		return false;
 	}
 
+	private void showRepeatManager()
+	{
+		Intent i = new Intent(this, RepeatManagerActivity.class);
+		startActivity(i);
+	}
+	
 	private void showChangeLog()
 	{
 		Intent i = new Intent(this, ChangeLogActivity.class);

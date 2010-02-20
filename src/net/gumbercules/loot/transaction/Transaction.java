@@ -35,8 +35,8 @@ public class Transaction
 	int type;				// DEPOSIT, WITHDRAW, CHECK
 	public int check_num;
 	Date date; 
-	String party;
-	double amount;
+	public String party;
+	public double amount;
 	ArrayList<String> tags;
 	
 	public Transaction()
