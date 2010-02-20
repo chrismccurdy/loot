@@ -10,7 +10,6 @@ import net.gumbercules.loot.R;
 import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.backend.Database;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +79,12 @@ public class RepeatAdapter extends ArrayAdapter<RepeatSchedule>
 	public void insert(RepeatSchedule object, int index)
 	{
 		mRepeatList.add(index, object);
+	}
+
+	@Override
+	public void clear()
+	{
+		mRepeatList.clear();
 	}
 
 	public void remove(int index)
