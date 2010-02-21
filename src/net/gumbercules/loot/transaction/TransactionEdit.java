@@ -51,7 +51,7 @@ public class TransactionEdit extends Activity
 	private Transaction mTrans;
 	private RepeatSchedule mRepeat;
 	private int mTransId;
-	private int mRepeatId;
+	private int mRepeatId;		// used only when editing from repeat manager
 	private int mFinishIntent;
 	private int mRequest;
 	private int mType;
@@ -644,6 +644,25 @@ public class TransactionEdit extends Activity
 		if (mFinishIntent == RESULT_CANCELED || mFinished)
 			return;
 
+		Object[] fields = parseFields();
+		if (fields != null)
+		{
+			if (mRepeatId == 0)
+			{
+				saveTransaction((Transaction)fields[0], (Account)fields[1]);
+			}
+			else
+			{
+				saveRepeat((Transaction)fields[0], (Account)fields[1]);
+			}
+		}
+
+		finish();
+	}
+	
+	// returns Object[] containing Transaction and Account
+	private Object[] parseFields()
+	{
 		Transaction trans;
 		Account acct2 = null;
 
@@ -655,9 +674,19 @@ public class TransactionEdit extends Activity
 		}
 
 		if (mType == TransactionActivity.TRANSACTION)
+		{
 			trans.party = partyEdit.getText().toString();
+		}
 		else
+		{
 			acct2 = Account.getAccountByName((String)accountSpinner.getSelectedItem());
+		}
+		
+		if (mRepeatId != 0)
+		{
+			trans.account = Account.getAccountByName(
+					(String)repeatAccountSpinner.getSelectedItem()).id();
+		}
 		
 		// clear the list so we don't write tags leftover from loading the transaction
 		trans.tags.clear();
@@ -716,6 +745,11 @@ public class TransactionEdit extends Activity
 
 		setRepeat();
 		
+		return new Object[]{trans, acct2};
+	}
+	
+	private void saveTransaction(Transaction trans, Account acct2)
+	{
 		int id = -1;
 		if (mType == TransactionActivity.TRANSACTION)
 		{
@@ -749,8 +783,31 @@ public class TransactionEdit extends Activity
 		{
 			setResult(RESULT_CANCELED);
 		}
-
-		finish();
+	}
+	
+	private void saveRepeat(Transaction trans, Account acct2)
+	{
+		int id = -1;
+		mRepeat.trans = trans;
+		if (mType == TransactionActivity.TRANSACTION)
+		{
+			id = mRepeat.updateRepeat(trans.id(), false);
+		}
+		else
+		{
+			// TODO: update the party text to reflect the transfer if the account changed
+			// and update the transferred repeat
+		}
+		
+		mFinished = true;
+		if (id != -1)
+		{
+			setResult(mFinishIntent);
+		}
+		else
+		{
+			setResult(RESULT_CANCELED);
+		}
 	}
 	
 	private void setRepeat()

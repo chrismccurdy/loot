@@ -31,10 +31,10 @@ public class Transaction
 	private int id;
 	public int account;
 	private boolean posted;
-	boolean budget;
-	int type;				// DEPOSIT, WITHDRAW, CHECK
+	public boolean budget;
+	public int type;				// DEPOSIT, WITHDRAW, CHECK
 	public int check_num;
-	Date date; 
+	public Date date; 
 	public String party;
 	public double amount;
 	ArrayList<String> tags;

@@ -12,6 +12,7 @@ import net.gumbercules.loot.transaction.Transaction;
 import android.content.ContentValues;
 import android.database.*;
 import android.database.sqlite.*;
+import android.util.Log;
 
 public class RepeatSchedule
 implements Cloneable
@@ -178,6 +179,11 @@ implements Cloneable
 	
 	private int updateRepeat(int trans_id)
 	{
+		return updateRepeat(trans_id, true);
+	}
+	
+	public int updateRepeat(int trans_id, boolean copy_from_transactions)
+	{
 		if (this.iter == NO_REPEAT)
 		{
 			this.erase(true);
@@ -192,10 +198,17 @@ implements Cloneable
 		catch (Exception e) { }
 
 		Transaction trans = Transaction.getTransactionById(trans_id, true);
-		int trans_id2 = trans.getTransferId();
+		int trans_id2 = -1;
+		if (trans != null)
+		{
+			trans_id2 = trans.getTransferId();
+		}
+
 		int repeat_id2 = -1;
 		if (trans_id2 > 0)
+		{
 			repeat_id2 = RepeatSchedule.getRepeatId(trans_id2);
+		}
 		
 		String update = "update repeat_pattern set start_date = " + this.start.getTime() +
 						", end_date = " + end_time + ", iterator = " + this.iter +
@@ -217,11 +230,64 @@ implements Cloneable
 			lootDB.endTransaction();
 			return -1;
 		}
+	
+		if (copy_from_transactions)
+		{
+			if (eraseAndCopyTransaction(lootDB, trans_id, trans_id2, repeat_id2))
+			{
+				lootDB.setTransactionSuccessful();
+			}
+		}
+		else
+		{
+			if (updateRepeatTransaction(lootDB))
+			{
+				lootDB.setTransactionSuccessful();
+			}
+		}
 		
+		lootDB.endTransaction();
+		return this.id;
+	}
+	
+	private boolean updateRepeatTransaction(SQLiteDatabase lootDb)
+	{
+		if (trans == null)
+		{
+			return false;
+		}
+		
+		Transaction t = trans;
+		
+		ContentValues cv = new ContentValues();
+		cv.put("trans_id", t.id());
+		cv.put("account", t.account);
+		cv.put("date", t.date.getTime());
+		cv.put("party", t.party);
+		cv.put("amount", t.amount);
+		cv.put("check_num", t.check_num);
+		cv.put("budget", t.budget);
+		
+		try
+		{
+			lootDb.update("repeat_transactions", cv, "repeat_id = " + this.id, null);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean eraseAndCopyTransaction(SQLiteDatabase lootDB, int trans_id,
+			int trans_id2, int repeat_id2)
+	{
 		// instead of trying to update the row, delete it and copy over the updated transaction
 		if (!this.eraseTransactionFromRepeatTable(repeat_id2))
 		{
-			lootDB.endTransaction();
+			return false;
 		}
 		
 		if (trans_id2 != -1)
@@ -230,22 +296,18 @@ implements Cloneable
 			if (!this.writeTransactionToRepeatTable(trans_id) ||
 				!repeat2.writeTransactionToRepeatTable(trans_id2))
 			{
-				lootDB.endTransaction();
-				return -1;
+				return false;
 			}
 		}
 		else
 		{
 			if (!this.writeTransactionToRepeatTable(trans_id))
 			{
-				lootDB.endTransaction();
-				return -1;
+				return false;
 			}
 		}
 		
-		lootDB.setTransactionSuccessful();
-		lootDB.endTransaction();
-		return this.id;
+		return true;
 	}
 	
 	public boolean erase(boolean eraseTransfers)
@@ -377,7 +439,7 @@ implements Cloneable
 	
 	public Transaction getTransaction()
 	{
-		String[] columns = {"account", "date", "party", "amount", "check_num", "budget", "tags"};
+		String[] columns = {"account", "date", "party", "amount", "check_num", "budget", "tags", "trans_id"};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		Cursor cur = lootDB.query("repeat_transactions", columns, "repeat_id = " + this.id,
 				null, null, null, null);
@@ -405,6 +467,7 @@ implements Cloneable
 			
 			trans = new Transaction(false, budget, date, type, cur.getString(2), amount, check_num);
 			trans.account = cur.getInt(0);
+			trans.setId(cur.getInt(7));
 			
 			trans.addTags(cur.getString(6));
 		}

@@ -55,6 +55,7 @@ public class Logger
 			FileWriter fw = new FileWriter(logFile);
 			PrintWriter pw = new PrintWriter(fw);
 			ex.printStackTrace(pw);
+			ex.printStackTrace();
 			if (pw.checkError())
 			{
 				Log.e(Logger.class.toString(), "PrintWriter had an error");
