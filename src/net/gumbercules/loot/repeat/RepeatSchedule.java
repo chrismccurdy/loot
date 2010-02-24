@@ -1,18 +1,17 @@
 package net.gumbercules.loot.repeat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.ArrayList;
 
 import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.transaction.Transaction;
-
 import android.content.ContentValues;
-import android.database.*;
-import android.database.sqlite.*;
-import android.util.Log;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 
 public class RepeatSchedule
 implements Cloneable
@@ -74,9 +73,25 @@ implements Cloneable
 		this.end = en;
 	}
 	
+	public RepeatSchedule(RepeatSchedule rs)
+	{
+		this.id = rs.id;
+		this.due = rs.due;
+		this.iter = rs.iter;
+		this.freq = rs.freq;
+		this.custom = rs.custom;
+		this.start = rs.start;
+		this.end = rs.end;
+	}
+	
 	public int id()
 	{
 		return id;
+	}
+	
+	public void setId(int id)
+	{
+		this.id = id;
 	}
 	
 	protected Object clone()
@@ -179,15 +194,28 @@ implements Cloneable
 	
 	private int updateRepeat(int trans_id)
 	{
-		return updateRepeat(trans_id, true);
+		return updateRepeat(trans_id, true, true);
 	}
 	
-	public int updateRepeat(int trans_id, boolean copy_from_transactions)
+	public int updateRepeat(int trans_id, boolean copy_from_transactions, boolean due_calculated)
 	{
 		if (this.iter == NO_REPEAT)
 		{
 			this.erase(true);
 			return -1;
+		}
+		
+		if (!due_calculated)
+		{
+			this.due = calculateDueDate();
+			if (this.due == null || this.start == null)
+			{
+				if (this.id > 0)
+				{
+					this.erase(true);
+				}
+				return -1;
+			}
 		}
 
 		long end_time = 0;
@@ -259,8 +287,12 @@ implements Cloneable
 		
 		Transaction t = trans;
 		
+		if (trans.type != Transaction.DEPOSIT)
+		{
+			t.amount = -t.amount;
+		}
+		
 		ContentValues cv = new ContentValues();
-		cv.put("trans_id", t.id());
 		cv.put("account", t.account);
 		cv.put("date", t.date.getTime());
 		cv.put("party", t.party);

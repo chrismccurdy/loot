@@ -556,13 +556,12 @@ public class TransactionActivity extends ListActivity
     
     private void fillList(boolean repeat)
     {
-    	mTa.clear();
-    	
     	if (repeat)
     	{
     		addRepeatedTransactions();
     	}
 
+    	mTa.clear();
     	mTa.add(mAcct.getTransactions());
 		mTa.sort();
 		mTa.notifyDataSetChanged();

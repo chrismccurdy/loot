@@ -296,14 +296,28 @@ public class TransactionEdit extends Activity
 	        ArrayAdapter<CharSequence> accountAdapter = showTransferFields();
 	        if (accountAdapter != null)
 	        {
-	        	if (!restarted && mTransId != 0)
+	        	if (!restarted)
 	        	{
-	        		Transaction transfer = Transaction.getTransactionById(mTrans.getTransferId(), true);
-	        		Account acct = Account.getAccountById(transfer.account);
-	        		int pos = accountAdapter.getPosition(acct.name);
-	        		accountSpinner.setSelection(pos);
+	        		Transaction transfer = null;
+	        		if (mTransId != 0)
+	        		{
+	        			transfer = Transaction.getTransactionById(mTrans.getTransferId(), true);
+	        		}
+	        		else if (mRepeatId != 0)
+	        		{
+	        			RepeatSchedule rs = RepeatSchedule.getSchedule(
+	        					RepeatSchedule.getRepeatId(mRepeat.getTransferId()));
+	        			transfer = rs.getTransaction();
+	        		}
+	        		
+	        		if (transfer != null)
+	        		{
+		        		Account acct = Account.getAccountById(transfer.account);
+		        		int pos = accountAdapter.getPosition(acct.name);
+		        		accountSpinner.setSelection(pos);
+	        		}
 	        	}
-		        else if (restarted)
+		        else
 		        {
 		        	accountSpinner.setSelection(mAccountPos);
 		        }
@@ -359,6 +373,10 @@ public class TransactionEdit extends Activity
 					android.R.layout.simple_spinner_item, names);
 	        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	        repeatAccountSpinner.setAdapter(adapter);
+	        
+    		Account acct = Account.getAccountById(mTrans.account);
+    		int pos = adapter.getPosition(acct.name);
+	        repeatAccountSpinner.setSelection(pos);
 		}
 		
 		saveButton.setOnClickListener(new View.OnClickListener()
@@ -789,14 +807,41 @@ public class TransactionEdit extends Activity
 	{
 		int id = -1;
 		mRepeat.trans = trans;
+		mRepeat.start = trans.date;
 		if (mType == TransactionActivity.TRANSACTION)
 		{
-			id = mRepeat.updateRepeat(trans.id(), false);
+			id = mRepeat.updateRepeat(trans.id(), false, false);
 		}
 		else
 		{
-			// TODO: update the party text to reflect the transfer if the account changed
+			// update the party text to reflect the transfer if the account changed
 			// and update the transferred repeat
+			String detail1, detail2;
+			RepeatSchedule repeat2 = new RepeatSchedule(mRepeat);
+			repeat2.setId(RepeatSchedule.getRepeatId(mRepeat.getTransferId()));
+			repeat2.trans = new Transaction(mRepeat.trans, false);
+			repeat2.trans.setId(repeat2.getTransactionId());
+			repeat2.trans.account = acct2.id();
+			Account acct1 = Account.getAccountById(mRepeat.trans.account);
+			
+			if ( mRepeat.trans.type == Transaction.DEPOSIT )
+			{
+				detail1 = "from ";
+				detail2 = "to ";
+				repeat2.trans.type = Transaction.WITHDRAW;
+			}
+			else
+			{
+				detail1 = "to ";
+				detail2 = "from ";
+				repeat2.trans.type = Transaction.DEPOSIT;
+			}
+			
+			mRepeat.trans.party = "Transfer " + detail1 + acct2.name;
+			id = mRepeat.updateRepeat(trans.id(), false, false);
+			
+			repeat2.trans.party = "Transfer " + detail2 + acct1.name;
+			repeat2.updateRepeat(repeat2.trans.id(), false, false);
 		}
 		
 		mFinished = true;

@@ -39,6 +39,14 @@ public class RepeatManagerActivity extends ListActivity
 		getListView().setOnCreateContextMenuListener(this);
 	}
 	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		
+		fillRepeatList();
+	}
+
 	private void fillRepeatList()
 	{
 		RepeatSchedule rs;
