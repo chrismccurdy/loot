@@ -25,10 +25,24 @@ public class RepeatManagerActivity extends ListActivity
 	
 	private static final String TAG	= "net.gumbercules.loot.repeat.RepeatManagerActivity";
 	
+	public static final String ID_ACCOUNT	= "id_account";
+	
+	private int mAccountId;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
+		Bundle bun = getIntent().getExtras();
+		if (bun != null)
+		{
+			mAccountId = bun.getInt(ID_ACCOUNT);
+		}
+		else
+		{
+			mAccountId = 0;
+		}
 		
 		RepeatAdapter ra = new RepeatAdapter(this, R.layout.repeat_row);
 		setListAdapter(ra);
@@ -68,6 +82,11 @@ public class RepeatManagerActivity extends ListActivity
 			
 			rs.trans = rs.getTransaction();
 			if (rs.trans == null)
+			{
+				continue;
+			}
+			
+			if (mAccountId != 0 && rs.trans.account != mAccountId)
 			{
 				continue;
 			}

@@ -13,6 +13,7 @@ import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.Logger;
 import net.gumbercules.loot.preferences.SettingsActivity;
 import net.gumbercules.loot.premium.PremiumCaller;
+import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.repeat.RepeatSchedule;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -74,6 +75,7 @@ public class TransactionActivity extends ListActivity
 	public static final int SETTINGS_ID		= Menu.FIRST + 6;
 	public static final int CHART_ID		= Menu.FIRST + 7;
 	public static final int IMPORT_ID		= Menu.FIRST + 8;
+	public static final int RMANAGER_ID		= Menu.FIRST + 9;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_COPY	= Menu.FIRST + 1;
@@ -315,8 +317,11 @@ public class TransactionActivity extends ListActivity
     	menu.add(0, CHART_ID, 0, R.string.chart)
     		.setShortcut('8', 'g')
     		.setIcon(android.R.drawable.ic_menu_report_image);
+    	menu.add(0, RMANAGER_ID, 0, R.string.repeat_manager)
+    		.setShortcut('9', 'm')
+    		.setIcon(android.R.drawable.ic_menu_recent_history);
     	menu.add(0, SETTINGS_ID, 0, R.string.settings)
-    		.setShortcut('9', 's')
+    		.setShortcut('0', 's')
     		.setIcon(android.R.drawable.ic_menu_preferences);
     	
     	return result;
@@ -364,6 +369,12 @@ public class TransactionActivity extends ListActivity
     		
     	case SETTINGS_ID:
     		showSettings();
+    		return true;
+    		
+    	case RMANAGER_ID:
+    		Intent i = new Intent(this, RepeatManagerActivity.class);
+    		i.putExtra(RepeatManagerActivity.ID_ACCOUNT, mAcct.id());
+    		startActivity(i);
     		return true;
     	}
     	
