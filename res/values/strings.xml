@@ -127,4 +127,6 @@
 	<string name="keyboard_style">On-Screen Keyboard Style</string>
 	<string name="keyboard_style_message">Choose the style of the on-screen keyboard.</string>
 	<string name="repeat_manager">Manage Repeats</string>
+	<string name="posted">Posted</string>
+	<string name="non_posted">Non-posted</string>
 </resources>

@@ -394,26 +394,75 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 
 	public class TransactionFilter extends Filter
 	{
+		private boolean mShowPosted;
+		private boolean mShowNonPosted;
+		
+		public TransactionFilter()
+		{
+			super();
+			mShowPosted = true;
+			mShowNonPosted = true;
+		}
+		
 		public FilterResults filtering(CharSequence constraint)
 		{
 			return performFiltering(constraint);
+		}
+		
+		public void setShowPosted(boolean b)
+		{
+			mShowPosted = b;
+		}
+		
+		public void setShowNonPosted(boolean b)
+		{
+			mShowNonPosted = b;
 		}
 		
 		@Override
 		protected FilterResults performFiltering(CharSequence constraint)
 		{
 			mConstraint = constraint;
-			FilterResults results = new FilterResults();
 			
 			// do the filtering to decide which items we show
 			if (constraint == null || constraint.length() == 0)
 			{
-				ArrayList<Transaction> list = new ArrayList<Transaction>(mOriginalList);
-				results.count = list.size();
-				results.values = list;
-				return results;
+				return filterEmptyString();
 			}
+			else
+			{
+				return filterString(constraint);
+			}
+		}
+		
+		private FilterResults filterEmptyString()
+		{
+			FilterResults results = new FilterResults();
+			ArrayList<Transaction> tList = new ArrayList<Transaction>(mOriginalList);
+			ArrayList<Transaction> values = new ArrayList<Transaction>();
+			results.count = 0;
+			results.values = values;
 			
+			for (Transaction trans : tList)
+			{
+				if ((!mShowPosted && trans.isPosted()) || (!mShowNonPosted && !trans.isPosted()))
+				{
+					continue;
+				}
+				
+				values.add(trans);
+			}
+
+			results.values = (Object)values;
+			results.count = values.size();
+			
+			return results;
+		}
+		
+		private FilterResults filterString(CharSequence constraint)
+		{
+			FilterResults results = new FilterResults();
+
 			boolean matches = false;
 			ArrayList<Transaction> tList = new ArrayList<Transaction>(mOriginalList);
 			ArrayList<Transaction> values = new ArrayList<Transaction>();
@@ -423,6 +472,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			
 			for (Transaction trans : tList)
 			{
+				// if it doesn't match the posted/non-posted options, exit
+				if ((!mShowPosted && trans.isPosted()) || (!mShowNonPosted && !trans.isPosted()))
+				{
+					continue;
+				}
+				
 				// check for at least one match
 				for (String filter : filters)
 				{

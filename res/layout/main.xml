@@ -4,23 +4,34 @@
 	android:orientation="vertical" android:id="@+id/main_layout">
 	<LinearLayout android:layout_height="wrap_content"
 		android:layout_width="fill_parent" android:visibility="gone"
-		android:id="@+id/SearchLayout">
-		<MultiAutoCompleteTextView
-			android:layout_width="wrap_content" android:layout_weight="1"
-			android:id="@+id/SearchEdit" android:layout_height="fill_parent"
-			android:hint="Search"></MultiAutoCompleteTextView>
-		<ImageButton android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:id="@+id/ClearButton"
-			android:src="@android:drawable/ic_input_delete"></ImageButton>
+		android:id="@+id/SearchLayout" android:orientation="vertical">
+		<LinearLayout android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:orientation="horizontal">
+			<MultiAutoCompleteTextView
+				android:layout_width="wrap_content" android:layout_weight="1"
+				android:id="@+id/SearchEdit" android:layout_height="fill_parent"
+				android:hint="Search" />
+			<ImageButton android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/ClearButton"
+				android:src="@android:drawable/ic_input_delete" />
+		</LinearLayout>
+		<LinearLayout android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:orientation="horizontal">
+			<CheckBox android:text="@string/posted" android:id="@+id/show_posted"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:layout_weight="1" android:checked="true" />
+			<CheckBox android:text="@string/non_posted" android:id="@+id/show_non_posted"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:checked="true" />
+		</LinearLayout>
 	</LinearLayout>
 	<ListView android:layout_height="wrap_content" android:id="@android:id/list"
 		android:layout_width="fill_parent" android:layout_weight="100"
-		android:paddingRight="5dip">
-	</ListView>
+		android:paddingRight="5dip" />
 	<TextView android:layout_height="wrap_content" android:id="@android:id/empty"
 		android:text="Use the menu to add new transactions."
 		android:layout_width="fill_parent" android:layout_weight="100"
-		android:textSize="24dip" android:gravity="center"></TextView>
+		android:textSize="24dip" android:gravity="center" />
 	<LinearLayout android:layout_height="wrap_content"
 		android:id="@+id/BalanceLayout" android:layout_width="fill_parent">
 		<LinearLayout android:id="@+id/LinearLayout01"
@@ -30,11 +41,11 @@
 			<TextView android:layout_height="wrap_content"
 				android:layout_weight="1" android:id="@+id/BalText1"
 				android:gravity="top|left" android:lines="1" android:text="@string/trans_posted"
-				android:layout_width="fill_parent"></TextView>
+				android:layout_width="fill_parent" />
 			<TextView android:layout_height="wrap_content"
 				android:gravity="top|left" android:lines="1" android:text="$0.00"
 				android:layout_width="fill_parent" android:layout_weight="1"
-				android:id="@+id/postedValue"></TextView>
+				android:id="@+id/postedValue" />
 		</LinearLayout>
 		<LinearLayout android:id="@+id/LinearLayout02"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"
@@ -43,10 +54,10 @@
 			<TextView android:layout_height="wrap_content"
 				android:layout_weight="1" android:id="@+id/BalText2"
 				android:gravity="top|center_horizontal" android:lines="1"
-				android:text="@string/trans_balance" android:layout_width="fill_parent"></TextView>
+				android:text="@string/trans_balance" android:layout_width="fill_parent" />
 			<TextView android:layout_height="wrap_content" android:text="$0.00"
 				android:layout_width="fill_parent" android:gravity="top|center_horizontal"
-				android:layout_weight="1" android:id="@+id/balanceValue"></TextView>
+				android:layout_weight="1" android:id="@+id/balanceValue" />
 		</LinearLayout>
 		<LinearLayout android:id="@+id/LinearLayout03"
 			android:layout_width="wrap_content" android:layout_weight="1"
@@ -55,10 +66,10 @@
 			<TextView android:layout_height="wrap_content"
 				android:layout_weight="1" android:id="@+id/BalText3"
 				android:gravity="top|right" android:lines="1" android:text="@string/trans_budget"
-				android:layout_width="fill_parent"></TextView>
+				android:layout_width="fill_parent" />
 			<TextView android:layout_height="wrap_content" android:text="$0.00"
 				android:gravity="top|right" android:layout_width="fill_parent"
-				android:layout_weight="1" android:id="@+id/budgetValue"></TextView>
+				android:layout_weight="1" android:id="@+id/budgetValue" />
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

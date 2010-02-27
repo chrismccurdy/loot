@@ -41,6 +41,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -164,14 +165,15 @@ public class TransactionActivity extends ListActivity
     		setBalances();
     	}
 
+		final TransactionAdapter.TransactionFilter filter = 
+			(TransactionAdapter.TransactionFilter)mTa.getFilter();
     	TextWatcher searchChanged = new TextWatcher()
     	{
     		// we only care what the end result is
 			public void afterTextChanged(Editable s)
 			{
 				searchString = s.toString();
-				TransactionAdapter.TransactionFilter f = (TransactionAdapter.TransactionFilter)mTa.getFilter();
-				f.publish(searchString, f.filtering(searchString));
+				filter.publish(searchString, filter.filtering(searchString));
 			}
 
 			public void beforeTextChanged(CharSequence s, int start, int count, int after)
@@ -179,8 +181,7 @@ public class TransactionActivity extends ListActivity
 				if (after == 0)
 				{
 					searchString = "";
-					TransactionAdapter.TransactionFilter f = (TransactionAdapter.TransactionFilter)mTa.getFilter();
-					f.publish(searchString, f.filtering(searchString));
+					filter.publish(searchString, filter.filtering(searchString));
 				}
 			}
 
@@ -191,14 +192,35 @@ public class TransactionActivity extends ListActivity
     	ListView view = getListView();
         registerForContextMenu(view);
         view.setStackFromBottom(true);
+        
+        CheckBox cb = (CheckBox)findViewById(R.id.show_posted);
+        cb.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener()
+        {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				filter.setShowPosted(isChecked);
+				filter.publish(searchString, filter.filtering(searchString));
+			}
+        });
+        
+        cb = (CheckBox)findViewById(R.id.show_non_posted);
+        cb.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener()
+        {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				filter.setShowNonPosted(isChecked);
+				filter.publish(searchString, filter.filtering(searchString));
+			}
+        });
 
         // show the search if the orientation has changed and the activity has restarted
     	if (showSearch)
     	{
     		toggleSearch();
-    		TransactionAdapter.TransactionFilter f = (TransactionAdapter.TransactionFilter)mTa.getFilter();
 			searchEdit.setText(searchString);
-			f.publish(searchString, f.filtering(searchString));
+			filter.publish(searchString, filter.filtering(searchString));
     	}
     }
     
