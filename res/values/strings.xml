@@ -129,4 +129,12 @@
 	<string name="repeat_manager">Manage Repeats</string>
 	<string name="posted">Posted</string>
 	<string name="non_posted">Non-posted</string>
+	<string name="date_format_message">
+	   Enter date format as expected (ex. yyyy-MM-dd); empty for default values:\n
+	   yyyy - 4 digit year\n
+	   yy - 2 digit year\n
+	   MM - 2 digit month\n
+	   MMM - Text month\n
+	   dd - 2 digit day\n
+	</string>
 </resources>

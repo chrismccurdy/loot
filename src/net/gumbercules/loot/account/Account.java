@@ -3,11 +3,11 @@ package net.gumbercules.loot.account;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.database.*;
-import android.database.sqlite.*;
-
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.transaction.Transaction;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 
 public class Account
 {
@@ -56,7 +56,7 @@ public class Account
 	{
 		// insert the new row into the database
 		String insert = "insert into accounts (name,balance,timestamp,priority,primary_account) " +
-				"values (?,?,strftime('%s','now'),?)";
+				"values (?,?,strftime('%s','now'),?,?)";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance),
 				new Long(this.priority), new Boolean(this.primary)};
 		SQLiteDatabase lootDB = Database.getDatabase();
@@ -68,6 +68,7 @@ public class Account
 		}
 		catch (SQLException e)
 		{
+			e.printStackTrace();
 			return -1;
 		}
 		finally

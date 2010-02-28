@@ -28,6 +28,12 @@
 			android:positiveButtonText="@string/save"></EditTextPreference>
 			</PreferenceCategory>
 		-->
+		<EditTextPreference android:defaultValue="yyyy-MM-dd"
+			android:dialogTitle="Date Format" android:key="date_format"
+			android:title="Import/Export Date Format" android:positiveButtonText="@string/save"
+			android:negativeButtonText="@string/cancel"
+			android:summary="Specifies a date format to use for importing and exporting."
+			android:dialogMessage="@string/date_format_message"></EditTextPreference>
 		<PreferenceCategory android:title="Custom Colors"
 			android:key="premium_colors">
 			<CheckBoxPreference
@@ -59,6 +65,7 @@
 				android:dialogTitle="Budget Check Color" android:dialogMessage="Color to paint a budgeted check transaction."
 				android:title="Budget Check Color" android:key="color_budget_check" />
 		</PreferenceCategory>
+
 	</PreferenceScreen>
 	<PreferenceScreen android:key="color_cat"
 		android:title="Colors" android:summary="Various options regarding colors.">
@@ -87,7 +94,7 @@
 		android:title="Default to Primary" android:key="primary_default"
 		android:defaultValue="false" />
 	<ListPreference android:key="key_input_type"
-		android:title="@string/keyboard_style" android:summary="@string/keyboard_style_message" 
+		android:title="@string/keyboard_style" android:summary="@string/keyboard_style_message"
 		android:entries="@array/input_type_name" android:entryValues="@array/input_type" />
 	<PreferenceCategory android:title="Security"
 		android:key="cat_security">

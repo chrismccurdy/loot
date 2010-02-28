@@ -5,7 +5,6 @@ import java.security.NoSuchAlgorithmException;
 
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.backend.Database;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
@@ -62,7 +61,7 @@ public class SettingsActivity extends PreferenceActivity
 		
 		String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
 				"color_budget_deposit", "color_check", "color_budget_check", 
-				/*"cal_enabled", "calendar_tag",*/ "use_custom_colors"};
+				"use_custom_colors", "date_format", /*"cal_enabled", "calendar_tag"*/};
 
 		if (type != null)
 		{
@@ -214,7 +213,8 @@ public class SettingsActivity extends PreferenceActivity
 	
 	private void setupPremiumSettings(String[] prefs)
 	{
-		final String[] cr_keys = {"aw", "bw", "ad", "bd", "ac", "bc", "calendar", "tag", "custom"};
+		final String[] cr_keys = {"aw", "bw", "ad", "bd", "ac", "bc",
+				 "custom", "date_format", "calendar", "tag"};
 		
 		int i = 0;
 		final ContentResolver cr = getContentResolver();
@@ -222,7 +222,23 @@ public class SettingsActivity extends PreferenceActivity
 		for (String pref : prefs)
 		{
 			final String key = cr_keys[i++];
-			if (pref.equals("calendar_tag"))
+			if (pref.equals("date_format"))
+			{
+				EditTextPreference date = (EditTextPreference)findPreference(pref);
+				date.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+				{
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue)
+					{
+						ContentValues cv = new ContentValues();
+						cv.put(key, (String)newValue);
+						cr.update(Uri.parse(uri + key), cv, null, null);
+						
+						return true;
+					}
+				});
+			}
+			else if (pref.equals("calendar_tag"))
 			{
 				// set up edittext preference
 				EditTextPreference tag = (EditTextPreference)findPreference(pref);
