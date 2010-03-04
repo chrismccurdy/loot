@@ -769,6 +769,7 @@ public class TransactionEdit extends Activity
 	private void saveTransaction(Transaction trans, Account acct2)
 	{
 		int id = -1;
+		Intent broadcast = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
 		if (mType == TransactionActivity.TRANSACTION)
 		{
 			id = trans.write(mAccountId);
@@ -777,6 +778,7 @@ public class TransactionEdit extends Activity
 		{
 			trans.account = mAccountId;
 			id = trans.transfer(acct2);
+			broadcast.putExtra("transfer_account", acct2.id());
 		}
 		
 		mFinished = true;
@@ -796,6 +798,9 @@ public class TransactionEdit extends Activity
 			b.putInt(TransactionActivity.KEY_REQ, mRequest);
 			i.putExtras(b);
 			setResult(mFinishIntent, i);
+			
+			broadcast.putExtra("account_id", trans.account);
+			sendBroadcast(broadcast);
 		}
 		else
 		{

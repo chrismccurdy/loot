@@ -8,6 +8,7 @@ import net.gumbercules.loot.backend.Database;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -143,6 +144,10 @@ public class TransactionProvider extends ContentProvider
 		
 		int id = trans.write(trans.account);
 		
+		Intent broadcast = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
+		broadcast.putExtra("account_id", trans.account);
+		getContext().sendBroadcast(broadcast);
+
 		return uri.buildUpon().appendPath(new Integer(id).toString()).build();
 	}
 

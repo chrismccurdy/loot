@@ -669,6 +669,10 @@ public class TransactionActivity extends ListActivity
 	   			Toast.makeText(this, R.string.bad_repeat, Toast.LENGTH_LONG).show();
    			}
    	    	mTa.add(ids);
+   	    	
+   	    	// send a broadcast out for widgets
+   	    	Intent i = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
+   	    	sendBroadcast(i);
    		}
     }
 
@@ -702,6 +706,10 @@ public class TransactionActivity extends ListActivity
 			if (tr.isPosted())
 				tr.post(false);
 			id = tr.write(mAcct.id());
+			
+			Intent broadcast = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
+			broadcast.putExtra("account_id", mAcct.id());
+			sendBroadcast(broadcast);
 		}
 		catch (Exception e)
 		{
@@ -909,6 +917,10 @@ public class TransactionActivity extends ListActivity
 						trans.date = cal.getTime();
 						mTransId = trans.write(mAcct.id());
 						updateList(mTransId, ACTIVITY_CREATE);
+
+						Intent broadcast = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
+						broadcast.putExtra("account_id", trans.account);
+						sendBroadcast(broadcast);
 					}
 					dismiss();
 				}

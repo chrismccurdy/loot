@@ -9,6 +9,7 @@ import net.gumbercules.loot.backend.CurrencyWatcher;
 import net.gumbercules.loot.backend.Database;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
 import android.view.View;
@@ -192,6 +193,10 @@ public class AccountEdit extends Activity
 
 		if (id != -1)
 		{
+			Intent broadcast = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
+			broadcast.putExtra("account_id", acct.id());
+			sendBroadcast(broadcast);
+
 			acct.setPrimary(primary);
 			mRowId = id;
 		}

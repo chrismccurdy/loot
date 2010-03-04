@@ -8,8 +8,8 @@ import java.util.Currency;
 
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.backend.Database;
-
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
@@ -252,6 +252,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 					// only need to update the view if it changed from budget to posted
 					if (budget)
 					{
+						Intent broadcast = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
+						broadcast.putExtra("account_id", trans.account);
+						TransactionAdapter.this.getContext().sendBroadcast(broadcast);
+
 						ListView lv = ta.getListView();
 						View v = lv.getChildAt(pos - lv.getFirstVisiblePosition());
 						if (v != null)

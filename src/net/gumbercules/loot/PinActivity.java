@@ -3,10 +3,8 @@ package net.gumbercules.loot;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import net.gumbercules.loot.R;
 import net.gumbercules.loot.account.AccountChooser;
 import net.gumbercules.loot.backend.Database;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,10 +24,19 @@ public class PinActivity extends Activity
 	private Button mUnlockButton;
 	private EditText mPinEdit;
 	private TextView mInvalidView;
+	private Bundle mBundle;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		Intent i = getIntent();
+		mBundle = null;
+
+		if (i != null && i.hasCategory("net.gumbercules.category.LAUNCHER"))
+		{
+			mBundle = i.getExtras();
+		}
+
 		final byte[] pin_hash = Database.getOptionBlob("pin");
 		if (pin_hash == null || pin_hash.length == 1)
 		{
@@ -135,8 +142,12 @@ public class PinActivity extends Activity
 
 	private void startAccountChooser(boolean show)
 	{
-        Intent intent = new Intent();
-        intent.setClass(PinActivity.this, AccountChooser.class);
+        Intent intent = new Intent(this, AccountChooser.class);
+        if (mBundle != null)
+        {
+        	intent.addCategory("net.gumbercules.category.LAUNCHER");
+        	intent.replaceExtras(mBundle);
+        }
        	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
        	prefs.edit().putBoolean(SHOW_ACCOUNTS, show).commit();
         startActivity(intent);
