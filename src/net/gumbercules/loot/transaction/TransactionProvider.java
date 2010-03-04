@@ -66,13 +66,17 @@ public class TransactionProvider extends ContentProvider
 		if (size == 2)
 		{
 			object = path.get(1);
-			if (Integer.valueOf(object) != null)
+			try
 			{
-				if (tag)
-					return null;
-				else
-					return TRANSACTION_ITEM_MIME;
+				if (Integer.valueOf(object) != null)
+				{
+					if (tag)
+						return null;
+					else
+						return TRANSACTION_ITEM_MIME;
+				}
 			}
+			catch (NumberFormatException e) { }
 			
 			if (object.equals("count"))
 			{
@@ -212,7 +216,7 @@ public class TransactionProvider extends ContentProvider
 				selection = "trans_id = id and " + selection;
 			}
 			
-			query = "select sum(*) from " + table + " where " + selection;
+			query = "select sum(amount) from " + table + " where " + selection;
 		}
 		
 		Log.i("net.gumbercules.loot.TransactionProvider.query", query);
