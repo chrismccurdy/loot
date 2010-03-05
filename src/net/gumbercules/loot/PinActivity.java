@@ -3,9 +3,12 @@ package net.gumbercules.loot;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.account.AccountChooser;
 import net.gumbercules.loot.backend.Database;
+import net.gumbercules.loot.transaction.TransactionActivity;
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -142,13 +145,25 @@ public class PinActivity extends Activity
 
 	private void startAccountChooser(boolean show)
 	{
-        Intent intent = new Intent(this, AccountChooser.class);
         if (mBundle != null)
         {
-        	intent.addCategory("net.gumbercules.category.LAUNCHER");
-        	intent.replaceExtras(mBundle);
+			if (mBundle.getInt("widget_id", AppWidgetManager.INVALID_APPWIDGET_ID) !=
+					AppWidgetManager.INVALID_APPWIDGET_ID)
+			{
+				int account = mBundle.getInt("account_id");
+				
+				if (account > 0)
+				{
+					Intent trans_intent = new Intent(this, TransactionActivity.class);
+					trans_intent.putExtra(Account.KEY_ID, account);
+					startActivity(trans_intent);
+					return;
+				}
+			}
         }
-       	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
+        Intent intent = new Intent(this, AccountChooser.class);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
        	prefs.edit().putBoolean(SHOW_ACCOUNTS, show).commit();
         startActivity(intent);
 	}

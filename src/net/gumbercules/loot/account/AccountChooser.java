@@ -17,11 +17,9 @@ import net.gumbercules.loot.preferences.SettingsActivity;
 import net.gumbercules.loot.premium.PremiumCaller;
 import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.transaction.TransactionActivity;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -84,6 +82,7 @@ public class AccountChooser extends ListActivity
 		super.onCreate(savedInstanceState);
 		
 		// required to prevent last-used from jumping back to this spot
+		@SuppressWarnings("unused")
 		Bundle bun = getIntent().getExtras();
 		
 		getListView().setOnCreateContextMenuListener(this);
@@ -102,7 +101,9 @@ public class AccountChooser extends ListActivity
 					"color_budget_deposit", "color_check", "color_budget_check", 
 					"cal_enabled", "calendar_tag"};
 			for (String key : pref_keys)
+			{
 				editor.remove(key);
+			}
 			editor.commit();
 		}
 		
@@ -146,27 +147,6 @@ public class AccountChooser extends ListActivity
 			for (Account acct : accountList)
 			{
 				acct.purgeTransactions(date);
-			}
-		}
-		
-		Intent i = getIntent();
-		if (i != null && i.hasCategory("net.gumbercules.category.LAUNCHER"))
-		{
-			if (bun != null)
-			{
-				if (bun.getInt("widget_id", AppWidgetManager.INVALID_APPWIDGET_ID) !=
-						AppWidgetManager.INVALID_APPWIDGET_ID)
-				{
-					int account = bun.getInt("account_id");
-					
-					if (account > 0)
-					{
-						Intent in = new Intent(this, TransactionActivity.class);
-						in.putExtra(Account.KEY_ID, account);
-						startActivity(in);
-						finish();
-					}
-				}
 			}
 		}
 		
