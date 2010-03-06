@@ -26,8 +26,8 @@
 		</LinearLayout>
 	</LinearLayout>
 	<ListView android:layout_height="wrap_content" android:id="@android:id/list"
-		android:layout_width="fill_parent" android:layout_weight="100"
-		android:paddingRight="5dip" android:fastScrollEnabled="true" />
+	android:layout_width="fill_parent" android:layout_weight="100"
+	android:fastScrollEnabled="true" />
 	<TextView android:layout_height="wrap_content" android:id="@android:id/empty"
 		android:text="Use the menu to add new transactions."
 		android:layout_width="fill_parent" android:layout_weight="100"

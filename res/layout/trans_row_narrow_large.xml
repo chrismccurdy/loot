@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/LinearLayout01"
 	android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:orientation="horizontal">
+	android:layout_width="fill_parent" android:orientation="horizontal"
+	android:paddingRight="5dip">
 	<CheckBox android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"
 		android:focusable="false" android:focusableInTouchMode="false" />
@@ -9,10 +10,17 @@
 		android:layout_width="wrap_content" android:layout_height="fill_parent"
 		android:layout_weight="1" android:layout_gravity="left|center_vertical"
 		android:orientation="vertical">
-		<TextView android:layout_height="wrap_content" android:id="@+id/PartyText"
-			android:layout_width="fill_parent" android:ellipsize="end"
-			android:gravity="top|left" android:lines="1" android:maxLines="1"
-			android:text="Wilmington Trust Company" android:textSize="24dip" />
+		<LinearLayout android:id="@+id/LinearLayout04"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<TextView android:layout_height="wrap_content" android:id="@+id/PartyText"
+				android:layout_width="wrap_content" android:layout_weight="1"
+				android:ellipsize="end" android:gravity="top|left" android:lines="1"
+				android:maxLines="1" android:text="Wilmington Trust Company"
+				android:textSize="24dip" />
+			<ImageView android:id="@+id/image_view"
+				android:layout_height="wrap_content" android:layout_width="wrap_content"
+				android:src="@drawable/ic_gallery" android:visibility="gone" />
+		</LinearLayout>
 		<LinearLayout android:id="@+id/LinearLayout03"
 			android:layout_height="wrap_content" android:layout_width="fill_parent"
 			android:layout_marginTop="-5dip">
@@ -22,9 +30,9 @@
 				android:textSize="16dip" />
 			<TextView android:layout_width="wrap_content" android:text="215.00"
 				android:gravity="right" android:id="@+id/AmountText"
-				android:layout_height="fill_parent" android:paddingRight="7dip"
-				android:singleLine="false" android:maxLines="1" android:lines="1"
-				android:layout_weight="1" android:textSize="16dip" />
+				android:layout_height="fill_parent" android:singleLine="false"
+				android:maxLines="1" android:lines="1" android:layout_weight="1"
+				android:textSize="16dip" />
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

@@ -17,14 +17,16 @@ import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.Logger;
 import net.gumbercules.loot.repeat.RepeatActivity;
 import net.gumbercules.loot.repeat.RepeatSchedule;
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
@@ -35,6 +37,8 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -379,6 +383,17 @@ public class TransactionEdit extends Activity
 	        repeatAccountSpinner.setSelection(pos);
 		}
 		
+		ImageView addImage = (ImageView)findViewById(R.id.addImage);
+		addImage.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				// TODO: ask user for camera/gallery choice
+				addImageRow();
+			}
+		});
+		
 		saveButton.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View view)
@@ -394,6 +409,35 @@ public class TransactionEdit extends Activity
 			{
 				setResult(mFinishIntent);
 				finish();
+			}
+		});
+	}
+	
+	// TODO: create alternate function with ID for automatically adding on edit/load
+	private void addImageRow()
+	{
+		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		final LinearLayout imageLayout = (LinearLayout)findViewById(R.id.imageLayout);
+		View row = inflater.inflate(R.layout.receipt_entry, null);
+		
+		final Long tag = SystemClock.elapsedRealtime();
+		row.setTag(tag);
+		
+		imageLayout.addView(row);
+		imageLayout.invalidate();
+		
+		// TODO: add titles to the buttons
+		Button button = (Button)row.findViewById(R.id.image_button);
+		button.setText("BLAAAAAAAAAAAAAAH " + tag);
+		
+		ImageView remove = (ImageView)row.findViewById(R.id.image_delete);
+		remove.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				imageLayout.removeView(imageLayout.findViewWithTag(tag));
+				imageLayout.invalidate();
 			}
 		});
 	}

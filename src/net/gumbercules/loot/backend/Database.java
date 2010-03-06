@@ -15,7 +15,7 @@ public class Database
 {
 	private final static String DB_NAME		= "LootDB";
 	private final static String DB_PATH		= "/data/data/net.gumbercules.loot/" + DB_NAME + ".db";
-	private final static int DB_VERSION		= 5;
+	private final static int DB_VERSION		= 6;
 	private static SQLiteDatabase lootDB	= null;
 	
 	public Database()
@@ -75,7 +75,7 @@ public class Database
 	
 	private static boolean createDB(SQLiteDatabase db)
 	{
-		String[] createSQL = new String[13];
+		String[] createSQL = new String[15];
 		
 		createSQL[0] = "create table accounts(\n" + 
 					"	id integer primary key autoincrement,\n" +
@@ -133,14 +133,21 @@ public class Database
 					"	tags text,\n" +
 					"	transfer_id integer,\n" +
 					"	primary key (trans_id, repeat_id))";
+		
+		createSQL[7] = "create table images(\n" +
+					"	id integer not null,\n" +
+					"	trans_id integer not null,\n" +
+					"	uri varchar(256),\n" +
+					"	primary key (id, trans_id))";
 
-		createSQL[7] = "insert into options values ('sort_column','0')";
-		createSQL[8] = "insert into options values ('auto_purge_days','-1')";
-		createSQL[9] = "insert into options values ('post_repeats_early','2')";
+		createSQL[8] = "insert into options values ('sort_column','0')";
+		createSQL[9] = "insert into options values ('auto_purge_days','-1')";
+		createSQL[10] = "insert into options values ('post_repeats_early','2')";
 
-		createSQL[10] = "create index idx_trans_id on transactions ( id asc )";
-		createSQL[11] = "create index idx_account on transactions ( account, purged )";
-		createSQL[12] = "create index idx_tags on tags ( trans_id asc )";
+		createSQL[11] = "create index idx_trans_id on transactions ( id asc )";
+		createSQL[12] = "create index idx_account on transactions ( account, purged )";
+		createSQL[13] = "create index idx_tags on tags ( trans_id asc )";
+		createSQL[14] = "create index idx_images on images ( trans_id asc )";
 		
 		try
 		{
@@ -254,9 +261,33 @@ public class Database
 			lootDB.setVersion(5);
 			current_version = 5;
 		}
+		if (current_version < 6)
+		{
+			lootDB.beginTransaction();
+			try
+			{
+				lootDB.execSQL("create table images(id integer not null, trans_id integer not null," +
+					" uri varchar(256), primary key (id))");
+				lootDB.execSQL("create index idx_images on images ( trans_id asc )");
+				lootDB.setTransactionSuccessful();
+			}
+			catch (SQLException e)
+			{
+				return false;
+			}
+			finally
+			{
+				lootDB.endTransaction();
+			}
+			
+			lootDB.setVersion(6);
+			current_version = 6;
+		}
 		
 		if ( current_version == max_version )
+		{
 			return true;
+		}
 
 		return false;
 	}

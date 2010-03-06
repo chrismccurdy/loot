@@ -137,4 +137,5 @@
 	   MMM - Text month\n
 	   dd - 2 digit day\n
 	</string>
+	<string name="receipts">Receipts</string>
 </resources>
