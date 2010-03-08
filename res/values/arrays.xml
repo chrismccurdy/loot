@@ -39,12 +39,16 @@
 		<item>#07a863 #5be8ab #f5aa0b #fccb63 #c10878 #ee5eb6</item>
 	</string-array>
 	<string-array name="input_type_name">
-	    <item>Phone Keypad</item>
-	    <item>Number Keyboard</item>
+		<item>Phone Keypad</item>
+		<item>Number Keyboard</item>
 	</string-array>
 	<string-array name="input_type">
-	    <item>PHONE</item>
-	    <item>NUMBER</item>
+		<item>PHONE</item>
+		<item>NUMBER</item>
+	</string-array>
+	<string-array name="receipt_capture_name">
+		<item>Images</item>
+		<item>Camera</item>
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n
@@ -57,6 +61,7 @@
 &#8226; Added options in search menu for hiding transactions based on posted status\n
 &#8226; Enabled fast-scrolling on the transaction list\n
 &#8226; Added widgets to display account information and provide quick access (Premium)\n
+&#8226; Added ability to attach images/receipts to transactions (Premium)\n
 	    </item>
 	    <item>\n
 &#8226; Improved display for devices with larger/denser screens\n

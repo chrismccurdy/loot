@@ -138,4 +138,5 @@
 	   dd - 2 digit day\n
 	</string>
 	<string name="receipts">Receipts</string>
+	<string name="attach_receipt">Attach Receipt</string>
 </resources>

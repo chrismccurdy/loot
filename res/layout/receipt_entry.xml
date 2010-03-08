@@ -4,7 +4,7 @@
 	android:orientation="horizontal">
 	<Button android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:layout_weight="1"
-		android:id="@+id/image_button"/>
+		android:id="@+id/image_button" />
 	<ImageView android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:src="@android:drawable/ic_delete"
 		android:id="@+id/image_delete" android:layout_gravity="center_vertical" />

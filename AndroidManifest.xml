@@ -35,6 +35,8 @@
 		</activity>
 		<activity android:name="net.gumbercules.loot.ChangeLogActivity" />
 		<activity android:name="net.gumbercules.loot.repeat.RepeatManagerActivity" />
+		<activity android:name="net.gumbercules.loot.premium.ViewImage"
+			android:theme="@android:style/Theme.Dialog" />
 	</application>
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-sdk android:minSdkVersion="3" />

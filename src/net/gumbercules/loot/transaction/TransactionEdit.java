@@ -1,5 +1,6 @@
 package net.gumbercules.loot.transaction;
 
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -15,15 +16,24 @@ import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.backend.CurrencyWatcher;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.Logger;
+import net.gumbercules.loot.premium.PremiumNotFoundActivity;
+import net.gumbercules.loot.premium.ViewImage;
 import net.gumbercules.loot.repeat.RepeatActivity;
 import net.gumbercules.loot.repeat.RepeatSchedule;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.provider.MediaStore.Images;
+import android.provider.MediaStore.Images.Media;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,6 +61,12 @@ public class TransactionEdit extends Activity
 	public static final String KEY_TRANSFER = "te_transfer";
 	@SuppressWarnings("unused")
 	private static final String TAG = "net.gumbercules.loot.TransactionEdit";
+	
+	private static final int REQ_REPEAT		= 0;
+	private static final int REQ_CAMERA		= 1;
+	private static final int REQ_GALLERY	= 2;
+	
+	private static final String IMAGE_CAPTURE = "android.media.action.IMAGE_CAPTURE";
 	
 	private Transaction mTrans;
 	private RepeatSchedule mRepeat;
@@ -389,8 +405,46 @@ public class TransactionEdit extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				// TODO: ask user for camera/gallery choice
-				addImageRow();
+				Intent i;
+				
+				// bail if premium isn't present
+				if (getContentResolver().getType(Uri.parse(
+						"content://net.gumbercules.loot.premium.settingsprovider/settings")) == null)
+				{
+					i = new Intent(TransactionEdit.this, PremiumNotFoundActivity.class);
+					startActivity(i);
+
+					return;
+				}
+
+				AlertDialog dialog = new AlertDialog.Builder(TransactionEdit.this)
+					.setTitle(R.string.attach_receipt)
+					.setItems(R.array.receipt_capture_name, 
+							new DialogInterface.OnClickListener()
+							{
+								@Override
+								public void onClick(DialogInterface dialog, int which)
+								{
+									Intent i = new Intent();
+									int req = 0;
+									
+									if (which == 0)
+									{
+										i.setAction(Intent.ACTION_GET_CONTENT);
+										i.setType("image/*");
+										req = REQ_GALLERY;
+									}
+									else if (which == 1)
+									{
+										i.setAction(IMAGE_CAPTURE);
+										req = REQ_CAMERA;
+									}
+									
+									startActivityForResult(i, req);
+								}
+							})
+					.create();
+				dialog.show();
 			}
 		});
 		
@@ -413,22 +467,39 @@ public class TransactionEdit extends Activity
 		});
 	}
 	
-	// TODO: create alternate function with ID for automatically adding on edit/load
-	private void addImageRow()
+	private void addImageRow(final Uri content_uri)
 	{
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		final LinearLayout imageLayout = (LinearLayout)findViewById(R.id.imageLayout);
 		View row = inflater.inflate(R.layout.receipt_entry, null);
 		
-		final Long tag = SystemClock.elapsedRealtime();
-		row.setTag(tag);
+		row.setTag(content_uri);
 		
 		imageLayout.addView(row);
 		imageLayout.invalidate();
 		
-		// TODO: add titles to the buttons
 		Button button = (Button)row.findViewById(R.id.image_button);
-		button.setText("BLAAAAAAAAAAAAAAH " + tag);
+		
+		String[] columns = new String[] { Images.ImageColumns.TITLE };
+		Cursor cur = getContentResolver().query(content_uri, columns, null, null, null);
+		String title = "Receipt";
+		if (cur.moveToFirst())
+		{
+			title = cur.getString(0);
+		}
+		
+		button.setText(title);
+		button.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				// TODO: pop up a window showing the image
+				Intent i = new Intent(TransactionEdit.this, ViewImage.class);
+				i.setData(content_uri);
+				startActivity(i);
+			}
+		});
 		
 		ImageView remove = (ImageView)row.findViewById(R.id.image_delete);
 		remove.setOnClickListener(new View.OnClickListener()
@@ -436,7 +507,7 @@ public class TransactionEdit extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				imageLayout.removeView(imageLayout.findViewWithTag(tag));
+				imageLayout.removeView(imageLayout.findViewWithTag(content_uri));
 				imageLayout.invalidate();
 			}
 		});
@@ -460,7 +531,7 @@ public class TransactionEdit extends Activity
 			    	i.putExtra(RepeatSchedule.KEY_FREQ, mRepeat.freq);
 			    	i.putExtra(RepeatSchedule.KEY_CUSTOM, mRepeat.custom);
 			    	i.putExtra(RepeatSchedule.KEY_DATE, (mRepeat.end != null) ? mRepeat.end.getTime() : 0);
-			    	startActivityForResult(i, 0);
+			    	startActivityForResult(i, REQ_REPEAT);
 				}
 				
 				mDefaultRepeatValue = pos;
@@ -546,21 +617,60 @@ public class TransactionEdit extends Activity
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 		
-		if (resultCode == RESULT_OK)
+		if (requestCode == REQ_REPEAT)
 		{
-			Bundle extras = data.getExtras();
-			mRepeat.iter = extras.getInt(RepeatSchedule.KEY_ITER);
-			mRepeat.freq = extras.getInt(RepeatSchedule.KEY_FREQ);
-			mRepeat.custom = extras.getInt(RepeatSchedule.KEY_CUSTOM);
-			mRepeat.end = new Date(extras.getLong(RepeatSchedule.KEY_DATE));
-			
-			setRepeatSpinnerSelection(mRepeat);
-		}
-		else
-		{
-			mDefaultRepeatValue = mLastRepeatValue;
-			if (mDefaultRepeatValue == 7)
+			if (resultCode == RESULT_OK)
+			{
+				Bundle extras = data.getExtras();
+				mRepeat.iter = extras.getInt(RepeatSchedule.KEY_ITER);
+				mRepeat.freq = extras.getInt(RepeatSchedule.KEY_FREQ);
+				mRepeat.custom = extras.getInt(RepeatSchedule.KEY_CUSTOM);
+				mRepeat.end = new Date(extras.getLong(RepeatSchedule.KEY_DATE));
+				
 				setRepeatSpinnerSelection(mRepeat);
+			}
+			else
+			{
+				mDefaultRepeatValue = mLastRepeatValue;
+				if (mDefaultRepeatValue == 7)
+					setRepeatSpinnerSelection(mRepeat);
+			}
+		}
+		else if (requestCode == REQ_CAMERA)
+		{
+			if (resultCode == RESULT_OK)
+			{
+				Bitmap bmp = (Bitmap)data.getExtras().get("data");
+				ContentValues values = new ContentValues();
+		        values.put(Images.Media.TITLE, "Loot Receipt");
+		        values.put(Images.Media.BUCKET_ID, "Receipts");
+		        values.put(Images.Media.DESCRIPTION, "Receipt Image for Loot");
+		        values.put(Images.Media.MIME_TYPE, "image/jpeg");
+		        Uri uri = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
+
+		        OutputStream outstream;
+				try
+				{
+					outstream = getContentResolver().openOutputStream(uri);
+
+					bmp.compress(Bitmap.CompressFormat.JPEG, 85, outstream);
+					outstream.close();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				
+				addImageRow(uri);
+			}
+		}
+		else if (requestCode == REQ_GALLERY)
+		{
+			if (resultCode == RESULT_OK)
+			{
+				Uri uri = data.getData();
+				addImageRow(uri);
+			}
 		}
 	}
 
