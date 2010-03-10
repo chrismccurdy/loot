@@ -306,6 +306,11 @@ public class TransactionEdit extends Activity
 				amountEdit.setText(num);
 				
 				tagsEdit.setText(trans.tagListToString());
+				
+				for (Uri uri : trans.images)
+				{
+					addImageRow(uri);
+				}
 			}
 
 			setRepeatSpinnerSelection(mRepeat);
@@ -397,6 +402,12 @@ public class TransactionEdit extends Activity
     		Account acct = Account.getAccountById(mTrans.account);
     		int pos = adapter.getPosition(acct.name);
 	        repeatAccountSpinner.setSelection(pos);
+	        
+	        // hide the image attachments
+	        row = (TableRow)findViewById(R.id.imageHeaderRow);
+	        row.setVisibility(View.GONE);
+	        LinearLayout ll = (LinearLayout)findViewById(R.id.imageLayout);
+	        ll.setVisibility(View.GONE);
 		}
 		
 		ImageView addImage = (ImageView)findViewById(R.id.addImage);
@@ -471,6 +482,13 @@ public class TransactionEdit extends Activity
 	{
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		final LinearLayout imageLayout = (LinearLayout)findViewById(R.id.imageLayout);
+		
+		// bail if this uri was already added
+		if (imageLayout.findViewWithTag(content_uri) != null)
+		{
+			return;
+		}
+		
 		View row = inflater.inflate(R.layout.receipt_entry, null);
 		
 		row.setTag(content_uri);
@@ -494,7 +512,6 @@ public class TransactionEdit extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				// TODO: pop up a window showing the image
 				Intent i = new Intent(TransactionEdit.this, ViewImage.class);
 				i.setData(content_uri);
 				startActivity(i);
@@ -916,6 +933,19 @@ public class TransactionEdit extends Activity
 		}
 
 		setRepeat();
+		
+		// add the images to the transaction
+		LinearLayout images = (LinearLayout)findViewById(R.id.imageLayout);
+		int count = images.getChildCount();
+		LinearLayout image_row;
+		Uri uri;
+		
+		for (int i = 0; i < count; ++i)
+		{
+			image_row = (LinearLayout)images.getChildAt(i);
+			uri = (Uri)image_row.getTag();
+			trans.addImage(uri);
+		}
 		
 		return new Object[]{trans, acct2};
 	}

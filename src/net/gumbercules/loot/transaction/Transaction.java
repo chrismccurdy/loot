@@ -9,6 +9,7 @@ import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.repeat.RepeatSchedule;
 import android.database.*;
 import android.database.sqlite.*;
+import android.net.Uri;
 import android.util.Log;
 
 public class Transaction
@@ -38,6 +39,7 @@ public class Transaction
 	public String party;
 	public double amount;
 	ArrayList<String> tags;
+	ArrayList<Uri> images;
 	
 	public Transaction()
 	{
@@ -51,6 +53,7 @@ public class Transaction
 		this.check_num = -1;
 		this.party = null;
 		this.tags = new ArrayList<String>();
+		this.images = new ArrayList<Uri>();
 	}
 	
 	public Transaction( boolean po, boolean b, Date d, int t, String pa, double a, int c )
@@ -65,6 +68,7 @@ public class Transaction
 		this.check_num = c;
 		this.party = pa;
 		this.tags = new ArrayList<String>();
+		this.images = new ArrayList<Uri>();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -83,6 +87,73 @@ public class Transaction
 		this.check_num = trans.check_num;
 		this.party = trans.party;
 		this.tags = (ArrayList<String>) trans.tags.clone();
+		this.images = (ArrayList<Uri>) trans.images.clone();
+	}
+	
+	public int addImage(Uri uri)
+	{
+		if (this.images.add(uri))
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	
+	public int addImages(Uri[] uris)
+	{
+		if (uris == null)
+		{
+			return 0;
+		}
+		
+		int i = 0;
+		
+		for (Uri uri : uris)
+		{
+			if (this.images.add(uri))
+			{
+				++i;
+			}
+		}
+		
+		return i;
+	}
+	
+	public int removeImage(Uri uri)
+	{
+		if (this.images.remove(uri))
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	
+	public int removeImages(Uri[] uris)
+	{
+		if (uris == null)
+		{
+			int size = this.images.size();
+			this.images.clear();
+			return size;
+		}
+		
+		int i = 0;
+		
+		for (Uri uri : uris)
+		{
+			if (this.images.remove(uri))
+			{
+				++i;
+			}
+		}
+		
+		return i;
 	}
 	
 	public int addTags( String tags )
@@ -228,7 +299,17 @@ public class Transaction
 		
 		// if tag writing is not successful, rollback the changes
 		if (writeTags())
-			lootDB.setTransactionSuccessful();
+		{
+			if (writeImages())
+			{
+				lootDB.setTransactionSuccessful();
+			}
+			else
+			{
+				this.id = -1;
+				Log.e("Transaction.newTransaction", "error writing images");
+			}
+		}
 		else
 		{
 			this.id = -1;
@@ -277,7 +358,7 @@ public class Transaction
 		
 		// if tag writing is not successful, rollback the changes
 		int ret = -1;
-		if (eraseTags() && writeTags())
+		if ((eraseTags() && writeTags() && (eraseImages() && writeImages())))
 		{
 			lootDB.setTransactionSuccessful();
 			ret = this.id;
@@ -285,6 +366,66 @@ public class Transaction
 		lootDB.endTransaction();
 		
 		return ret;
+	}
+	
+	private boolean writeImages()
+	{
+		int size = this.images.size();
+		if (size == 0)
+		{
+			return true;
+		}
+		
+		String insert = "insert into images (trans_id,uri) values (?,?)";
+		Object[] bindArgs = new Object[2];
+		bindArgs[0] = new Long(this.id);
+		
+		SQLiteDatabase lootDb = Database.getDatabase();
+		lootDb.beginTransaction();
+		
+		try
+		{
+			for (int i = 0; i < size; ++i)
+			{
+				bindArgs[1] = this.images.get(i).toString();
+				lootDb.execSQL(insert, bindArgs);
+			}
+			
+			lootDb.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		finally
+		{
+			lootDb.endTransaction();
+		}
+		
+		return true;
+	}
+	
+	private boolean eraseImages()
+	{
+		SQLiteDatabase lootDb = Database.getDatabase();
+		lootDb.beginTransaction();
+		
+		try
+		{
+			lootDb.delete("images", "trans_id = " + this.id, null);
+			lootDb.setTransactionSuccessful();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		finally
+		{
+			lootDb.endTransaction();
+		}
+		
+		return true;
 	}
 	
 	private boolean writeTags()
@@ -523,6 +664,26 @@ public class Transaction
 		cur.close();
 	}
 	
+	public void loadImages()
+	{
+		SQLiteDatabase lootDb = Database.getDatabase();
+		String[] columns = {"uri"};
+		String[] sArgs = {Integer.toString(this.id)};
+		Cursor cur = lootDb.query("images", columns, "trans_id = ?", sArgs, null, null, null);
+		
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return;
+		}
+		
+		do
+		{
+			this.images.add(Uri.parse(cur.getString(0)));
+		} while (cur.moveToNext());
+		cur.close();
+	}
+	
 	public static Transaction getTransactionById(int id)
 	{
 		return getTransactionById(id, false);
@@ -573,6 +734,7 @@ public class Transaction
 		cur.close();
 		
 		trans.loadTags();
+		trans.loadImages();
 		
 		return trans;
 	}

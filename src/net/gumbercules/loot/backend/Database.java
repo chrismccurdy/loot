@@ -135,10 +135,8 @@ public class Database
 					"	primary key (trans_id, repeat_id))";
 		
 		createSQL[7] = "create table images(\n" +
-					"	id integer not null,\n" +
 					"	trans_id integer not null,\n" +
-					"	uri varchar(256),\n" +
-					"	primary key (id, trans_id))";
+					"	uri varchar(256))";
 
 		createSQL[8] = "insert into options values ('sort_column','0')";
 		createSQL[9] = "insert into options values ('auto_purge_days','-1')";
@@ -266,8 +264,7 @@ public class Database
 			lootDB.beginTransaction();
 			try
 			{
-				lootDB.execSQL("create table images(id integer not null, trans_id integer not null," +
-					" uri varchar(256), primary key (id))");
+				lootDB.execSQL("create table images(trans_id integer not null, uri varchar(256))");
 				lootDB.execSQL("create index idx_images on images ( trans_id asc )");
 				lootDB.setTransactionSuccessful();
 			}
