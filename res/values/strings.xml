@@ -139,4 +139,5 @@
 	</string>
 	<string name="receipts">Receipts</string>
 	<string name="attach_receipt">Attach Receipt</string>
+	<string name="view_receipts">View Receipts</string>
 </resources>

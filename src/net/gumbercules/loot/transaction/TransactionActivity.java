@@ -13,6 +13,7 @@ import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.Logger;
 import net.gumbercules.loot.preferences.SettingsActivity;
 import net.gumbercules.loot.premium.PremiumCaller;
+import net.gumbercules.loot.premium.ViewImage;
 import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.repeat.RepeatSchedule;
 import android.app.AlertDialog;
@@ -83,6 +84,7 @@ public class TransactionActivity extends ListActivity
 	public static final int CONTEXT_POST	= Menu.FIRST + 2;
 	public static final int CONTEXT_DEL		= Menu.FIRST + 3;
 	public static final int CONTEXT_REPEAT	= Menu.FIRST + 4;
+	public static final int CONTEXT_IMAGE	= Menu.FIRST + 5;
 	
 	private static ArrayList<Transaction> mTransList;
 	private static Account mAcct;
@@ -799,6 +801,13 @@ public class TransactionActivity extends ListActivity
 			dialog.show();
 			
 			return true;
+			
+		case CONTEXT_IMAGE:
+			Intent i = new Intent(this, ViewImage.class);
+			Transaction t = (Transaction)getListAdapter().getItem(info.position);
+			i.putExtra(ViewImage.KEY_URIS, t.images);
+			startActivity(i);
+			return true;
 		}
 		return false;
 	}
@@ -825,7 +834,9 @@ public class TransactionActivity extends ListActivity
 
 		Transaction trans = (Transaction)getListAdapter().getItem(info.position);
 		if (trans == null)
+		{
 			return;
+		}
 		
 		menu.setHeaderTitle(trans.party);
 		
@@ -833,6 +844,11 @@ public class TransactionActivity extends ListActivity
 		menu.add(0, CONTEXT_COPY, 0, R.string.copy);
 		menu.add(0, CONTEXT_POST, 0, R.string.post);
 		menu.add(0, CONTEXT_REPEAT, 0, R.string.repeat);
+		if (trans.images != null && trans.images.size() > 0)
+		{
+			menu.add(0, CONTEXT_IMAGE, 0, R.string.view_receipts);
+		}
+		
 		menu.add(0, CONTEXT_DEL, 0, R.string.del);
 	}
 	

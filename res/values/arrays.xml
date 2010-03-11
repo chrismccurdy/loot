@@ -54,6 +54,7 @@
 	    <item>\n
 &#8226; Added option for a primary account which bypasses the account screen\n
 &#8226; Changed order of items for account context menus\n
+&#8226; Fixed a bug regarding searching transactions based on tag\n
 &#8226; Added option to change on-screen keyboard input type\n
 &#8226; Fixed issue with incorrectly reporting the space available on SD cards &gt; 4GB in size\n
 &#8226; Added a menu option to delete repeating transactions (Premium version allows editing)\n

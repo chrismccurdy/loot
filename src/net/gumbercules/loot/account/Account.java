@@ -8,6 +8,7 @@ import net.gumbercules.loot.transaction.Transaction;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 public class Account
 {
@@ -544,7 +545,16 @@ public class Account
 		Cursor tags_cur = lootDB.rawQuery("select trans_id, name from tags, transactions " +
 				"where account = " + this.id + " and trans_id = id", null);
 		if (!tags_cur.moveToFirst())
+		{
 			tags_cur.close();
+		}
+		
+		Cursor image_cur = lootDB.rawQuery("select trans_id, uri from images, transactions " +
+				"where account = " + this.id + " and trans_id = id", null);
+		if (!image_cur.moveToFirst())
+		{
+			image_cur.close();
+		}
 		
 		Transaction[] trans_list = new Transaction[cur.getCount()];
 		int i = 0;
@@ -557,13 +567,29 @@ public class Account
 			// add tags to the transaction
 			while (!tags_cur.isClosed() && !tags_cur.isAfterLast() && tags_cur.getInt(0) == trans.id())
 			{
-				trans.addTags(cur.getString(1));
+				trans.addTags(tags_cur.getString(1));
 				tags_cur.moveToNext();
+			}
+			
+			while (!image_cur.isClosed() && !image_cur.isAfterLast() && image_cur.getInt(0) == trans.id())
+			{
+				trans.addImage(Uri.parse(image_cur.getString(1)));
+				image_cur.moveToNext();
 			}
 			
 			trans_list[i++] = trans;
 		} while (cur.moveToNext());
-		tags_cur.close();
+		
+		if (!tags_cur.isClosed())
+		{
+			tags_cur.close();
+		}
+		
+		if (!image_cur.isClosed())
+		{
+			image_cur.close();
+		}
+		
 		cur.close();
 		
 		return trans_list;

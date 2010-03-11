@@ -92,14 +92,12 @@ public class Transaction
 	
 	public int addImage(Uri uri)
 	{
-		if (this.images.add(uri))
+		if (!this.images.contains(uri) && this.images.add(uri))
 		{
 			return 1;
 		}
-		else
-		{
-			return 0;
-		}
+
+		return 0;
 	}
 	
 	public int addImages(Uri[] uris)
@@ -113,7 +111,7 @@ public class Transaction
 		
 		for (Uri uri : uris)
 		{
-			if (this.images.add(uri))
+			if (!this.images.contains(uri) && this.images.add(uri))
 			{
 				++i;
 			}

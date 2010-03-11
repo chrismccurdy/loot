@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -216,6 +217,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			holder.date = (TextView)convertView.findViewById(R.id.DateText);
 			holder.party = (TextView)convertView.findViewById(R.id.PartyText);
 			holder.amount = (TextView)convertView.findViewById(R.id.AmountText);
+			holder.image = (ImageView)convertView.findViewById(R.id.image_view);
 			holder.top = (LinearLayout)convertView.findViewById(R.id.LinearLayout01);
 			
 			convertView.setTag(holder);
@@ -356,6 +358,15 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		setText(dateText, dateStr, color, showColors, colorBackground);
 		setText(partyText, partyStr, color, showColors, colorBackground);
 		setText(amountText, amountStr, color, showColors, colorBackground);
+		
+		if (trans.images != null && trans.images.size() > 0)
+		{
+			v.image.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			v.image.setVisibility(View.GONE);
+		}
 	}
 	
 	private void setText(TextView text, String str, int color, boolean colors, boolean bg)
@@ -393,6 +404,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		TextView date;
 		TextView party;
 		TextView amount;
+		ImageView image;
 		LinearLayout top;
 	}
 
