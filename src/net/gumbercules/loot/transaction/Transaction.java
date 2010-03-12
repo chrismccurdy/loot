@@ -1,14 +1,15 @@
 package net.gumbercules.loot.transaction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.ArrayList;
 
 import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.repeat.RepeatSchedule;
-import android.database.*;
-import android.database.sqlite.*;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
@@ -406,21 +407,16 @@ public class Transaction
 	private boolean eraseImages()
 	{
 		SQLiteDatabase lootDb = Database.getDatabase();
-		lootDb.beginTransaction();
+		String[] where = new String[] { Long.toString(this.id) };
 		
 		try
 		{
-			lootDb.delete("images", "trans_id = " + this.id, null);
-			lootDb.setTransactionSuccessful();
+			lootDb.delete("images", "trans_id = ?", where);
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 			return false;
-		}
-		finally
-		{
-			lootDb.endTransaction();
 		}
 		
 		return true;

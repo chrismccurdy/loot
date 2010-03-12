@@ -185,7 +185,7 @@ public class ViewImage extends Activity implements OnGestureListener
 	private int getSampleSize(long size)
 	{
 		int sampleSize = 0;
-		long maxSize = 524288; // 2^19
+		long maxSize = 65536; // 2^16
 		
 		while (size > maxSize)
 		{
