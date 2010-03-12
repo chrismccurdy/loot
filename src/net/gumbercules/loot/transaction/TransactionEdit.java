@@ -59,7 +59,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class TransactionEdit extends Activity
 {
 	public static final String KEY_TRANSFER = "te_transfer";
-	@SuppressWarnings("unused")
 	private static final String TAG = "net.gumbercules.loot.TransactionEdit";
 	
 	private static final int REQ_REPEAT		= 0;
@@ -213,13 +212,19 @@ public class TransactionEdit extends Activity
 		{
 			if (mTransId != 0)
 			{
-				mTrans = Transaction.getTransactionById(mTransId);
+				if (mTrans == null)
+				{
+					mTrans = Transaction.getTransactionById(mTransId);
+				}
 			}
 			else
 			{
-				mRepeat = RepeatSchedule.getSchedule(mRepeatId);
-				mTrans = mRepeat.getTransaction();
-				mAccountId = mTrans.account;
+				if (mRepeat == null && mTrans == null)
+				{
+					mRepeat = RepeatSchedule.getSchedule(mRepeatId);
+					mTrans = mRepeat.getTransaction();
+					mAccountId = mTrans.account;
+				}
 			}
 			trans = mTrans;
 			
@@ -236,7 +241,7 @@ public class TransactionEdit extends Activity
 				
 				if (trans == null)
 				{
-					Log.e(TransactionEdit.class.toString(), "trans is null in populateFields()");
+					Log.e(TAG + ".populateFields()", "trans is null");
 					return;
 				}
 	
@@ -525,6 +530,7 @@ public class TransactionEdit extends Activity
 			public void onClick(View v)
 			{
 				imageLayout.removeView(imageLayout.findViewWithTag(content_uri));
+				mTrans.images.remove(content_uri);
 				imageLayout.invalidate();
 			}
 		});

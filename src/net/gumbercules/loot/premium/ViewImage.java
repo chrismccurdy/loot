@@ -10,10 +10,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.GestureDetector.OnGestureListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
 public class ViewImage extends Activity implements OnGestureListener
 {
@@ -21,7 +19,11 @@ public class ViewImage extends Activity implements OnGestureListener
 	
 	private ArrayList<Uri> mUris;
 	private ImageSwitcher mSwitcher;
+	private ImageView mActive;
+	private ImageView mInactive;
 	private GestureDetector mGesture;
+	
+	private int mPosition;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -56,19 +58,10 @@ public class ViewImage extends Activity implements OnGestureListener
 		setContentView(R.layout.animated_image_view);
 		mGesture = new GestureDetector(this);
 		mSwitcher = (ImageSwitcher)findViewById(R.id.ImageSwitcher);
+		mActive = (ImageView)findViewById(R.id.FirstImage);
 		
-		ImageView view;
-		final LayoutParams fill = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-		
-		for (Uri uri : mUris)
-		{
-			view = new ImageView(this);
-			view.setLayoutParams(fill);
-			view.setAdjustViewBounds(true);
-			view.setScaleType(ScaleType.FIT_CENTER);
-			view.setImageURI(uri);
-			mSwitcher.addView(view, fill);
-		}
+		mPosition = 0;
+		mActive.setImageURI(mUris.get(mPosition));
 	}
 
 	@Override
@@ -86,21 +79,32 @@ public class ViewImage extends Activity implements OnGestureListener
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
 	{
-		if (mUris.size() > 1)
+		final int sz = mUris.size();
+		if (sz > 1)
 		{
-			if (velocityX < 0)
+			if (velocityX < 0 && mPosition < sz - 1)
 			{
+				mInactive = mActive;
+				mActive = (ImageView) mSwitcher.getNextView();
+				mActive.setImageURI(mUris.get(++mPosition));
+				
 				mSwitcher.setInAnimation(this, R.anim.slide_in_right);
 				mSwitcher.setOutAnimation(this, R.anim.slide_out_left);
 				mSwitcher.showNext();
 			}
-			else
+			else if (velocityX > 0 && mPosition > 0)
 			{
+				mInactive = mActive;
+				mActive = (ImageView) mSwitcher.getNextView();
+				mActive.setImageURI(mUris.get(--mPosition));
+				
 				mSwitcher.setInAnimation(this, R.anim.slide_in_left);
 				mSwitcher.setOutAnimation(this, R.anim.slide_out_right);
 				mSwitcher.showPrevious();
 			}
 		}
+		
+		mInactive.setImageURI(null);
 		
 		return true;
 	}
