@@ -1,11 +1,16 @@
 package net.gumbercules.loot.premium;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import net.gumbercules.loot.R;
 import android.app.Activity;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore.Images;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.Window;
@@ -61,7 +66,18 @@ public class ViewImage extends Activity implements OnGestureListener
 		mActive = (ImageView)findViewById(R.id.FirstImage);
 		
 		mPosition = 0;
-		mActive.setImageURI(mUris.get(mPosition));
+		
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		opt.inSampleSize = 4;
+		
+		try
+		{
+			mActive.setImageBitmap(resizeImage(mUris.get(mPosition), opt));
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -82,31 +98,102 @@ public class ViewImage extends Activity implements OnGestureListener
 		final int sz = mUris.size();
 		if (sz > 1)
 		{
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			boolean swapping = false;
+			int in = 0, out = 0, position = 0;
+
 			if (velocityX < 0 && mPosition < sz - 1)
 			{
-				mInactive = mActive;
-				mActive = (ImageView) mSwitcher.getNextView();
-				mActive.setImageURI(mUris.get(++mPosition));
-				
-				mSwitcher.setInAnimation(this, R.anim.slide_in_right);
-				mSwitcher.setOutAnimation(this, R.anim.slide_out_left);
-				mSwitcher.showNext();
+				swapping = true;
+				position = ++mPosition;
+				in = R.anim.slide_in_right;
+				out = R.anim.slide_out_left;
 			}
 			else if (velocityX > 0 && mPosition > 0)
 			{
+				swapping = true;
+				position = --mPosition;
+				in = R.anim.slide_in_left;
+				out = R.anim.slide_out_right;
+			}
+			
+			if (swapping)
+			{
 				mInactive = mActive;
 				mActive = (ImageView) mSwitcher.getNextView();
-				mActive.setImageURI(mUris.get(--mPosition));
+				Uri uri = mUris.get(position);
 				
-				mSwitcher.setInAnimation(this, R.anim.slide_in_left);
-				mSwitcher.setOutAnimation(this, R.anim.slide_out_right);
-				mSwitcher.showPrevious();
+				try
+				{
+					mActive.setImageBitmap(resizeImage(uri, options));
+
+					mSwitcher.setInAnimation(this, in);
+					mSwitcher.setOutAnimation(this, out);
+					mSwitcher.showNext();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		
-		mInactive.setImageURI(null);
+		// this block of threads sleeps, then clears the inactive image view
+		new Thread()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					Thread.sleep(500);
+				}
+				catch (InterruptedException e) { }
+				
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						mInactive.setImageBitmap(null);
+					}
+				});
+			}
+		}.start();
 		
 		return true;
+	}
+	
+	private Bitmap resizeImage(Uri uri, BitmapFactory.Options options)
+		throws FileNotFoundException
+	{
+		String[] columns = new String[] { Images.Media.SIZE };
+		Cursor cur = Images.Media.query(getContentResolver(), uri, columns);
+
+		if (!cur.moveToFirst())
+		{
+			options.inSampleSize = 4;
+		}
+		else
+		{
+			options.inSampleSize = getSampleSize(cur.getLong(0));
+		}
+		
+		return BitmapFactory.decodeStream(getContentResolver().openInputStream(uri), null, options);
+	}
+	
+	private int getSampleSize(long size)
+	{
+		int sampleSize = 0;
+		long maxSize = 524288; // 2^19
+		
+		while (size > maxSize)
+		{
+			size /= 4;
+			++sampleSize;
+		}
+		
+		return sampleSize;
 	}
 
 	@Override
