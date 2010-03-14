@@ -150,6 +150,7 @@
         %b - absolute amount (used with %y)\n
         %y - transaction type (credit/debit)\n
         %t - tags\n
+        %z - unused column\n
     </string>
     <string name="csv_debit_type">Enter comma-separated values for debit transactions
         (default: debit, withdraw):</string>
