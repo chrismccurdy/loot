@@ -17,9 +17,15 @@
 		<TextView android:layout_height="wrap_content"
 			android:layout_width="fill_parent" android:textSize="18dip"
 			android:layout_marginLeft="15dip" android:text="@string/p_importing" />
-		<TextView android:layout_height="wrap_content"
-			android:layout_width="fill_parent" android:textSize="18dip"
-			android:layout_marginLeft="15dip" android:text="@string/p_more" />
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="fill_parent" android:textSize="18dip"
+            android:layout_marginLeft="15dip" android:text="@string/p_widget" />
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="fill_parent" android:textSize="18dip"
+            android:layout_marginLeft="15dip" android:text="@string/p_receipt" />
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="fill_parent" android:textSize="18dip"
+            android:layout_marginLeft="15dip" android:text="@string/p_more" />
 		<LinearLayout android:layout_height="wrap_content"
 			android:orientation="horizontal" android:gravity="center_horizontal"
 			android:layout_gravity="center_horizontal" android:layout_marginTop="8dip"

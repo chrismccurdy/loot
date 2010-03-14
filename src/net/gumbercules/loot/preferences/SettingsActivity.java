@@ -61,7 +61,8 @@ public class SettingsActivity extends PreferenceActivity
 		
 		String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
 				"color_budget_deposit", "color_check", "color_budget_check", 
-				"use_custom_colors", "date_format", /*"cal_enabled", "calendar_tag"*/};
+				"use_custom_colors", "date_format", "csv_order", "csv_debit_type",
+				"csv_credit_type", /*"cal_enabled", "calendar_tag"*/};
 
 		if (type != null)
 		{
@@ -214,7 +215,8 @@ public class SettingsActivity extends PreferenceActivity
 	private void setupPremiumSettings(String[] prefs)
 	{
 		final String[] cr_keys = {"aw", "bw", "ad", "bd", "ac", "bc",
-				 "custom", "date_format", "calendar", "tag"};
+				 "custom", "date_format", "order", "debit_type",
+				 "credit_type", "calendar", "tag"};
 		
 		int i = 0;
 		final ContentResolver cr = getContentResolver();
@@ -233,6 +235,22 @@ public class SettingsActivity extends PreferenceActivity
 						ContentValues cv = new ContentValues();
 						cv.put(key, (String)newValue);
 						cr.update(Uri.parse(uri + key), cv, null, null);
+						
+						return true;
+					}
+				});
+			}
+			else if (pref.startsWith("csv"))
+			{
+				EditTextPreference edit = (EditTextPreference)findPreference(pref);
+				edit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+				{
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue)
+					{
+						ContentValues cv = new ContentValues();
+						cv.put(key, (String)newValue);
+						cr.update(Uri.parse(uri + "csv/" + key), cv, null, null);
 						
 						return true;
 					}

@@ -91,8 +91,9 @@
 		files</string>
 	<string name="p_colors">&#8226; Custom color schemes</string>
 	<string name="p_charts">&#8226; Charting across all accounts</string>
-	<string name="p_more">&#8226; And more features planned for the future!
-	</string>
+	<string name="p_widget">&#8226; Widget for quick account access</string>
+	<string name="p_receipt">&#8226; Ability to add receipts/images to transactions</string>
+	<string name="p_more">&#8226; And more features planned for the future!</string>
 	<string name="buy_now">Buy it now!</string>
 	<string name="no_market">Market is not available</string>
 	<string name="about">About Loot</string>
@@ -140,4 +141,18 @@
 	<string name="receipts">Receipts</string>
 	<string name="attach_receipt">Attach Receipt</string>
 	<string name="view_receipts">View Receipts</string>
+    <string name="csv_order">Enter the order for CSV columns (default:
+        %d,%c,%p,%a,%t)\n
+        %d - date\n
+        %c - check number\n
+        %p - party\n
+        %a - amount\n
+        %b - absolute amount (used with %y)\n
+        %y - transaction type (credit/debit)\n
+        %t - tags\n
+    </string>
+    <string name="csv_debit_type">Enter comma-separated values for debit transactions
+        (default: debit, withdraw):</string>
+    <string name="csv_credit_type">Enter comma-separated values for credit
+        transactions (default: credit, deposit):</string>
 </resources>

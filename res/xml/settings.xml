@@ -33,7 +33,28 @@
 			android:title="Import/Export Date Format" android:positiveButtonText="@string/save"
 			android:negativeButtonText="@string/cancel"
 			android:summary="Specifies a date format to use for importing and exporting."
-			android:dialogMessage="@string/date_format_message"></EditTextPreference>
+			android:dialogMessage="@string/date_format_message" />
+		<PreferenceCategory android:title="CSV Options"
+			android:key="premium_csv">
+			<EditTextPreference android:defaultValue="%d,%c,%p,%a,%t"
+				android:dialogTitle="CSV Order" android:key="csv_order"
+				android:title="CSV Order Format" android:positiveButtonText="@string/save"
+				android:negativeButtonText="@string/cancel"
+				android:summary="Specifies the format order for CSV imports and exports."
+				android:dialogMessage="@string/csv_order" />
+			<EditTextPreference android:defaultValue="debit, withdraw"
+				android:dialogTitle="CSV Debit Values" android:key="csv_debit_type"
+				android:title="CSV Debit Values" android:positiveButtonText="@string/save"
+				android:negativeButtonText="@string/cancel"
+				android:summary="Specifies the valid values for debit transactions."
+				android:dialogMessage="@string/csv_debit_type" />
+			<EditTextPreference android:defaultValue="credit, deposit"
+				android:dialogTitle="CSV Credit Values" android:key="csv_credit_type"
+				android:title="CSV Credit Values" android:positiveButtonText="@string/save"
+				android:negativeButtonText="@string/cancel"
+				android:summary="Specifies the valid values for credit transactions."
+				android:dialogMessage="@string/csv_credit_type" />
+		</PreferenceCategory>
 		<PreferenceCategory android:title="Custom Colors"
 			android:key="premium_colors">
 			<CheckBoxPreference
