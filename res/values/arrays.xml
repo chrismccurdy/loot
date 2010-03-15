@@ -82,6 +82,10 @@
 			include them in future releases!</item>
 		<item>Don't want other people to see your account details? Enable the
 			security option, and always use the back key to exit.</item>
+		<item>Long-click on a transaction to bring up the context menu, which
+		    which allows you to edit or delete transactions, and more.</item>
+		<item>Use the repeat once option from the context menu to do an 
+		    immediate, one-time repetition of a transaction.</item>
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n
