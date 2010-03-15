@@ -114,6 +114,8 @@
 		android:summary="Automatically starts in the account set as the primary."
 		android:title="Default to Primary" android:key="primary_default"
 		android:defaultValue="false" />
+	<CheckBoxPreference android:summary="Show tips at startup."
+		android:title="Tips" android:key="tips" android:defaultValue="true" />
 	<ListPreference android:key="key_input_type"
 		android:title="@string/keyboard_style" android:summary="@string/keyboard_style_message"
 		android:entries="@array/input_type_name" android:entryValues="@array/input_type" />

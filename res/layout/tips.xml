@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent"
+	android:orientation="vertical">
+	<TextView android:id="@+id/tip_text" android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:layout_weight="1"
+		android:layout_margin="25dp" android:textSize="20dip" />
+	<LinearLayout android:id="@+id/LinearLayout01"
+		android:layout_height="wrap_content" android:orientation="horizontal"
+		android:layout_width="fill_parent">
+		<CheckBox android:id="@+id/tip_checkbox"
+			android:layout_width="wrap_content" android:layout_weight="1"
+			android:text="@string/tips" android:layout_height="fill_parent" />
+		<LinearLayout android:id="@+id/LinearLayout02"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:orientation="horizontal">
+			<ImageButton android:id="@+id/back_button" android:src="@drawable/ic_menu_back"
+				android:layout_width="wrap_content" android:layout_height="fill_parent" />
+			<ImageButton android:id="@+id/forward_button"
+				android:src="@drawable/ic_menu_forward" android:layout_width="wrap_content"
+				android:layout_height="fill_parent" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

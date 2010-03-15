@@ -18,6 +18,7 @@ import net.gumbercules.loot.premium.PremiumCaller;
 import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.transaction.TransactionActivity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -130,6 +131,11 @@ public class AccountChooser extends ListActivity
 			Database.setOption("nag_donate", 1);
 		}
 		
+		if (prefs.getBoolean("tips", true))
+		{
+			showTipsDialog();
+		}
+		
 		// if we're not overriding locale, check to see if the detected one is valid
 		String locale = Database.getOptionString("override_locale");
 		if (locale == null || locale.equals(""))
@@ -168,6 +174,15 @@ public class AccountChooser extends ListActivity
 		}
 	}
 	
+	private void showTipsDialog()
+	{
+		Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.tips);
+
+		// TODO: add function to the buttons
+		dialog.show();
+	}
+
 	private void checkLocale()
 	{
 		Currency cur = NumberFormat.getInstance().getCurrency();

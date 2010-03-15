@@ -156,4 +156,5 @@
         (default: debit, withdraw):</string>
     <string name="csv_credit_type">Enter comma-separated values for credit
         transactions (default: credit, deposit):</string>
+    <string name="tips">Show tips at startup</string>
 </resources>
