@@ -39,6 +39,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -179,7 +181,26 @@ public class AccountChooser extends ListActivity
 		Dialog dialog = new Dialog(this);
 		dialog.setContentView(R.layout.tips);
 
+		final String[] tips = getResources().getStringArray(R.array.tips);
+		final int tip_len = tips.length;
+		int tip_position = ((int)Math.random() * 100) % tip_len;
+		
+		TextView text = (TextView)dialog.findViewById(R.id.tip_text);
+		text.setText(tips[tip_position]);
+		
+		CheckBox show_tips = (CheckBox)dialog.findViewById(R.id.tip_checkbox);
+		show_tips.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				SharedPreferences.Editor prefs = PreferenceManager
+					.getDefaultSharedPreferences(buttonView.getContext()).edit();
+				prefs.putBoolean("tips", isChecked);
+			}
+		});
 		// TODO: add function to the buttons
+		
 		dialog.show();
 	}
 
