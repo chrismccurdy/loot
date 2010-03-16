@@ -51,41 +51,23 @@
 		<item>Camera</item>
 	</string-array>
 	<string-array name="tips">
-		<item>You can toggle between showing posted and unposted transactions
-			in the search menu.</item>
-		<item>You can change the order of columns for importing and exporting
-			CSV items through the settings.</item>
-		<item>You can change the preferred date format for importing and
-			exporting through the settings.</item>
-		<item>Loot Premium allows you to chart details for all your accounts.
-		</item>
-		<item>Changing color schemes allows you to easily differentiate
-			between different transaction types.</item>
-		<item>You can view repeating transactions through the repeat manager
-			menu option, and edit them with Loot Premium.</item>
-		<item>Loot Premium widgets allow you to see your account balance from
-			your home screen, and start directly in that account.</item>
-		<item>Marking an account as primary will allow you to start in that
-			transaction without seeing the accounts screen.</item>
-		<item>When two or more accounts are present, you are given an option
-			to transfer between accounts.</item>
-		<item>You can search for transactions based on the party name or the
-			tags.</item>
-		<item>Don't like the color choices? Set them to whatever you want with
-			Loot Premium!</item>
-		<item>You can purge posted transactions when you think you have too
-			many listed.</item>
-		<item>You can restore transactions that were previously purged (but
-			not deleted). The restore date works backwards from today, the
-			opposite way that the purge date works.</item>
-		<item>Have any tips you want to share? Send them to me and I'll try to
-			include them in future releases!</item>
-		<item>Don't want other people to see your account details? Enable the
-			security option, and always use the back key to exit.</item>
-		<item>Long-click on a transaction to bring up the context menu, which
-		    which allows you to edit or delete transactions, and more.</item>
-		<item>Use the repeat once option from the context menu to do an 
-		    immediate, one-time repetition of a transaction.</item>
+		<item>You can toggle between showing posted and unposted transactions in the search menu.</item>
+		<item>You can change the order of columns for importing and exporting CSV items through the settings.</item>
+		<item>You can change the preferred date format for importing and exporting through the settings.</item>
+		<item>Loot Premium allows you to chart details for all your accounts.</item>
+		<item>Changing color schemes allows you to easily differentiate between different transaction types.</item>
+		<item>You can view repeating transactions through the repeat manager menu option, and edit them with Loot Premium.</item>
+		<item>Loot Premium widgets allow you to see your account balance from your home screen, and start directly in that account.</item>
+		<item>Marking an account as primary will allow you to start in that transaction without seeing the accounts screen.</item>
+		<item>When two or more accounts are present, you are given an option to transfer between accounts.</item>
+		<item>You can search for transactions based on the party name or the tags.</item>
+		<item>Don't like the color choices? Set them to whatever you want with Loot Premium!</item>
+		<item>You can purge posted transactions when you think you have too many listed.</item>
+		<item>You can restore transactions that were previously purged (but not deleted). The restore date works backwards from today, the opposite way that the purge date works.</item>
+		<item>Have any tips you want to share? Send them to me and I'll try to include them in future releases!</item>
+		<item>Don't want other people to see your account details? Enable the security option, and always use the back key to exit.</item>
+		<item>Long-click on a transaction to bring up the context menu, which which allows you to edit or delete transactions, and more.</item>
+		<item>Use the repeat once option from the context menu to do an immediate, one-time repetition of a transaction.</item>
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n

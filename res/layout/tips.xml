@@ -4,7 +4,7 @@
 	android:orientation="vertical">
 	<TextView android:id="@+id/tip_text" android:layout_height="wrap_content"
 		android:layout_width="fill_parent" android:layout_weight="1"
-		android:layout_margin="25dp" android:textSize="20dip" />
+		android:layout_margin="15dp" android:textSize="20dp" />
 	<LinearLayout android:id="@+id/LinearLayout01"
 		android:layout_height="wrap_content" android:orientation="horizontal"
 		android:layout_width="fill_parent">

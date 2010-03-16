@@ -11,6 +11,7 @@ import net.gumbercules.loot.ChangeLogActivity;
 import net.gumbercules.loot.DonateActivity;
 import net.gumbercules.loot.PinActivity;
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.TipsDialog;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.MemoryStatus;
 import net.gumbercules.loot.preferences.SettingsActivity;
@@ -18,7 +19,6 @@ import net.gumbercules.loot.premium.PremiumCaller;
 import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.transaction.TransactionActivity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -39,8 +39,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -135,7 +133,7 @@ public class AccountChooser extends ListActivity
 		
 		if (prefs.getBoolean("tips", true))
 		{
-			showTipsDialog();
+			new TipsDialog(this).show();
 		}
 		
 		// if we're not overriding locale, check to see if the detected one is valid
@@ -176,34 +174,6 @@ public class AccountChooser extends ListActivity
 		}
 	}
 	
-	private void showTipsDialog()
-	{
-		Dialog dialog = new Dialog(this);
-		dialog.setContentView(R.layout.tips);
-
-		final String[] tips = getResources().getStringArray(R.array.tips);
-		final int tip_len = tips.length;
-		int tip_position = ((int)Math.random() * 100) % tip_len;
-		
-		TextView text = (TextView)dialog.findViewById(R.id.tip_text);
-		text.setText(tips[tip_position]);
-		
-		CheckBox show_tips = (CheckBox)dialog.findViewById(R.id.tip_checkbox);
-		show_tips.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener()
-		{
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-			{
-				SharedPreferences.Editor prefs = PreferenceManager
-					.getDefaultSharedPreferences(buttonView.getContext()).edit();
-				prefs.putBoolean("tips", isChecked);
-			}
-		});
-		// TODO: add function to the buttons
-		
-		dialog.show();
-	}
-
 	private void checkLocale()
 	{
 		Currency cur = NumberFormat.getInstance().getCurrency();
