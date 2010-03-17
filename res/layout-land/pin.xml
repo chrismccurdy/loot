@@ -4,28 +4,29 @@
 	android:orientation="vertical">
 	<TextView android:id="@+id/TextView01" android:layout_height="wrap_content"
 		android:layout_width="fill_parent" android:text="@string/pin"
-		android:gravity="center_horizontal" android:textSize="24dip"></TextView>
+		android:gravity="center_horizontal" android:textSize="24dip" />
 	<TextView android:layout_height="wrap_content"
 		android:layout_width="fill_parent" android:gravity="center_vertical|center_horizontal"
 		android:id="@+id/invalidView" android:textSize="24dip"
-		android:textStyle="bold" android:textColor="#ff0000"></TextView>
+		android:textStyle="bold" android:textColor="#ff0000" />
 	<EditText android:layout_height="wrap_content"
 		android:layout_width="fill_parent" android:layout_marginLeft="40dip"
 		android:layout_marginRight="40dip" android:id="@+id/pinEdit"
-		android:gravity="center" android:inputType="textPassword|number"></EditText>
+		android:gravity="center" android:inputType="textPassword"
+		android:password="true" />
 	<TextView android:id="@+id/TextView02" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:layout_weight="1"></TextView>
+		android:layout_height="wrap_content" android:layout_weight="1" />
 	<LinearLayout android:id="@+id/LinearLayout01"
 		android:layout_height="wrap_content" android:layout_width="fill_parent"
 		android:layout_marginTop="15dip">
 		<Button android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:textSize="24dip"
 			android:textStyle="bold" android:text="Clear" android:layout_weight="1"
-			android:layout_marginLeft="10dip" android:id="@+id/clearButton"></Button>
+			android:layout_marginLeft="10dip" android:id="@+id/clearButton" />
 		<Button android:layout_height="wrap_content" android:text="@string/unlock"
 			android:layout_width="wrap_content" android:textSize="24dip"
 			android:id="@+id/unlockButton" android:textStyle="bold"
 			android:layout_weight="1" android:layout_marginRight="10dip"
-			android:layout_marginLeft="35dip"></Button>
+			android:layout_marginLeft="35dip" />
 	</LinearLayout>
 </LinearLayout>
