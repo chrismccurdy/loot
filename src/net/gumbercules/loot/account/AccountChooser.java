@@ -164,13 +164,19 @@ public class AccountChooser extends ListActivity
 				new AlertDialog.Builder(this)
 					.setMessage(R.string.primary_not_set)
 					.show();
+				Log.i(TAG + ".onCreate", "primary account is null");
 			}
 			else
 			{
+				Log.i(TAG + ".onCreate", "skipping account chooser; going directly to transaction activity");
 				Intent in = new Intent(this, TransactionActivity.class);
 				in.putExtra(Account.KEY_ID, acct.id());
 				startActivityForResult(in, 0);
 			}
+		}
+		else
+		{
+			Log.i(TAG + ".onCreate", "primary_default is false");
 		}
 	}
 	
