@@ -28,10 +28,6 @@
 			</intent-filter>
 		</activity>
 		<activity android:name="net.gumbercules.loot.DonateActivity" />
-		<provider android:authorities="net.gumbercules.loot.transactionprovider"
-			android:name="net.gumbercules.loot.transaction.TransactionProvider" />
-		<provider android:name="net.gumbercules.loot.account.AccountProvider"
-			android:authorities="net.gumbercules.loot.accountprovider" />
 		<activity android:name="net.gumbercules.loot.premium.PremiumNotFoundActivity" />
 		<activity android:name="net.gumbercules.loot.AboutActivity">
 			<intent-filter>
@@ -43,6 +39,12 @@
 		<activity android:name="net.gumbercules.loot.repeat.RepeatManagerActivity" />
 		<activity android:name="net.gumbercules.loot.premium.ViewImage"
 			android:theme="@android:style/Theme.Dialog" />
+        <provider android:authorities="net.gumbercules.loot.transactionprovider"
+            android:name="net.gumbercules.loot.transaction.TransactionProvider" />
+        <provider android:name="net.gumbercules.loot.account.AccountProvider"
+            android:authorities="net.gumbercules.loot.accountprovider" />
+        <provider android:name="net.gumbercules.loot.backend.OptionsProvider"
+            android:authorities="net.gumbercules.loot.optionsprovider" />
 	</application>
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-sdk android:minSdkVersion="3" />

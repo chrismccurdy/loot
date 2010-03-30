@@ -136,30 +136,30 @@ public class ViewImage extends Activity implements OnGestureListener
 					e.printStackTrace();
 				}
 			}
-		}
-		
-		// this block of threads sleeps, then clears the inactive image view
-		new Thread()
-		{
-			@Override
-			public void run()
+
+			// this block of threads sleeps, then clears the inactive image view
+			new Thread()
 			{
-				try
+				@Override
+				public void run()
 				{
-					Thread.sleep(500);
-				}
-				catch (InterruptedException e) { }
-				
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
+					try
 					{
-						mInactive.setImageBitmap(null);
+						Thread.sleep(500);
 					}
-				});
-			}
-		}.start();
+					catch (InterruptedException e) { }
+					
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							mInactive.setImageBitmap(null);
+						}
+					});
+				}
+			}.start();
+		}
 		
 		return true;
 	}

@@ -626,7 +626,9 @@ public class AccountChooser extends ListActivity
 			NumberFormat nf = NumberFormat.getCurrencyInstance();
 			String new_currency = Database.getOptionString("override_locale");
 			if (new_currency != null && !new_currency.equals(""))
+			{
 				nf.setCurrency(Currency.getInstance(new_currency));
+			}
 			Double bal = Account.getTotalBalance();
 			String text;
 			if (bal != null)
