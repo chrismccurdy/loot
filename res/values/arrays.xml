@@ -71,6 +71,12 @@
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n
+&#8226; Fixed issue with primary accounts not working properly\n
+&#8226; Fixed date formatting issues with QIF imports (Premium)\n
+&#8226; Fixed widget currency symbol detection (Premium)\n
+&#8226; Fixed crash when dragging over single receipt image (Premium)\n
+	    </item>
+	    <item>\n
 &#8226; Added option for a primary account which bypasses the account screen\n
 &#8226; Changed order of items for account context menus\n
 &#8226; Fixed a bug regarding searching transactions based on tag\n
@@ -148,6 +154,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
+	    <item>2.1.1</item>
 	    <item>2.1.0</item>
 	    <item>2.0.7</item>
 	    <item>2.0.6</item>
