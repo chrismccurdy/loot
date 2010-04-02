@@ -70,6 +70,8 @@ public class AccountChooser extends ListActivity
 	
 	private static final String TAG			= "net.gumbercules.loot.AccountChooser"; 
 	private static boolean copyInProgress	= false;
+	private static boolean launchActivity	= false;
+	private boolean creating;
 
 	private ArrayList<Account> accountList;
 	private TextView mTotalBalance;
@@ -90,6 +92,8 @@ public class AccountChooser extends ListActivity
 		
 		TransactionActivity.setAccountNull();
 		accountList = new ArrayList<Account>();
+		
+		creating = true;
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		ContentResolver cr = getContentResolver();
@@ -171,6 +175,7 @@ public class AccountChooser extends ListActivity
 				Log.i(TAG + ".onCreate", "skipping account chooser; going directly to transaction activity");
 				Intent in = new Intent(this, TransactionActivity.class);
 				in.putExtra(Account.KEY_ID, acct.id());
+				launchActivity = true;
 				startActivityForResult(in, 0);
 			}
 		}
@@ -194,6 +199,7 @@ public class AccountChooser extends ListActivity
 
 	private void donate()
 	{
+		launchActivity = true;
 		startActivity(new Intent(this, DonateActivity.class));
 	}
 	
@@ -213,6 +219,7 @@ public class AccountChooser extends ListActivity
 		
 		Intent in = new Intent(this, TransactionActivity.class);
 		in.putExtra(Account.KEY_ID, acct.id());
+		launchActivity = true;
 		startActivityForResult(in, 0);
 	}
 
@@ -324,12 +331,14 @@ public class AccountChooser extends ListActivity
 	private void showRepeatManager()
 	{
 		Intent i = new Intent(this, RepeatManagerActivity.class);
+		launchActivity = true;
 		startActivity(i);
 	}
 	
 	private void showChangeLog()
 	{
 		Intent i = new Intent(this, ChangeLogActivity.class);
+		launchActivity = true;
 		startActivity(i);
 	}
 
@@ -429,19 +438,22 @@ public class AccountChooser extends ListActivity
 	private void createAccount()
 	{
 		Intent i = new Intent(this, AccountEdit.class);
-    	startActivityForResult(i, ACTIVITY_CREATE);
+		launchActivity = true;
+		startActivityForResult(i, ACTIVITY_CREATE);
 	}
 	
 	private void editAccount(int id)
 	{
 		Intent i = new Intent(this, AccountEdit.class);
 		i.putExtra(Account.KEY_ID, id);
+		launchActivity = true;
 		startActivityForResult(i, ACTIVITY_EDIT);
 	}
 	
 	private void showSettings()
 	{
 		Intent i = new Intent(this, SettingsActivity.class);
+		launchActivity = true;
 		startActivityForResult(i, 0);
 	}
 
@@ -590,6 +602,14 @@ public class AccountChooser extends ListActivity
 	protected void onResume()
 	{
 		super.onResume();
+		
+		if (!creating)
+		{
+			launchActivity = false;
+		}
+		
+		creating = false;
+		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if (!prefs.getBoolean(PinActivity.SHOW_ACCOUNTS, true))
 		{
@@ -610,6 +630,17 @@ public class AccountChooser extends ListActivity
 		fillList();
 	}
 	
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		
+		if (!launchActivity)
+		{
+			finish();
+		}
+	}
+
 	private void setContent()
 	{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
