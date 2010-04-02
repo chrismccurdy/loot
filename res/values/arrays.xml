@@ -68,6 +68,7 @@
 		<item>Don't want other people to see your account details? Enable the security option, and always use the back key to exit.</item>
 		<item>Long-click on a transaction to bring up the context menu, which which allows you to edit or delete transactions, and more.</item>
 		<item>Use the repeat once option from the context menu to do an immediate, one-time repetition of a transaction.</item>
+		<item>To enter a negative  amount, start an account with a zero balance, then enter a dummy transaction to put your account in the negative. After that, if you don't want to see that transaction, click the check for it and purge the posted transactions.</item>
 	</string-array>
 	<string-array name="changelog">
 	    <item>\n
