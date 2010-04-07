@@ -2,17 +2,23 @@ package net.gumbercules.loot;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
 
 import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.account.AccountChooser;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.transaction.TransactionActivity;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +29,8 @@ public class PinActivity extends Activity
 {
 	public static final String SHOW_ACCOUNTS = "show";
 	public static final String CHECKSUM = "checksum";
+	
+	private static final String TAG	= "net.gumbercules.loot.PinActivity";
 	
 	private Button mUnlockButton;
 	private EditText mPinEdit;
@@ -39,6 +47,8 @@ public class PinActivity extends Activity
 		{
 			mBundle = i.getExtras();
 		}
+		
+		housekeeping();
 
 		final byte[] pin_hash = Database.getOptionBlob("pin");
 		if (pin_hash == null || pin_hash.length == 1)
@@ -131,6 +141,46 @@ public class PinActivity extends Activity
 		});
 	}
 	
+	private void housekeeping()
+	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		ContentResolver cr = getContentResolver();
+
+		// remove preferences if the premium package has been removed
+		if (cr.getType(Uri.parse("content://net.gumbercules.loot.premium.settingsprovider/settings")) == null)
+		{
+			SharedPreferences.Editor editor = prefs.edit();
+			String[] pref_keys = {"color_withdraw", "color_budget_withdraw", "color_deposit",
+					"color_budget_deposit", "color_check", "color_budget_check", 
+					"cal_enabled", "calendar_tag"};
+			for (String key : pref_keys)
+			{
+				editor.remove(key);
+			}
+			editor.commit();
+		}
+		
+		// automatically purge transactions on load if this option is set
+		int purge_days = (int)Database.getOptionInt("auto_purge_days");
+		if (purge_days != -1)
+		{
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_YEAR, -purge_days);
+			Date date = cal.getTime();
+			int[] acctIds = Account.getAccountIds();
+			Account[] accounts = new Account[acctIds.length];
+			for (int i = 0; i < accounts.length; ++i)
+			{
+				accounts[i] = Account.getAccountById(acctIds[i]);
+			}
+			
+			for (Account acct : accounts)
+			{
+				acct.purgeTransactions(date);
+			}
+		}
+	}
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
@@ -145,6 +195,8 @@ public class PinActivity extends Activity
 
 	private void startAccountChooser(boolean show)
 	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         if (mBundle != null)
         {
 			if (mBundle.getInt("widget_id", AppWidgetManager.INVALID_APPWIDGET_ID) !=
@@ -163,8 +215,32 @@ public class PinActivity extends Activity
         }
         
         Intent intent = new Intent(this, AccountChooser.class);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
        	prefs.edit().putBoolean(SHOW_ACCOUNTS, show).commit();
         startActivity(intent);
+
+        if (prefs.getBoolean("primary_default", false))
+		{
+			Account acct = Account.getPrimaryAccount();
+			if (acct == null)
+			{
+				new AlertDialog.Builder(this)
+					.setMessage(R.string.primary_not_set)
+					.show();
+				Log.i(TAG + ".startAccountChooser", "primary account is null");
+			}
+			else
+			{
+				Log.i(TAG + ".startAccountChooser",
+						"skipping account chooser; going directly to transaction activity");
+				Intent in = new Intent(this, TransactionActivity.class);
+				in.putExtra(Account.KEY_ID, acct.id());
+				startActivityForResult(in, 0);
+				return;
+			}
+		}
+		else
+		{
+			Log.i(TAG + ".startAccountChooser", "primary_default is false");
+		}
 	}
 }

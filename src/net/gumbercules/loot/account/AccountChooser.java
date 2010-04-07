@@ -3,9 +3,9 @@ package net.gumbercules.loot.account;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Currency;
-import java.util.Date;
+import java.util.HashMap;
 
 import net.gumbercules.loot.ChangeLogActivity;
 import net.gumbercules.loot.DonateActivity;
@@ -21,13 +21,11 @@ import net.gumbercules.loot.transaction.TransactionActivity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
@@ -70,8 +68,6 @@ public class AccountChooser extends ListActivity
 	
 	private static final String TAG			= "net.gumbercules.loot.AccountChooser"; 
 	private static boolean copyInProgress	= false;
-	private static boolean launchActivity	= false;
-	private boolean creating;
 
 	private ArrayList<Account> accountList;
 	private TextView mTotalBalance;
@@ -93,24 +89,7 @@ public class AccountChooser extends ListActivity
 		TransactionActivity.setAccountNull();
 		accountList = new ArrayList<Account>();
 		
-		creating = true;
-		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		ContentResolver cr = getContentResolver();
-
-		// remove preferences if the premium package has been removed
-		if (cr.getType(Uri.parse("content://net.gumbercules.loot.premium.settingsprovider/settings")) == null)
-		{
-			SharedPreferences.Editor editor = prefs.edit();
-			String[] pref_keys = {"color_withdraw", "color_budget_withdraw", "color_deposit",
-					"color_budget_deposit", "color_check", "color_budget_check", 
-					"cal_enabled", "calendar_tag"};
-			for (String key : pref_keys)
-			{
-				editor.remove(key);
-			}
-			editor.commit();
-		}
 		
 		if (Database.getOptionInt("nag_donate") < 1)
 		{
@@ -146,43 +125,6 @@ public class AccountChooser extends ListActivity
 		{
 			checkLocale();
 		}
-
-		// automatically purge transactions on load if this option is set
-		int purge_days = (int)Database.getOptionInt("auto_purge_days");
-		if (purge_days != -1)
-		{
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_YEAR, -purge_days);
-			Date date = cal.getTime();
-			for (Account acct : accountList)
-			{
-				acct.purgeTransactions(date);
-			}
-		}
-		
-		if (prefs.getBoolean("primary_default", false))
-		{
-			Account acct = Account.getPrimaryAccount();
-			if (acct == null)
-			{
-				new AlertDialog.Builder(this)
-					.setMessage(R.string.primary_not_set)
-					.show();
-				Log.i(TAG + ".onCreate", "primary account is null");
-			}
-			else
-			{
-				Log.i(TAG + ".onCreate", "skipping account chooser; going directly to transaction activity");
-				Intent in = new Intent(this, TransactionActivity.class);
-				in.putExtra(Account.KEY_ID, acct.id());
-				launchActivity = true;
-				startActivityForResult(in, 0);
-			}
-		}
-		else
-		{
-			Log.i(TAG + ".onCreate", "primary_default is false");
-		}
 	}
 	
 	private void checkLocale()
@@ -199,8 +141,7 @@ public class AccountChooser extends ListActivity
 
 	private void donate()
 	{
-		launchActivity = true;
-		startActivity(new Intent(this, DonateActivity.class));
+		startActivityForResult(new Intent(this, DonateActivity.class), 0);
 	}
 	
 	private void donateReminder()
@@ -219,7 +160,6 @@ public class AccountChooser extends ListActivity
 		
 		Intent in = new Intent(this, TransactionActivity.class);
 		in.putExtra(Account.KEY_ID, acct.id());
-		launchActivity = true;
 		startActivityForResult(in, 0);
 	}
 
@@ -331,15 +271,13 @@ public class AccountChooser extends ListActivity
 	private void showRepeatManager()
 	{
 		Intent i = new Intent(this, RepeatManagerActivity.class);
-		launchActivity = true;
-		startActivity(i);
+		startActivityForResult(i, 0);
 	}
 	
 	private void showChangeLog()
 	{
 		Intent i = new Intent(this, ChangeLogActivity.class);
-		launchActivity = true;
-		startActivity(i);
+		startActivityForResult(i, 0);
 	}
 
 	private Account[] findDeletedAccounts()
@@ -438,7 +376,6 @@ public class AccountChooser extends ListActivity
 	private void createAccount()
 	{
 		Intent i = new Intent(this, AccountEdit.class);
-		launchActivity = true;
 		startActivityForResult(i, ACTIVITY_CREATE);
 	}
 	
@@ -446,29 +383,29 @@ public class AccountChooser extends ListActivity
 	{
 		Intent i = new Intent(this, AccountEdit.class);
 		i.putExtra(Account.KEY_ID, id);
-		launchActivity = true;
 		startActivityForResult(i, ACTIVITY_EDIT);
 	}
 	
 	private void showSettings()
 	{
 		Intent i = new Intent(this, SettingsActivity.class);
-		launchActivity = true;
 		startActivityForResult(i, 0);
 	}
 
 	private void fillList()
 	{
-		int[] acctIds = Account.getAccountIds();
 		accountList.clear();
+		accountList.addAll(Arrays.asList(Account.getActiveAccounts()));
 		
-		if (acctIds != null)
+		HashMap<Integer, Double> bals = Account.calculateBalances();
+		if (bals != null)
 		{
-			for ( int id : acctIds )
+			for (Account acct : accountList)
 			{
-				accountList.add(Account.getAccountById(id));
+				acct.setActualBalance(acct.initialBalance + bals.get(acct.id()));
 			}
 		}
+		
 		AccountAdapter aa = (AccountAdapter)getListAdapter();
 		if (aa == null)
 		{
@@ -603,13 +540,6 @@ public class AccountChooser extends ListActivity
 	{
 		super.onResume();
 		
-		if (!creating)
-		{
-			launchActivity = false;
-		}
-		
-		creating = false;
-		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if (!prefs.getBoolean(PinActivity.SHOW_ACCOUNTS, true))
 		{
@@ -628,17 +558,6 @@ public class AccountChooser extends ListActivity
 		AccountAdapter accounts = new AccountAdapter(this, row_res, accountList);
 		setListAdapter(accounts);
 		fillList();
-	}
-	
-	@Override
-	protected void onPause()
-	{
-		super.onPause();
-		
-		if (!launchActivity)
-		{
-			finish();
-		}
 	}
 
 	private void setContent()

@@ -2,6 +2,7 @@ package net.gumbercules.loot.account;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.transaction.Transaction;
@@ -12,9 +13,9 @@ import android.net.Uri;
 
 public class Account
 {
-	public static final String KEY_NAME	= "name";
-	public static final String KEY_BAL	= "balance";
-	public static final String KEY_ID	= "a_id";
+	public static final String KEY_NAME		= "name";
+	public static final String KEY_BAL		= "balance";
+	public static final String KEY_ID		= "a_id";
 	
 	private int id;
 	public String name;
@@ -193,6 +194,30 @@ public class Account
 		return true;
 	}
 	
+	public static HashMap<Integer, Double> calculateBalances()
+	{
+		SQLiteDatabase db = Database.getDatabase();
+		String query = "select account, sum(amount) from transactions where " +
+				"purged = 0 and budget = 0 group by account order by account";
+		Cursor cur = db.rawQuery(query, null);
+		
+		HashMap<Integer, Double> bals = new HashMap<Integer, Double>();
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		do
+		{
+			bals.put(cur.getInt(0), cur.getDouble(1));
+		} while (cur.moveToNext());
+		
+		cur.close();
+		
+		return bals;
+	}
+	
 	public static Double getTotalBalance()
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();
@@ -239,6 +264,11 @@ public class Account
 		return bal;
 	}
 	
+	public void setActualBalance(double b)
+	{
+		this.actual_balance = b;
+	}
+	
 	public double getActualBalance()
 	{
 		return this.actual_balance;
@@ -255,6 +285,11 @@ public class Account
 		return bal;
 	}
 	
+	public void setPostedBalance(double b)
+	{
+		this.posted_balance = b;
+	}
+	
 	public double getPostedBalance()
 	{
 		return this.posted_balance;
@@ -269,6 +304,11 @@ public class Account
 			return this.posted_balance;
 		}
 		return bal;
+	}
+	
+	public void setBudgetBalance(double b)
+	{
+		this.budget_balance = b;
 	}
 	
 	public double getBudgetBalance()
@@ -294,24 +334,12 @@ public class Account
 	
 	public boolean loadById(int id, boolean get_purged)
 	{
-		SQLiteDatabase lootDB;
-		try
-		{
-			lootDB = Database.getDatabase();
-		}
-		catch (SQLException e)
+		Cursor cur = getAccountCursor(id, get_purged);
+		if (cur == null)
 		{
 			return false;
 		}
 		
-		int purged = 0;
-		if (get_purged)
-			purged = 1;
-		
-		String[] columns = {"id", "name", "balance", "priority", "primary_account"};
-		String[] sArgs = {Integer.toString(id), Integer.toString(purged)};
-		Cursor cur = lootDB.query("accounts", columns, "id = ? and purged = ?", sArgs,
-				null, null, null, "1");
 		if (!cur.moveToFirst())
 		{
 			cur.close();
@@ -326,6 +354,77 @@ public class Account
 		cur.close();
 		
 		return true;
+	}
+	
+	private static Cursor getAccountCursor(int id, boolean get_purged)
+	{
+		SQLiteDatabase lootDB;
+		try
+		{
+			lootDB = Database.getDatabase();
+		}
+		catch (SQLException e)
+		{
+			return null;
+		}
+		
+		int purged = 0;
+		if (get_purged)
+		{
+			purged = 1;
+		}
+		
+		String where;
+		String[] sArgs;
+		String limit;
+		
+		if (id == -1)
+		{
+			where = "purged = ?";
+			sArgs = new String[] {Integer.toString(purged)};
+			limit = null;
+		}
+		else
+		{
+			where = "id = ? and purged = ?";
+			sArgs = new String[] {Integer.toString(id), Integer.toString(purged)};
+			limit = "1";
+		}
+		
+		String[] columns = {"id", "name", "balance", "priority", "primary_account"};
+		return lootDB.query("accounts", columns, where, sArgs, null, null, null, limit);
+	}
+	
+	public static Account[] getActiveAccounts()
+	{
+		Cursor cur = getAccountCursor(-1, false);
+		if (cur == null)
+		{
+			return null;
+		}
+		
+		if (!cur.moveToFirst())
+		{
+			cur.close();
+			return null;
+		}
+		
+		Account[] accounts = new Account[cur.getCount()];
+		int i = 0;
+		
+		do
+		{
+			accounts[i] = new Account();
+			accounts[i].id = cur.getInt(0);
+			accounts[i].name = cur.getString(1);
+			accounts[i].initialBalance = cur.getDouble(2);
+			accounts[i].priority = cur.getInt(3);
+			accounts[i++].primary = Database.getBoolean(cur.getInt(4));
+		} while (cur.moveToNext());
+		
+		cur.close();
+
+		return accounts;
 	}
 	
 	public static int getCurrentAccountNum()
@@ -880,6 +979,7 @@ public class Account
 			int id = cur.getInt(0);
 			primary = getAccountById(id);
 		}
+		cur.close();
 		
 		return primary;
 	}
