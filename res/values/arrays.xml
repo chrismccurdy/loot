@@ -75,6 +75,7 @@
 &#8226; Fixed issue with reloading primary account/exiting application when rotating screen\n
 &#8226; Improved account screen loading speed\n
 &#8226; Added option to display different balances in widget (Premium)\n
+&#8226; Added check option to transfers\n
 	    </item>
 	    <item>\n
 &#8226; Fixed issue with primary accounts not working properly\n

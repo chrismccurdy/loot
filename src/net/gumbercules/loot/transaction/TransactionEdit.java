@@ -166,6 +166,8 @@ public class TransactionEdit extends Activity
 		dateButton = (ImageButton)findViewById(R.id.datePickerButton);
 		
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
+		checkEdit = (EditText)findViewById(R.id.checkEdit);
+		checkEdit.setKeyListener(new DigitsKeyListener());
 		mCurrencyWatcher = new CurrencyWatcher();
 		amountEdit.addTextChangedListener(mCurrencyWatcher);
 		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
@@ -195,7 +197,27 @@ public class TransactionEdit extends Activity
             }
         });
 
-		// load the transaction if mTransId > 0
+		// set the check radio to enable/disable and automatically populate the check entry field
+		checkRadio.setOnCheckedChangeListener( new RadioButton.OnCheckedChangeListener()
+		{
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				if (isChecked)
+				{
+					if (checkEdit.getText().toString().equals(""))
+					{
+						// autopopulate the edit with the next check number
+						Account acct = Account.getAccountById(mAccountId);
+						int check_num = acct.getNextCheckNum();
+						checkEdit.setText(new Integer(check_num).toString());
+					}
+				}
+				checkEdit.setEnabled(isChecked);
+			}
+		});
+		checkEdit.setEnabled(false);
+
+        // load the transaction if mTransId > 0
         Transaction trans = null;
 		if (mTransId == 0 && mRepeatId == 0)
 		{
@@ -293,9 +315,13 @@ public class TransactionEdit extends Activity
 				}
 				
 				if (mDate == null)
+				{
 					setDateEdit(trans.date);
+				}
 				else
+				{
 					setDateEdit(mDate);
+				}
 	
 				// replace comma and currency symbol with empty string
 				NumberFormat nf = NumberFormat.getCurrencyInstance();
@@ -351,6 +377,11 @@ public class TransactionEdit extends Activity
 		        {
 		        	accountSpinner.setSelection(mAccountPos);
 		        }
+	        	
+	        	if (trans != null && trans.type == Transaction.CHECK)
+	        	{
+	        		fillCheckFields(trans.check_num);
+	        	}
 	        }
 		}
 		else
@@ -362,9 +393,7 @@ public class TransactionEdit extends Activity
 
 				if (trans.type == Transaction.CHECK)
 				{
-					checkEdit.setText(new Integer(trans.check_num).toString());
-					checkRadio.setChecked(true);
-					checkEdit.setEnabled(true);
+					fillCheckFields(trans.check_num);
 				}
 			}
 		}
@@ -380,7 +409,7 @@ public class TransactionEdit extends Activity
 			}
 		});
 		CurrencyWatcher.setInputType(amountEdit);
-		
+				
 		repeatSpinner.setSelection(mDefaultRepeatValue);
 		repeatSpinner.setOnItemSelectedListener(mRepeatSpinnerListener);
 		
@@ -481,6 +510,13 @@ public class TransactionEdit extends Activity
 				finish();
 			}
 		});
+	}
+	
+	private void fillCheckFields(int check_num)
+	{
+		checkEdit.setText(new Integer(check_num).toString());
+		checkRadio.setChecked(true);
+		checkEdit.setEnabled(true);
 	}
 	
 	private void addImageRow(final Uri content_uri)
@@ -746,31 +782,7 @@ public class TransactionEdit extends Activity
 
 	private void showTransactionFields()
 	{
-		// set the check radio to enable/disable and automatically populate the check entry field
-		checkRadio.setOnCheckedChangeListener( new RadioButton.OnCheckedChangeListener()
-		{
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-			{
-				checkEdit = (EditText)findViewById(R.id.checkEdit);
-				checkEdit.setKeyListener(new DigitsKeyListener());
-
-				if (isChecked)
-				{
-					if (checkEdit.getText().toString().equals(""))
-					{
-						// autopopulate the edit with the next check number
-						Account acct = Account.getAccountById(mAccountId);
-						int check_num = acct.getNextCheckNum();
-						checkEdit.setText(new Integer(check_num).toString());
-					}
-				}
-				checkEdit.setEnabled(isChecked);
-			}
-		});
-		
 		partyEdit = (AutoCompleteTextView)findViewById(R.id.partyEdit);
-		checkEdit = (EditText)findViewById(R.id.checkEdit);
-		checkEdit.setEnabled(false);
 		
 		// set the autocompletion values for partyEdit
 		String[] parties = Transaction.getAllParties();
@@ -784,12 +796,12 @@ public class TransactionEdit extends Activity
 	private ArrayAdapter<CharSequence> showTransferFields()
 	{
 		// if we're showing a transfer window, hide the check button, check field, and party field
-		checkRadio.setVisibility(RadioButton.GONE);
+		//checkRadio.setVisibility(RadioButton.GONE);
 		
 		TableRow row = (TableRow)findViewById(R.id.partyRow);
 		row.setVisibility(TableRow.GONE);
-		row = (TableRow)findViewById(R.id.checkRow);
-		row.setVisibility(TableRow.GONE);
+		//row = (TableRow)findViewById(R.id.checkRow);
+		//row.setVisibility(TableRow.GONE);
 		row = (TableRow)findViewById(R.id.accountRow);
 		row.setVisibility(TableRow.VISIBLE);
 		
@@ -809,8 +821,12 @@ public class TransactionEdit extends Activity
 		Account acct = Account.getAccountById(mAccountId);
 		int i = 0;
 		for ( String name : names )
+		{
 			if (!name.equalsIgnoreCase(acct.name))
+			{
 				acctNames[i++] = name;
+			}
+		}
 		
 		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
 				android.R.layout.simple_spinner_item, acctNames);

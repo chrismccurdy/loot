@@ -769,7 +769,9 @@ public class Transaction
 	{
 		Account acct1 = Account.getAccountById(this.account);
 		if ( acct1 == null || acct2 == null )
+		{
 			return -1;
+		}
 	
 		String detail1, detail2;
 		
@@ -799,6 +801,11 @@ public class Transaction
 		}
 		else
 		{
+			if (this.type == Transaction.CHECK)
+			{
+				trans2.check_num = 0;
+			}
+			
 			detail1 = "to ";
 			detail2 = "from ";
 			trans2.type = Transaction.DEPOSIT;
