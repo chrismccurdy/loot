@@ -395,14 +395,21 @@ public class AccountChooser extends ListActivity
 	private void fillList()
 	{
 		accountList.clear();
-		accountList.addAll(Arrays.asList(Account.getActiveAccounts()));
+		Account[] accounts = Account.getActiveAccounts();
+		
+		if (accounts != null)
+		{
+			accountList.addAll(Arrays.asList(accounts));
+		}
 		
 		HashMap<Integer, Double> bals = Account.calculateBalances();
 		if (bals != null)
 		{
+			Double transactions;
 			for (Account acct : accountList)
 			{
-				acct.setActualBalance(acct.initialBalance + bals.get(acct.id()));
+				transactions = bals.get(acct.id());
+				acct.setActualBalance(acct.initialBalance + (transactions == null ? 0 : transactions));
 			}
 		}
 		
@@ -419,8 +426,6 @@ public class AccountChooser extends ListActivity
 			aa = new AccountAdapter(this, row_res, accountList);
 			setListAdapter(aa);
 			setContent();
-			
-			Log.i(TAG + ".fillList()", "i used to crash here, but now i don't");
 		}
 		aa.notifyDataSetChanged();
 		setTotalBalance();
