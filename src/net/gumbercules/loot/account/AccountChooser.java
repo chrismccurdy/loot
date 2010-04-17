@@ -66,6 +66,7 @@ public class AccountChooser extends ListActivity
 	public static final int CONTEXT_IMPORT	= Menu.FIRST + 4;
 	public static final int CONTEXT_PRIMARY	= Menu.FIRST + 5;
 	
+	@SuppressWarnings("unused")
 	private static final String TAG			= "net.gumbercules.loot.AccountChooser"; 
 	private static boolean copyInProgress	= false;
 
