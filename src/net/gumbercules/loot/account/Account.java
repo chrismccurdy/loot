@@ -392,7 +392,7 @@ public class Account
 		}
 		
 		String[] columns = {"id", "name", "balance", "priority", "primary_account"};
-		return lootDB.query("accounts", columns, where, sArgs, null, null, null, limit);
+		return lootDB.query("accounts", columns, where, sArgs, null, null, "priority", limit);
 	}
 	
 	public static Account[] getActiveAccounts()
