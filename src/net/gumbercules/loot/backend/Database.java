@@ -471,6 +471,7 @@ public class Database
 		catch (SQLiteException e)
 		{
 			Log.e("copyDatabase", "source file does not exist or is not a valid database");
+			e.printStackTrace();
 			return false;
 		}
 		
@@ -495,6 +496,7 @@ public class Database
 		catch (IOException e)
 		{
 			Log.e("copyDatabase", "couldn't copy to temp file: " + tmpFile.getName());
+			e.printStackTrace();
 			return false;
 		}
 		
