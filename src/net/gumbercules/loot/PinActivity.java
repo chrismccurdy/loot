@@ -152,7 +152,7 @@ public class PinActivity extends Activity
 			SharedPreferences.Editor editor = prefs.edit();
 			String[] pref_keys = {"color_withdraw", "color_budget_withdraw", "color_deposit",
 					"color_budget_deposit", "color_check", "color_budget_check", 
-					"cal_enabled", "calendar_tag"};
+					"cal_enabled", "calendar_tag", "auto_backup"};
 			for (String key : pref_keys)
 			{
 				editor.remove(key);

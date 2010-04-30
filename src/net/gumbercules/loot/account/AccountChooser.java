@@ -1,6 +1,5 @@
 package net.gumbercules.loot.account;
 
-import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +11,7 @@ import net.gumbercules.loot.DonateActivity;
 import net.gumbercules.loot.PinActivity;
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.TipsDialog;
+import net.gumbercules.loot.backend.CopyThread;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.MemoryStatus;
 import net.gumbercules.loot.preferences.SettingsActivity;
@@ -27,8 +27,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -40,7 +38,6 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class AccountChooser extends ListActivity
@@ -68,7 +65,6 @@ public class AccountChooser extends ListActivity
 	
 	@SuppressWarnings("unused")
 	private static final String TAG			= "net.gumbercules.loot.AccountChooser"; 
-	private static boolean copyInProgress	= false;
 
 	private ArrayList<Account> accountList;
 	private TextView mTotalBalance;
@@ -618,127 +614,6 @@ public class AccountChooser extends ListActivity
 		else
 		{
 			mTbLayout.setVisibility(LinearLayout.GONE);
-		}
-	}
-
-	private class CopyThread extends Thread
-	{
-		public static final int BACKUP	= 0;
-		public static final int RESTORE	= 1;
-		
-		private Context mContext;
-		private int mOp;
-		private ProgressDialog mPd;
-		
-		public CopyThread(int op, ProgressDialog pd, Context con)
-		{
-			mOp = op;
-			mContext = con;
-			mPd = pd;
-		}
-		
-		@Override
-		public void run()
-		{
-    		if (copyInProgress)
-    			return;
-    		else
-    			copyInProgress = true;
-
-			Looper.prepare();
-			
-    		int res = 0;
-    		if (mOp == BACKUP)
-			{
-    			String backup_path = Environment.getExternalStorageDirectory().getPath() + 
-    					getResources().getString(R.string.backup_path);
-    			FileWatcherThread fwt = new FileWatcherThread(Database.getDbPath(), backup_path, mPd);
-    			fwt.start();
-    			
-	    		if (Database.backup(backup_path))
-	    		{
-	    			res = R.string.backup_successful;
-	    			mPd.setProgress(100);
-	    		}
-	    		else
-	    		{
-	    			res = R.string.backup_failed;
-	    		}
-			}
-			else if (mOp == RESTORE)
-			{
-    			String backup_path = Environment.getExternalStorageDirectory().getPath() + 
-						getResources().getString(R.string.backup_path);
-    			FileWatcherThread fwt = new FileWatcherThread(backup_path, Database.getDbPath(), mPd);
-    			fwt.start();
-
-    			if (Database.restore(backup_path))
-	    		{
-	    			res = R.string.restore_successful;
-	    			mPd.setProgress(100);
-	    			
-	    			new Thread()
-	    			{
-	    				public void run()
-	    				{
-	    					try
-	    					{
-								Thread.sleep(3000);
-							}
-	    					catch (InterruptedException e) { }
-	    					System.exit(0);
-	    				}
-	    			}.start();
-	    		}
-	    		else
-	    		{
-	    			res = R.string.restore_failed;
-	    		}
-			}
-    		mPd.dismiss();
-    		copyInProgress = false;
-    		
-    		if (res != 0)
-    		{
-    			Toast.makeText(mContext, res, Toast.LENGTH_LONG).show();
-    		}
-    		
-    		Looper.loop();
-		}
-	}
-	
-	private class FileWatcherThread extends Thread
-	{
-		private ProgressDialog mPd;
-		private String mFilename;
-		private long mTarget;
-		
-		public FileWatcherThread(String from_fn, String fn, ProgressDialog pd)
-		{
-			File fromFile = new File(from_fn);
-			mTarget = fromFile.length();
-			
-			mFilename = fn;
-			mPd = pd;
-		}
-		
-		@Override
-		public void run()
-		{
-			File mFile;
-			
-			try
-			{
-				int progress = 0;
-				while (progress < 100)
-				{
-					mPd.setProgress(progress);
-					Thread.sleep(100);
-					mFile = new File(mFilename);
-					progress = (int)(((float)mFile.length() / mTarget) * 100);
-				}
-			}
-			catch (InterruptedException e) { }
 		}
 	}
 }

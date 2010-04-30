@@ -250,14 +250,14 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 					trans.post(isChecked);
 					TransactionActivity ta = (TransactionActivity) mContext;
 					ta.setBalances();
-					
+
+					Intent broadcast = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
+					broadcast.putExtra("account_id", trans.account);
+					TransactionAdapter.this.getContext().sendBroadcast(broadcast);
+
 					// only need to update the view if it changed from budget to posted
 					if (budget)
 					{
-						Intent broadcast = new Intent("net.gumbercules.loot.intent.ACCOUNT_UPDATED", null);
-						broadcast.putExtra("account_id", trans.account);
-						TransactionAdapter.this.getContext().sendBroadcast(broadcast);
-
 						ListView lv = ta.getListView();
 						View v = lv.getChildAt(pos - lv.getFirstVisiblePosition());
 						if (v != null)

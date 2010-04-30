@@ -45,9 +45,19 @@
 			android:authorities="net.gumbercules.loot.accountprovider" />
 		<provider android:name="net.gumbercules.loot.backend.OptionsProvider"
 			android:authorities="net.gumbercules.loot.optionsprovider" />
+		<receiver android:name="net.gumbercules.loot.backend.DbUpdateReceiver">
+			<intent-filter>
+				<action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
+			</intent-filter>
+		</receiver>
+		<service android:name="net.gumbercules.loot.premium.DbBackupService">
+			<intent-filter>
+				<action android:name="net.gumbercules.action.BACKUP_DATABASE" />
+			</intent-filter>
+		</service>
 	</application>
 	<uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
 	<supports-screens />
 </manifest> 

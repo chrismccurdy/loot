@@ -34,6 +34,9 @@
 			android:negativeButtonText="@string/cancel"
 			android:summary="Specifies a date format to use for importing and exporting."
 			android:dialogMessage="@string/date_format_message" />
+		<CheckBoxPreference android:key="auto_backup"
+			android:summary="Backup the database automatically after changes."
+			android:title="Automatic Backup" android:defaultValue="false" />
 		<PreferenceCategory android:title="CSV Options"
 			android:key="premium_csv">
 			<EditTextPreference android:defaultValue="%d,%c,%p,%a,%t"
@@ -87,7 +90,8 @@
 				android:title="Budget Check Color" android:key="color_budget_check" />
 		</PreferenceCategory>
 
-	</PreferenceScreen>
+	
+</PreferenceScreen>
 	<PreferenceScreen android:key="color_cat"
 		android:title="Colors" android:summary="Various options regarding colors.">
 		<CheckBoxPreference android:defaultValue="false"
