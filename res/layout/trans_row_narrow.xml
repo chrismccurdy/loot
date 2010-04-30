@@ -6,7 +6,7 @@
 	<CheckBox android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"
 		android:focusable="false" android:focusableInTouchMode="false"
-		android:layout_marginTop="-5dip" android:layout_marginBottom="-8dip" />
+		android:layout_marginTop="-5dip" android:layout_marginBottom="-6dip" />
 	<LinearLayout android:id="@+id/LinearLayout02"
 		android:layout_width="wrap_content" android:layout_height="fill_parent"
 		android:layout_weight="1" android:layout_gravity="left|center_vertical"

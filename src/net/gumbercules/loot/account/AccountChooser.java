@@ -7,7 +7,6 @@ import java.util.Currency;
 import java.util.HashMap;
 
 import net.gumbercules.loot.ChangeLogActivity;
-import net.gumbercules.loot.DonateActivity;
 import net.gumbercules.loot.PinActivity;
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.TipsDialog;
@@ -88,29 +87,6 @@ public class AccountChooser extends ListActivity
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		if (Database.getOptionInt("nag_donate") < 1)
-		{
-			new AlertDialog.Builder(this)
-				.setMessage(R.string.new_version)
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int which)
-					{
-						donate();
-					}
-				})
-				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int which)
-					{
-						donateReminder();
-					}
-				})
-				.setCancelable(false)
-				.show();
-			Database.setOption("nag_donate", 1);
-		}
-		
 		if (prefs.getBoolean("tips", true))
 		{
 			new TipsDialog(this).show();
@@ -134,18 +110,6 @@ public class AccountChooser extends ListActivity
 				.setMessage(R.string.no_locale)
 				.show();
 		}
-	}
-
-	private void donate()
-	{
-		startActivityForResult(new Intent(this, DonateActivity.class), 0);
-	}
-	
-	private void donateReminder()
-	{
-		new AlertDialog.Builder(this)
-			.setMessage(R.string.donate_location)
-			.show();
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class DbUpdateReceiver extends BroadcastReceiver
 {
-	private static final long TIME_OFFSET	= 15000; //TODO: replace with 300000 // 5 minutes
+	private static final long TIME_OFFSET	= 300000;	// 5 minutes
 	private static final String TAG			= "net.gumbercules.loot.backend.DbUpdateReceiver";
 	
 	@Override

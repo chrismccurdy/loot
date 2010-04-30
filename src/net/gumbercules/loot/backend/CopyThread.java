@@ -31,9 +31,13 @@ public class CopyThread extends Thread
 	public void run()
 	{
 		if (copyInProgress)
+		{
 			return;
+		}
 		else
+		{
 			copyInProgress = true;
+		}
 
 		Looper.prepare();
 		
@@ -42,13 +46,19 @@ public class CopyThread extends Thread
 		{
 			String backup_path = Environment.getExternalStorageDirectory().getPath() + 
 					mContext.getResources().getString(R.string.backup_path);
-			FileWatcherThread fwt = new FileWatcherThread(Database.getDbPath(), backup_path, mPd);
-			fwt.start();
+			if (mPd != null)
+			{
+				FileWatcherThread fwt = new FileWatcherThread(Database.getDbPath(), backup_path, mPd);
+				fwt.start();
+			}
 			
     		if (Database.backup(backup_path))
     		{
     			res = R.string.backup_successful;
-    			mPd.setProgress(100);
+    			if (mPd != null)
+    			{
+    				mPd.setProgress(100);
+    			}
     		}
     		else
     		{
@@ -59,13 +69,19 @@ public class CopyThread extends Thread
 		{
 			String backup_path = Environment.getExternalStorageDirectory().getPath() + 
 					mContext.getResources().getString(R.string.backup_path);
-			FileWatcherThread fwt = new FileWatcherThread(backup_path, Database.getDbPath(), mPd);
-			fwt.start();
+			if (mPd != null)
+			{
+				FileWatcherThread fwt = new FileWatcherThread(backup_path, Database.getDbPath(), mPd);
+				fwt.start();
+			}
 
 			if (Database.restore(backup_path))
     		{
     			res = R.string.restore_successful;
-    			mPd.setProgress(100);
+    			if (mPd != null)
+    			{
+    				mPd.setProgress(100);
+    			}
     			
     			new Thread()
     			{
@@ -85,7 +101,11 @@ public class CopyThread extends Thread
     			res = R.string.restore_failed;
     		}
 		}
-		mPd.dismiss();
+		
+		if (mPd != null)
+		{
+			mPd.dismiss();
+		}
 		copyInProgress = false;
 		
 		if (res != 0)
