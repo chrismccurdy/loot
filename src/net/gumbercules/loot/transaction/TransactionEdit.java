@@ -57,8 +57,10 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class TransactionEdit extends Activity
 {
-	public static final String KEY_TRANSFER = "te_transfer";
-	private static final String TAG = "net.gumbercules.loot.TransactionEdit";
+	public static final String KEY_TRANSFER		= "te_transfer";
+	private static final String TAG				= "net.gumbercules.loot.TransactionEdit";
+	private static final String KEY_IMAGE_URI	= "k_uri";
+	private static final String KEY_URIS		= "k_uris";
 	
 	private static final int REQ_REPEAT		= 0;
 	private static final int REQ_CAMERA		= 1;
@@ -79,6 +81,7 @@ public class TransactionEdit extends Activity
 	private int mAccountPos;
 	private CurrencyWatcher mCurrencyWatcher;
 	private Uri mImageUri;
+	private Uri[] mUris;
 
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
@@ -139,10 +142,21 @@ public class TransactionEdit extends Activity
 			long end = savedInstanceState.getLong(RepeatSchedule.KEY_DATE);
 			mRepeat.end = (end == 0 ? null : new Date(end));
 			mAccountPos = savedInstanceState.getInt(TransactionEdit.KEY_TRANSFER);
-			String uri_string = savedInstanceState.getString("image_uri");
+			String uri_string = savedInstanceState.getString(KEY_IMAGE_URI);
 			if (uri_string != null)
 			{
 				mImageUri = Uri.parse(uri_string);
+			}
+			
+			String[] uris = savedInstanceState.getStringArray(KEY_URIS);
+			if (uris != null)
+			{
+				int len = uris.length;
+				mUris = new Uri[len];
+				for (int i = 0; i < len; ++i)
+				{
+					mUris[i] = Uri.parse(uris[i]);
+				}
 			}
 			
 			restarted = true;
@@ -226,9 +240,13 @@ public class TransactionEdit extends Activity
 		{
 			mTrans = new Transaction();
 			if (mRepeat == null)
+			{
 				mRepeat = new RepeatSchedule();
+			}
 			else
+			{
 				setRepeatSpinnerSelection(mRepeat);
+			}
 			
 			// set the date edittext to the current date by default
         	setDateEdit(mDate);
@@ -345,6 +363,15 @@ public class TransactionEdit extends Activity
 				{
 					addImageRow(uri);
 				}
+			}
+			
+			if (mUris != null)
+			{
+				for (Uri uri : mUris)
+				{
+					addImageRow(uri);
+				}
+				mUris = null;
 			}
 
 			setRepeatSpinnerSelection(mRepeat);
@@ -534,7 +561,7 @@ public class TransactionEdit extends Activity
 	{
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		final LinearLayout imageLayout = (LinearLayout)findViewById(R.id.imageLayout);
-		
+
 		// bail if this uri was already added
 		if (imageLayout.findViewWithTag(content_uri) != null)
 		{
@@ -1154,7 +1181,26 @@ public class TransactionEdit extends Activity
 		
 		if (mImageUri != null)
 		{
-			outState.putString("image_uri", mImageUri.toString());
+			outState.putString(KEY_IMAGE_URI, mImageUri.toString());
+		}
+		
+		// save added image URIs
+		// add the images to the transaction
+		LinearLayout images = (LinearLayout)findViewById(R.id.imageLayout);
+		int count = images.getChildCount();
+		
+		if (count > 0)
+		{
+			LinearLayout image_row;
+			String[] uris = new String[count];
+			
+			for (int i = 0; i < count; ++i)
+			{
+				image_row = (LinearLayout)images.getChildAt(i);
+				uris[i] = ((Uri)image_row.getTag()).toString();
+			}
+			
+			outState.putStringArray(KEY_URIS, uris);
 		}
 	}
 }
