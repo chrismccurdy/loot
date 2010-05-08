@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
 import android.text.method.DigitsKeyListener;
@@ -65,8 +66,6 @@ public class TransactionEdit extends Activity
 	private static final int REQ_CAMERA		= 1;
 	private static final int REQ_GALLERY	= 2;
 	
-	private static final String IMAGE_CAPTURE = "android.media.action.IMAGE_CAPTURE";
-	
 	private Transaction mTrans;
 	private RepeatSchedule mRepeat;
 	private int mTransId;
@@ -81,6 +80,7 @@ public class TransactionEdit extends Activity
 	private Date mDate;
 	private int mAccountPos;
 	private CurrencyWatcher mCurrencyWatcher;
+	private Uri mImageUri;
 
 	private RadioButton checkRadio;
 	private RadioButton withdrawRadio;
@@ -141,6 +141,11 @@ public class TransactionEdit extends Activity
 			long end = savedInstanceState.getLong(RepeatSchedule.KEY_DATE);
 			mRepeat.end = (end == 0 ? null : new Date(end));
 			mAccountPos = savedInstanceState.getInt(TransactionEdit.KEY_TRANSFER);
+			String uri_string = savedInstanceState.getString("image_uri");
+			if (uri_string != null)
+			{
+				mImageUri = Uri.parse(uri_string);
+			}
 			
 			restarted = true;
 		}
@@ -481,7 +486,15 @@ public class TransactionEdit extends Activity
 									}
 									else if (which == 1)
 									{
-										i.setAction(IMAGE_CAPTURE);
+										ContentValues values = new ContentValues();
+								        values.put(Images.Media.TITLE, "Loot Receipt");
+								        values.put(Images.Media.BUCKET_ID, "Receipts");
+								        values.put(Images.Media.DESCRIPTION, "Receipt Image for Loot");
+								        values.put(Images.Media.MIME_TYPE, "image/jpeg");
+								        mImageUri = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
+										
+										i.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+										i.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
 										req = REQ_CAMERA;
 									}
 									
@@ -699,28 +712,7 @@ public class TransactionEdit extends Activity
 		{
 			if (resultCode == RESULT_OK)
 			{
-				Bitmap bmp = (Bitmap)data.getExtras().get("data");
-				ContentValues values = new ContentValues();
-		        values.put(Images.Media.TITLE, "Loot Receipt");
-		        values.put(Images.Media.BUCKET_ID, "Receipts");
-		        values.put(Images.Media.DESCRIPTION, "Receipt Image for Loot");
-		        values.put(Images.Media.MIME_TYPE, "image/jpeg");
-		        Uri uri = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
-
-		        OutputStream outstream;
-				try
-				{
-					outstream = getContentResolver().openOutputStream(uri);
-
-					bmp.compress(Bitmap.CompressFormat.JPEG, 85, outstream);
-					outstream.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-				
-				addImageRow(uri);
+				addImageRow(mImageUri);
 			}
 		}
 		else if (requestCode == REQ_GALLERY)
@@ -1160,6 +1152,11 @@ public class TransactionEdit extends Activity
 		if (mType == TransactionActivity.TRANSFER)
 		{
 			outState.putInt(TransactionEdit.KEY_TRANSFER, accountSpinner.getSelectedItemPosition());
+		}
+		
+		if (mImageUri != null)
+		{
+			outState.putString("image_uri", mImageUri.toString());
 		}
 	}
 }
