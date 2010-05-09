@@ -875,7 +875,7 @@ implements Cloneable
 		}
 		else if ( this.iter == WEEKLY )
 		{
-			if (this.custom == -1)
+			if (this.custom == -1 || this.custom == 0)
 			{
 				// standard weekly repetition
 				cal.add(Calendar.DAY_OF_MONTH, this.freq * 7);
@@ -901,7 +901,9 @@ implements Cloneable
 					
 					// if we reached the end of the week, add this.freq - 1 weeks
 					if (weekday == first_day)
+					{
 						cal.add(Calendar.DAY_OF_MONTH, 7 * (this.freq - 1));
+					}
 					
 					switch (weekday)
 					{
