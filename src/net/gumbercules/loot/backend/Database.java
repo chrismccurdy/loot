@@ -305,7 +305,6 @@ public class Database
 		lootDB = null;
 	}
 	
-	@SuppressWarnings("unused")
 	private static boolean privSetOption( Object option, Object value )
 	{
 		Object dummy = getOptionString( (String)option );
@@ -317,6 +316,7 @@ public class Database
 
 		try
 		{
+			@SuppressWarnings("unused")
 			Database db = new Database();
 		}
 		catch ( SQLException e )

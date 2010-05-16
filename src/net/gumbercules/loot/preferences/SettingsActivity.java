@@ -20,10 +20,13 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.widget.EditText;
 
 public class SettingsActivity extends PreferenceActivity
 {
+	private static final String TAG = "net.gumbercules.loot.preferences.SettingsActivity";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -167,12 +170,18 @@ public class SettingsActivity extends PreferenceActivity
 		{
 			public boolean onPreferenceChange(Preference preference, Object newValue)
 			{
-				if (newValue.equals(""))
+				if (newValue.equals("") || newValue == null)
+				{
+					Log.i(TAG + ".onCreate$onPreferenceChange", "newValue is empty");
 					return false;
+				}
 				
 				int val = Integer.valueOf((String)newValue);
 				if (val <= 0)
+				{
+					Log.i(TAG + ".onCreate$onPreferenceChange", "entered value is <= 0");
 					return false;
+				}
 				
 				Database.setOption("post_repeats_early", val);
 					
