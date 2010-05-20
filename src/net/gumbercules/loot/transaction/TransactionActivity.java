@@ -132,7 +132,9 @@ public class TransactionActivity extends ListActivity
     		cal.add(Calendar.DAY_OF_YEAR, -auto_purge);
     		int[] ids = mAcct.purgeTransactions(cal.getTime());
     		if (ids != null && mTa != null && !mTa.isEmpty())
+    		{
     			mTa.remove(ids);
+    		}
     	}
 
 		budgetValue = (TextView)findViewById(R.id.budgetValue);
@@ -166,6 +168,7 @@ public class TransactionActivity extends ListActivity
     		setListAdapter(mTa);
     		setBalances();
     	}
+		mTa.updatePreferenceValues();
 
 		final TransactionAdapter.TransactionFilter filter = 
 			(TransactionAdapter.TransactionFilter)mTa.getFilter();
@@ -599,6 +602,7 @@ public class TransactionActivity extends ListActivity
     	mTa.clear();
     	mTa.add(mAcct.getTransactions());
 		mTa.sort();
+		mTa.calculateRunningBalances();
 		mTa.notifyDataSetChanged();
 		
 		setBalances();
@@ -614,7 +618,7 @@ public class TransactionActivity extends ListActivity
     	addRepeatedTransactions();
     	TransactionAdapter ta = mTa;
     	Transaction trans;
-    	int pos;
+    	int pos = 0;
     	
     	switch (request)
     	{
@@ -627,6 +631,7 @@ public class TransactionActivity extends ListActivity
     		trans = Transaction.getTransactionById(trans_id);
     		ta.add(trans);
     		ta.sort();
+    		pos = ta.findItemNoFilter(trans_id);
     		break;
     		
     	case ACTIVITY_DEL:
@@ -635,6 +640,7 @@ public class TransactionActivity extends ListActivity
     		break;
     	}
 
+    	ta.calculateRunningBalances(pos);
 		setBalances();
     }
     
@@ -655,6 +661,7 @@ public class TransactionActivity extends ListActivity
     		break;
     	}
 
+    	ta.calculateRunningBalances();
 		setBalances();
     }
     
@@ -688,6 +695,7 @@ public class TransactionActivity extends ListActivity
 			mCurrentBundle = data.getExtras();
 		}
 		
+		mTa.updatePreferenceValues();
 		mTa.notifyDataSetChanged();
 	}
 	
@@ -750,8 +758,8 @@ public class TransactionActivity extends ListActivity
 			Log.e(TransactionActivity.class.toString(), "Bad ContextMenuInfo", e);
 			return false;
 		}
-		
-		int id = (int)getListAdapter().getItemId(info.position);
+		final int pos = info.position;
+		int id = (int)getListAdapter().getItemId(pos);
 		switch (item.getItemId())
 		{
 		case CONTEXT_EDIT:
@@ -764,7 +772,7 @@ public class TransactionActivity extends ListActivity
 			return true;
 			
 		case CONTEXT_POST:
-			postListItem(info.position);
+			postListItem(pos);
 			return true;
 			
 		case CONTEXT_REPEAT:

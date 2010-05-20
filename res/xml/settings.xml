@@ -89,9 +89,7 @@
 				android:dialogTitle="Budget Check Color" android:dialogMessage="Color to paint a budgeted check transaction."
 				android:title="Budget Check Color" android:key="color_budget_check" />
 		</PreferenceCategory>
-
-	
-</PreferenceScreen>
+	</PreferenceScreen>
 	<PreferenceScreen android:key="color_cat"
 		android:title="Colors" android:summary="Various options regarding colors.">
 		<CheckBoxPreference android:defaultValue="false"
@@ -109,6 +107,10 @@
 			android:summary="Color negative balances in account summaries."
 			android:key="color_balance" />
 	</PreferenceScreen>
+	<CheckBoxPreference android:key="running_balance"
+		android:title="Running Balance"
+		android:summary="Enables a running balance to the right of each transaction's amount."
+		android:defaultValue="false" />
 	<CheckBoxPreference android:key="total_balance"
 		android:title="Total Balance" android:summary="Enables a total balance display in the account list."
 		android:defaultValue="true" />

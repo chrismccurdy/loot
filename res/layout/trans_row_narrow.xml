@@ -32,6 +32,11 @@
 				android:gravity="right" android:id="@+id/AmountText"
 				android:layout_height="fill_parent" android:singleLine="false"
 				android:maxLines="1" android:lines="1" android:layout_weight="1" />
+            <TextView android:layout_width="wrap_content" android:text="1215.00"
+                android:gravity="right" android:id="@+id/RunningBalanceText"
+                android:layout_height="fill_parent" android:singleLine="false"
+                android:maxLines="1" android:lines="1" android:layout_weight="1" 
+                android:visibility="gone" />
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

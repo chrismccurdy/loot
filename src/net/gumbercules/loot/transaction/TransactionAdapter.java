@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Currency;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.backend.Database;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 {
 	private ArrayList<Transaction> mTransList;
 	private ArrayList<Transaction> mOriginalList;
+	private ArrayList<Double> mRunningBalances;
 	private int mRowResId;
 	private Context mContext;
 	private LayoutInflater mInflater;
@@ -38,11 +40,23 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private DateFormat mDf;
 	private static NumberFormat mNf = null;
 	
+	// preferences
+	private int mColorCheck;
+	private int mColorCheckBudget;
+	private int mColorWithdraw;
+	private int mColorWithdrawBudget;
+	private int mColorDeposit;
+	private int mColorDepositBudget;
+	private boolean mShowColors;
+	private boolean mColorBackgrounds;
+	private boolean mShowRunningBalance;
+	
 	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
 	{
 		super(con, 0);
 		this.mTransList = tr;
 		this.mOriginalList = tr;
+		this.mRunningBalances = new ArrayList<Double>();
 		this.mRowResId = row;
 		this.mContext = con;
 		this.mAcctId = acct_id;
@@ -54,6 +68,86 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			mNf.setCurrency(Currency.getInstance(new_currency));
 		
 		mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	}
+	
+	public void updatePreferenceValues()
+	{
+		final int Color_LTGREEN = Color.rgb(185, 255, 185);
+		final int Color_LTYELLOW = Color.rgb(255, 255, 185);
+		final int Color_LTCYAN = Color.rgb(185, 255, 255);
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		mShowColors = prefs.getBoolean("color", false);
+		mColorBackgrounds = prefs.getBoolean("color_background", false);
+		mShowRunningBalance = prefs.getBoolean("running_balance", false);
+		
+		mColorCheckBudget = prefs.getInt("color_budget_check", prefs.getInt("bc_color", Color_LTCYAN));
+		mColorCheck = prefs.getInt("color_check", prefs.getInt("ac_color", Color.CYAN));
+		mColorWithdrawBudget = prefs.getInt("color_budget_withdraw", prefs.getInt("bw_color", Color_LTYELLOW));
+		mColorWithdraw = prefs.getInt("color_withdraw", prefs.getInt("aw_color", Color.YELLOW));
+		mColorDepositBudget = prefs.getInt("color_budget_deposit", prefs.getInt("bd_color", Color_LTGREEN));
+		mColorDeposit = prefs.getInt("color_deposit", prefs.getInt("ad_color", Color.GREEN));
+	}
+	
+	public void calculateRunningBalances()
+	{
+		calculateRunningBalances(0);
+	}
+	
+	public void calculateRunningBalances(int pos)
+	{
+		// don't waste time with the calculations if it's not being shown
+		if (!mShowRunningBalance)
+		{
+			return;
+		}
+		
+		if (!mRunningBalances.isEmpty())
+		{
+			if (pos <= 1)
+			{
+				mRunningBalances.clear();
+			}
+			else
+			{
+				int sz = mRunningBalances.size();
+				mRunningBalances.subList(pos, sz).clear(); 
+			}
+		}
+		
+		int len = mOriginalList.size();
+		double cur_balance, prev_balance, amount;
+		Transaction trans;
+		
+		if (pos == 0)
+		{
+			Account acct = Account.getAccountById(mAcctId);
+			prev_balance = acct.initialBalance;
+		}
+		else
+		{
+			prev_balance = mRunningBalances.get(pos - 1);
+		}
+		
+		for (int i = pos; i < len; ++i)
+		{
+			trans = mOriginalList.get(i);
+			if (trans.type == Transaction.DEPOSIT)
+			{
+				amount = trans.amount;
+			}
+			else
+			{
+				amount = -trans.amount;
+			}
+			
+			cur_balance = prev_balance + amount;
+			mRunningBalances.add(cur_balance);
+			
+			prev_balance = cur_balance;
+		}
+		
+		notifyDataSetChanged();
 	}
 
 	public void setContext(Context con)
@@ -81,6 +175,17 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		return mTransList.get(position).id();
 	}
 	
+	public int findItemNoFilter(int id)
+	{
+		for (int i = 0; i < mOriginalList.size(); ++i)
+		{
+			if (mOriginalList.get(i).id() == id)
+				return i;
+		}
+		
+		return -1;
+	}
+	
 	public int findItemById(int id)
 	{
 		for (int i = 0; i < mTransList.size(); ++i)
@@ -100,7 +205,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public void setList(ArrayList<Transaction> trans)
 	{
 		mOriginalList = trans;
-		new TransactionFilter().filter(mConstraint);
+		new TransactionFilter()._filter(mConstraint);
 		notifyDataSetChanged();
 	}
 	
@@ -112,7 +217,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public void sort()
 	{
 		Collections.sort(mOriginalList);
-		new TransactionFilter().filter(mConstraint);
+		new TransactionFilter()._filter(mConstraint);
 		notifyDataSetChanged();
 	}
 
@@ -129,7 +234,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public void add(int[] ids)
 	{
 		if (ids == null)
+		{
 			return;
+		}
 		
 		int last = -1;
 		Transaction trans;
@@ -140,7 +247,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			
 			trans = Transaction.getTransactionById(id);
 			if (trans != null && trans.account == mAcctId)
+			{
 				mOriginalList.add(trans);
+			}
 			
 			last = id;
 		}
@@ -150,14 +259,18 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public void add(Transaction[] trans_list)
 	{
 		if (trans_list == null)
+		{
 			return;
+		}
 		
 		Transaction trans;
 		for (int i = trans_list.length - 1; i >= 0; --i)
 		{
 			trans = trans_list[i];
 			if (trans != null && trans.account == mAcctId)
+			{
 				mOriginalList.add(trans);
+			}
 		}
 		notifyDataSetChanged();
 	}
@@ -176,15 +289,17 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public void remove(Transaction object)
 	{
 		mOriginalList.remove(object);
-		new TransactionFilter().filter(mConstraint);
+		new TransactionFilter()._filter(mConstraint);
 		notifyDataSetChanged();
 	}
 	
 	public void remove(int[] ids)
 	{
 		for (int id : ids)
+		{
 			mOriginalList.remove(getItem(findItemById(id)));
-		new TransactionFilter().filter(mConstraint);
+		}
+		new TransactionFilter()._filter(mConstraint);
 		notifyDataSetChanged();
 	}
 	
@@ -192,7 +307,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public void clear()
 	{
 		mOriginalList.clear();
-		new TransactionFilter().filter(mConstraint);
+		new TransactionFilter()._filter(mConstraint);
 		notifyDataSetChanged();
 	}
 	
@@ -217,6 +332,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			holder.date = (TextView)convertView.findViewById(R.id.DateText);
 			holder.party = (TextView)convertView.findViewById(R.id.PartyText);
 			holder.amount = (TextView)convertView.findViewById(R.id.AmountText);
+			holder.running_balance = (TextView)convertView.findViewById(R.id.RunningBalanceText);
 			holder.image = (ImageView)convertView.findViewById(R.id.image_view);
 			holder.top = (LinearLayout)convertView.findViewById(R.id.LinearLayout01);
 			
@@ -230,7 +346,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		// bail early if the transaction doesn't exist, isn't for this account, or is not currently visible
 		final Transaction trans = mTransList.get(position);
 		if (trans == null || trans.account == 0)
+		{
 			return convertView;
+		}
 		
 		final int pos = position;
 
@@ -263,7 +381,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 						if (v != null)
 						{
 							ViewHolder holder = (ViewHolder)v.getTag();
-							setViewData(trans, holder, null, null);
+							setViewData(trans, holder, null, null, null);
 						}
 					}
 				}
@@ -277,67 +395,80 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		// change the numbers to the locale currency format
 		NumberFormat nf = mNf;
 		String amountStr = nf.format(Math.abs(trans.amount));
+		String balStr = nf.format(mRunningBalances.get(pos));
 		
 		if (postedCheck != null)
+		{
 			postedCheck.setChecked(trans.isPosted());
+		}
 
 		// populate the widgets with data
-		setViewData(trans, holder, amountStr, dateStr);
+		setViewData(trans, holder, amountStr, dateStr, balStr);
 		
 		return convertView;
 	}
 	
-	private void setViewData(Transaction trans, ViewHolder v, String amountStr, String dateStr)
+	private void setViewData(Transaction trans, ViewHolder v, String amountStr, String dateStr, String balStr)
 	{
 		String partyStr = "";
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		boolean showColors = prefs.getBoolean("color", false);
-		boolean colorBackground = prefs.getBoolean("color_background", false);
 		int color = Color.LTGRAY;
-		
-		final int Color_LTGREEN = Color.rgb(185, 255, 185);
-		final int Color_LTYELLOW = Color.rgb(255, 255, 185);
-		final int Color_LTCYAN = Color.rgb(185, 255, 255);
 		
 		if (trans.budget)
 		{
 			if (trans.type == Transaction.DEPOSIT)
+			{
 				partyStr += "+";
+			}
 			else
+			{
 				partyStr += "-";
+			}
 		}
 		
 		if (trans.type == Transaction.CHECK)
 		{
 			partyStr += trans.check_num;
 			if (trans.budget)
-				color = prefs.getInt("color_budget_check", prefs.getInt("bc_color", Color_LTCYAN));
+			{
+				color = mColorCheckBudget;
+			}
 			else
-				color = prefs.getInt("color_check", prefs.getInt("ac_color", Color.CYAN));
+			{
+				color = mColorCheck;
+			}
 		}
 		else if (trans.type == Transaction.WITHDRAW)
 		{
 			partyStr += "W";
 			if (trans.budget)
-				color = prefs.getInt("color_budget_withdraw", prefs.getInt("bw_color", Color_LTYELLOW));
+			{
+				color = mColorWithdrawBudget;
+			}
 			else
-				color = prefs.getInt("color_withdraw", prefs.getInt("aw_color", Color.YELLOW));
+			{
+				color = mColorWithdraw;
+			}
 		}
 		else
 		{
 			partyStr += "D";
 			if (trans.budget)
-				color = prefs.getInt("color_budget_deposit", prefs.getInt("bd_color", Color_LTGREEN));
+			{
+				color = mColorDepositBudget;
+			}
 			else
-				color = prefs.getInt("color_deposit", prefs.getInt("ad_color", Color.GREEN));
+			{
+				color = mColorDeposit;
+			}
 		}
 		partyStr += ":" + trans.party;
 		
 		TextView dateText = v.date;
 		TextView partyText = v.party;
 		TextView amountText = v.amount;
+		TextView runningBalanceText = v.running_balance;
 		
-		if (showColors && colorBackground)
+		if (mShowColors && mColorBackgrounds)
 		{
 			v.top.setBackgroundColor(color);
 		}
@@ -354,10 +485,24 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			amountStr = v.amount.getText().toString();
 		}
+		if (balStr == null)
+		{
+			balStr = v.running_balance.getText().toString();
+		}
 		
-		setText(dateText, dateStr, color, showColors, colorBackground);
-		setText(partyText, partyStr, color, showColors, colorBackground);
-		setText(amountText, amountStr, color, showColors, colorBackground);
+		setText(dateText, dateStr, color, mShowColors, mColorBackgrounds);
+		setText(partyText, partyStr, color, mShowColors, mColorBackgrounds);
+		setText(amountText, amountStr, color, mShowColors, mColorBackgrounds);
+		setText(runningBalanceText, balStr, color, mShowColors, mColorBackgrounds);
+		
+		if (mShowRunningBalance)
+		{
+			runningBalanceText.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			runningBalanceText.setVisibility(View.GONE);
+		}
 		
 		if (trans.images != null && trans.images.size() > 0)
 		{
@@ -404,6 +549,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		TextView date;
 		TextView party;
 		TextView amount;
+		TextView running_balance;
 		ImageView image;
 		LinearLayout top;
 	}
@@ -532,6 +678,17 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		public void publish(CharSequence constraint, FilterResults results)
 		{
 			publishResults(constraint, results);
+		}
+		
+		@SuppressWarnings("unchecked")
+		public void _filter(CharSequence cs)
+		{
+			filter(cs);
+			
+			if (cs == null || cs.equals(""))
+			{
+				mTransList = (ArrayList<Transaction>) mOriginalList.clone();
+			}
 		}
 		
 		@SuppressWarnings("unchecked")
