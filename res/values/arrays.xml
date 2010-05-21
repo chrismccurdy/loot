@@ -75,10 +75,13 @@
 	    <item>\n
 &#8226; Removed donation reminder\n
 &#8226; Fixed bi-weekly scheduling bug\n
+&#8226; Adjusted transaction layout better for landscape orientation\n
+&#8226; Added option for running balance\n
 &#8226; Fixed bugs related to adding widgets (Premium)\n
 &#8226; Added automatic backup option (Premium)\n
 &#8226; Fixed bugs related to attaching receipt images (Premium)\n
 &#8226; Fixed screen size usage when charting (Premium)\n
+&#8226; Added option to chart based on account balance (Premium)\n
 	    </item>
 	    <item>\n
 &#8226; Fixed database backup and file export issues\n
@@ -174,7 +177,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
-	    <item>2.1.4</item>
+	    <item>2.2.0</item>
 	    <item>2.1.3</item>
 	    <item>2.1.2</item>
 	    <item>2.1.1</item>
