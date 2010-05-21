@@ -395,7 +395,19 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		// change the numbers to the locale currency format
 		NumberFormat nf = mNf;
 		String amountStr = nf.format(Math.abs(trans.amount));
-		String balStr = nf.format(mRunningBalances.get(pos));
+		String balStr = null;
+		if (mShowRunningBalance)
+		{
+			try
+			{
+				balStr = nf.format(mRunningBalances.get(pos));
+			}
+			catch (IndexOutOfBoundsException e)
+			{
+				calculateRunningBalances();
+				balStr = nf.format(mRunningBalances.get(pos));
+			}
+		}
 		
 		if (postedCheck != null)
 		{
@@ -485,18 +497,18 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			amountStr = v.amount.getText().toString();
 		}
-		if (balStr == null)
-		{
-			balStr = v.running_balance.getText().toString();
-		}
 		
 		setText(dateText, dateStr, color, mShowColors, mColorBackgrounds);
 		setText(partyText, partyStr, color, mShowColors, mColorBackgrounds);
 		setText(amountText, amountStr, color, mShowColors, mColorBackgrounds);
-		setText(runningBalanceText, balStr, color, mShowColors, mColorBackgrounds);
 		
 		if (mShowRunningBalance)
 		{
+			if (balStr == null)
+			{
+				balStr = v.running_balance.getText().toString();
+			}
+			setText(runningBalanceText, balStr, color, mShowColors, mColorBackgrounds);
 			runningBalanceText.setVisibility(View.VISIBLE);
 		}
 		else
