@@ -7,14 +7,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import android.database.*;
-import android.database.sqlite.*;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 public class Database
 {
-	private final static String DB_NAME		= "LootDB";
-	private final static String DB_PATH		= "/data/data/net.gumbercules.loot/" + DB_NAME + ".db";
+	private final static String DB_PATH		= "/data/data/net.gumbercules.loot/LootDB.db";
 	private final static int DB_VERSION		= 6;
 	private static SQLiteDatabase lootDB	= null;
 	

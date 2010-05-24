@@ -641,7 +641,9 @@ public class TransactionEdit extends Activity
 	{
 		Calendar cal = Calendar.getInstance();
 		if (date != null)
+		{
 			cal.setTime(date);
+		}
 
 		mDate = date;
 		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
@@ -662,6 +664,12 @@ public class TransactionEdit extends Activity
 			// set the date to today if there's a parsing error
 			date = new Date();
 		}
+		catch (NullPointerException e)
+		{
+			date = new Date();
+			Log.e(TAG + ".parseDateEdit", "null pointer exception on parsing date edit");
+		}
+		
 		date.setHours(0);
 		date.setMinutes(0);
 		date.setSeconds(0);

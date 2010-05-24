@@ -53,10 +53,41 @@ public class ColorPickerPreference extends DialogPreference
 	    private int[] mHSVColors;
 	    private boolean mRedrawHSV;
 	    private OnColorChangedListener mListener;
+	    private boolean mTrackingCenter;
+	    private boolean mHighlightCenter;
+	    private float mScale;
+	    private RectF mHSVBar;
 	    
+	    private int HSV_LEFT;
+	    private int HSV_RIGHT;
+	    private int HSV_TOP;
+	    
+	    private int CENTER_X;
+	    private int CENTER_Y;
+	    private int CENTER_RADIUS;
+	    
+	    // density-independent pixel values
+	    private static final int DI_CENTER_X = 125;
+	    private static final int DI_CENTER_Y = 125;
+	    private static final int DI_CENTER_RADIUS = 32;
+	    
+	    private static final float PI = 3.1415926f;
+
 	    ColorPickerView(Context c, OnColorChangedListener l, int color)
 	    {
 	        super(c);
+	        
+	        mScale = c.getResources().getDisplayMetrics().density;
+	        
+	        CENTER_X = pixels(DI_CENTER_X);
+	        CENTER_Y = pixels(DI_CENTER_Y);
+	        CENTER_RADIUS = pixels(DI_CENTER_RADIUS);
+	        
+	        HSV_LEFT = pixels(-100);
+	        HSV_RIGHT = pixels(100);
+	        HSV_TOP = pixels(125);
+	        mHSVBar = new RectF(HSV_LEFT, HSV_TOP, HSV_RIGHT, pixels(185));
+	        
 	        mListener = l;
 	        mColors = new int[] {
 	            0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF, 0xFF00FF00,
@@ -67,54 +98,62 @@ public class ColorPickerPreference extends DialogPreference
 	        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	        mPaint.setShader(s);
 	        mPaint.setStyle(Paint.Style.STROKE);
-	        mPaint.setStrokeWidth(32);
+	        mPaint.setStrokeWidth(CENTER_RADIUS);
 	        
 	        mCenterPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	        mCenterPaint.setColor(color);
-	        mCenterPaint.setStrokeWidth(5);
+	        mCenterPaint.setStrokeWidth(pixels(5));
 	        
 	        mHSVColors = new int[] {
 	        		0xFF000000, color, 0xFFFFFFFF
 	        };
 	
 	        mHSVPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-	        mHSVPaint.setStrokeWidth(10);
+	        mHSVPaint.setStrokeWidth(pixels(10));
 	        
 	        mRedrawHSV = true;
 	    }
-	    
-	    private boolean mTrackingCenter;
-	    private boolean mHighlightCenter;
-	
+	    	
 	    public int getColor()
 	    {
 	    	return mCenterPaint.getColor();
 	    }
 	    
+	    private int pixels(float f)
+	    {
+	    	return (int)(f * mScale);
+	    }
+	    
 	    @Override 
 	    protected void onDraw(Canvas canvas)
 	    {
-	        float r = CENTER_X - mPaint.getStrokeWidth()*2.0f;
+	        canvas.translate(CENTER_X, CENTER_Y);
 	        
-	        canvas.translate(CENTER_X, CENTER_Y );
+	        float r = pixels(mPaint.getStrokeWidth() * 2.25f);
+	        
 	        int c = mCenterPaint.getColor();
 	
 	        if (mRedrawHSV)
 	        {
 	            mHSVColors[1] = c;
-	            mHSVPaint.setShader(new LinearGradient(-100, 0, 100, 0, mHSVColors, null, Shader.TileMode.CLAMP));
+	            mHSVPaint.setShader(new LinearGradient(-100, 0, 100, 0, 
+	            		mHSVColors, null, Shader.TileMode.CLAMP));
 	        }
 	        
 	        canvas.drawOval(new RectF(-r, -r, r, r), mPaint);            
 	        canvas.drawCircle(0, 0, CENTER_RADIUS, mCenterPaint);
-	        canvas.drawRect(new RectF(-100, 125, 100, 185), mHSVPaint);
+	        canvas.drawRect(mHSVBar, mHSVPaint);
 	        
-	        if (mTrackingCenter) {
+	        if (mTrackingCenter)
+	        {
 	            mCenterPaint.setStyle(Paint.Style.STROKE);
 	            
-	            if (mHighlightCenter) {
+	            if (mHighlightCenter)
+	            {
 	                mCenterPaint.setAlpha(0xFF);
-	            } else {
+	            }
+	            else
+	            {
 	                mCenterPaint.setAlpha(0x80);
 	            }
 	            canvas.drawCircle(0, 0,
@@ -131,13 +170,9 @@ public class ColorPickerPreference extends DialogPreference
 	    @Override
 	    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	    {
-	        setMeasuredDimension(CENTER_X*2, CENTER_Y*3);
+	        setMeasuredDimension(CENTER_X*2, (int)(CENTER_Y*2.5));
 	    }
 	    
-	    private static final int CENTER_X = 150;
-	    private static final int CENTER_Y = 125;
-	    private static final int CENTER_RADIUS = 32;
-	
 	    private int ave(int s, int d, float p)
 	    {
 	        return s + java.lang.Math.round(p * (d - s));
@@ -169,8 +204,6 @@ public class ColorPickerPreference extends DialogPreference
 	        return Color.argb(a, r, g, b);
 	    }
 	    
-	    private static final float PI = 3.1415926f;
-	
 	    @Override
 	    public boolean onTouchEvent(MotionEvent event)
 	    {
@@ -197,7 +230,8 @@ public class ColorPickerPreference extends DialogPreference
 	                        invalidate();
 	                    }
 	                } 
-	                else if ((x >= -100 & x <= 100) && (y >= 125)) // see if we're in the hsv slider
+	                // see if we're in the hsv slider
+	                else if ((x >= HSV_LEFT & x <= HSV_RIGHT) && (y >= HSV_TOP))
 	                {
 	                	int a, r, g, b, c0, c1;
 	                	float p;

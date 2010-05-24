@@ -360,7 +360,8 @@ public class SettingsActivity extends PreferenceActivity
 			{
 				// set up color picker preference
 				ColorPickerPreference picker = (ColorPickerPreference)findPreference(pref);
-				picker.setDialogMessage("");
+				picker.setDialogMessage(null);
+				picker.setDialogTitle(null);
 				picker.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
 				{
 					public boolean onPreferenceChange(Preference preference, Object newValue)
