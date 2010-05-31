@@ -77,11 +77,14 @@
 &#8226; Fixed bi-weekly scheduling bug\n
 &#8226; Adjusted transaction layout better for landscape orientation\n
 &#8226; Added option for running balance\n
+&#8226; Fixed bug which caused transaction editing to crash\n
 &#8226; Fixed bugs related to adding widgets (Premium)\n
 &#8226; Added automatic backup option (Premium)\n
 &#8226; Fixed bugs related to attaching receipt images (Premium)\n
 &#8226; Fixed screen size usage when charting (Premium)\n
 &#8226; Added option to chart based on account balance (Premium)\n
+&#8226; Fixed some charting crashes and issues (Premium)\n
+&#8226; Fixed custom color picker to work better on WVGA screens (Premium)\n
 	    </item>
 	    <item>\n
 &#8226; Fixed database backup and file export issues\n
