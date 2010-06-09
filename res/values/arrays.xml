@@ -61,17 +61,20 @@
 		<item>Marking an account as primary will allow you to start in that transaction without seeing the accounts screen.</item>
 		<item>When two or more accounts are present, you are given an option to transfer between accounts.</item>
 		<item>You can search for transactions based on the party name or the tags.</item>
-		<item>Don't like the color choices? Set them to whatever you want with Loot Premium!</item>
+		<item>Don\'t like the color choices? Set them to whatever you want with Loot Premium!</item>
 		<item>You can purge posted transactions when you think you have too many listed.</item>
 		<item>You can restore transactions that were previously purged (but not deleted). The restore date works backwards from today, the opposite way that the purge date works.</item>
-		<item>Have any tips you want to share? Send them to me and I'll try to include them in future releases!</item>
-		<item>Don't want other people to see your account details? Enable the security option, and always use the back key to exit.</item>
+		<item>Have any tips you want to share? Send them to me and I\'ll try to include them in future releases!</item>
+		<item>Don\'t want other people to see your account details? Enable the security option, and always use the back key to exit.</item>
 		<item>Long-click on a transaction to bring up the context menu, which which allows you to edit or delete transactions, and more.</item>
 		<item>Use the repeat once option from the context menu to do an immediate, one-time repetition of a transaction.</item>
-		<item>To enter a negative  amount, start an account with a zero balance, then enter a dummy transaction to put your account in the negative. After that, if you don't want to see that transaction, click the check for it and purge the posted transactions.</item>
+		<item>To enter a negative  amount, start an account with a zero balance, then enter a dummy transaction to put your account in the negative. After that, if you don\'t want to see that transaction, click the check for it and purge the posted transactions.</item>
 		<item>Automatic backups will run 5 minutes after your most recent change when the option is enabled.</item>
 	</string-array>
 	<string-array name="changelog">
+	    <item>\n
+&#8226; Fixed bug which caused force closing when calculating running balances\n
+	    </item>
 	    <item>\n
 &#8226; Removed donation reminder\n
 &#8226; Fixed bi-weekly scheduling bug\n
@@ -180,6 +183,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
+	    <item>2.2.1</item>
 	    <item>2.2.0</item>
 	    <item>2.1.3</item>
 	    <item>2.1.2</item>
@@ -304,7 +308,7 @@
 		<item>Norwegian krone</item>
 		<item>Nuevo sol</item>
 		<item>Ouguiya</item>
-		<item>Pa'anga</item>
+		<item>Pa\'anga</item>
 		<item>Pakistan rupee</item>
 		<item>Pataca</item>
 		<item>Peso Uruguayo</item>

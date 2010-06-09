@@ -104,15 +104,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		
 		if (!mRunningBalances.isEmpty())
 		{
-			if (pos <= 1)
-			{
-				mRunningBalances.clear();
-			}
-			else
-			{
-				int sz = mRunningBalances.size();
-				mRunningBalances.subList(pos, sz).clear(); 
-			}
+			int sz = mRunningBalances.size();
+			mRunningBalances.subList(pos, sz).clear(); 
 		}
 		
 		int len = mOriginalList.size();
@@ -126,7 +119,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 		else
 		{
-			prev_balance = mRunningBalances.get(pos - 1);
+			prev_balance = mRunningBalances.get(pos - 1); // FIXME: gets here with empty list
 		}
 		
 		for (int i = pos; i < len; ++i)
