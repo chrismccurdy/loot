@@ -74,6 +74,7 @@
 	<string-array name="changelog">
 	    <item>\n
 &#8226; Fixed bug which caused force closing when calculating running balances\n
+&#8226; Fixed bug which caused force closing when searching for importable files\n
 	    </item>
 	    <item>\n
 &#8226; Removed donation reminder\n
