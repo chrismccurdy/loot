@@ -74,7 +74,11 @@
 	<string-array name="changelog">
 	    <item>\n
 &#8226; Fixed bug which caused force closing when calculating running balances\n
-&#8226; Fixed bug which caused force closing when searching for importable files\n
+&#8226; Added option to show no balance on widgets (Premium)\n
+	    </item>
+	    <item>\n
+&#8226; Fixed bug which caused force closing when calculating running balances\n
+&#8226; Fixed bug which caused force closing when searching for importable files (Premium)\n
 	    </item>
 	    <item>\n
 &#8226; Removed donation reminder\n
@@ -184,6 +188,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
+	    <item>2.2.2</item>
 	    <item>2.2.1</item>
 	    <item>2.2.0</item>
 	    <item>2.1.3</item>

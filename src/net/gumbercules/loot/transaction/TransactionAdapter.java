@@ -112,14 +112,14 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		double cur_balance, prev_balance, amount;
 		Transaction trans;
 		
-		if (pos == 0)
+		if (pos == 0 || mRunningBalances.isEmpty())
 		{
 			Account acct = Account.getAccountById(mAcctId);
 			prev_balance = acct.initialBalance;
 		}
 		else
 		{
-			prev_balance = mRunningBalances.get(pos - 1); // FIXME: gets here with empty list
+			prev_balance = mRunningBalances.get(pos - 1);
 		}
 		
 		for (int i = pos; i < len; ++i)
