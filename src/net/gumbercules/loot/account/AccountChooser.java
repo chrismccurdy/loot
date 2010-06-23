@@ -4,7 +4,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
-import java.util.HashMap;
 
 import net.gumbercules.loot.ChangeLogActivity;
 import net.gumbercules.loot.PinActivity;
@@ -361,17 +360,6 @@ public class AccountChooser extends ListActivity
 		if (accounts != null)
 		{
 			accountList.addAll(Arrays.asList(accounts));
-		}
-		
-		HashMap<Integer, Double> bals = Account.calculateBalances();
-		if (bals != null)
-		{
-			Double transactions;
-			for (Account acct : accountList)
-			{
-				transactions = bals.get(acct.id());
-				acct.setActualBalance(acct.initialBalance + (transactions == null ? 0 : transactions));
-			}
 		}
 		
 		AccountAdapter aa = (AccountAdapter)getListAdapter();

@@ -2,7 +2,6 @@ package net.gumbercules.loot.account;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.transaction.Transaction;
@@ -17,6 +16,10 @@ public class Account
 	public static final String KEY_BAL		= "balance";
 	public static final String KEY_ID		= "a_id";
 	
+	private static final int ACTUAL			= 0x1 << 0;
+	private static final int POSTED			= 0x1 << 1;
+	private static final int BUDGET			= 0x1 << 2;
+	
 	private int id;
 	public String name;
 	public double initialBalance;
@@ -26,10 +29,12 @@ public class Account
 	private double actual_balance;
 	private double posted_balance;
 	private double budget_balance;
+	private int calculated_balances;
 	
 	public Account()
 	{
 		this.id = -1;
+		calculated_balances = 0;
 	}
 	
 	public Account(String name, double initialBalance)
@@ -39,6 +44,7 @@ public class Account
 		this.initialBalance = initialBalance;
 		this.priority = 1;
 		this.primary = false;
+		calculated_balances = 0;
 	}
 	
 	public int id()
@@ -194,30 +200,6 @@ public class Account
 		return true;
 	}
 	
-	public static HashMap<Integer, Double> calculateBalances()
-	{
-		SQLiteDatabase db = Database.getDatabase();
-		String query = "select account, sum(amount) from transactions where " +
-				"purged = 0 and budget = 0 group by account order by account";
-		Cursor cur = db.rawQuery(query, null);
-		
-		HashMap<Integer, Double> bals = new HashMap<Integer, Double>();
-		if (!cur.moveToFirst())
-		{
-			cur.close();
-			return null;
-		}
-		
-		do
-		{
-			bals.put(cur.getInt(0), cur.getDouble(1));
-		} while (cur.moveToNext());
-		
-		cur.close();
-		
-		return bals;
-	}
-	
 	public static Double getTotalBalance()
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();
@@ -271,6 +253,10 @@ public class Account
 	
 	public double getActualBalance()
 	{
+		if ((calculated_balances & ACTUAL) == 0)
+		{
+			calculateActualBalance();
+		}
 		return this.actual_balance;
 	}
 	
@@ -280,6 +266,7 @@ public class Account
 		if (bal != null)
 		{
 			this.actual_balance = bal + this.initialBalance;
+			calculated_balances |= ACTUAL;
 			return this.actual_balance;
 		}
 		return bal;
@@ -292,6 +279,10 @@ public class Account
 	
 	public double getPostedBalance()
 	{
+		if ((calculated_balances & POSTED) == 0)
+		{
+			calculatePostedBalance();
+		}
 		return this.posted_balance;
 	}
 	
@@ -301,6 +292,7 @@ public class Account
 		if (bal != null)
 		{
 			this.posted_balance = bal + this.initialBalance;
+			calculated_balances |= POSTED;
 			return this.posted_balance;
 		}
 		return bal;
@@ -313,6 +305,10 @@ public class Account
 	
 	public double getBudgetBalance()
 	{
+		if ((calculated_balances & BUDGET) == 0)
+		{
+			calculateBudgetBalance();
+		}
 		return this.budget_balance;
 	}
 	
@@ -322,6 +318,7 @@ public class Account
 		if (bal != null)
 		{
 			this.budget_balance = bal + this.initialBalance;
+			calculated_balances |= BUDGET;
 			return this.budget_balance;
 		}
 		return bal;
