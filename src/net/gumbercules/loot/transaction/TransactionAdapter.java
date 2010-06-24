@@ -210,6 +210,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public void sort()
 	{
 		Collections.sort(mOriginalList);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		if (prefs.getBoolean("top_sort", false))
+		{
+			Collections.reverse(mOriginalList);
+		}
 		new TransactionFilter()._filter(mConstraint);
 		notifyDataSetChanged();
 	}

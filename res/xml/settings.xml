@@ -117,6 +117,10 @@
 	<CheckBoxPreference android:summary="Enables fonts larger than default for most text."
 		android:key="large_fonts" android:title="Large Fonts" />
 	<CheckBoxPreference
+		android:summary="Sorts transactions with the most recent date on top."
+		android:key="top_sort" android:title="Top Sorting"
+		android:defaultValue="false" />
+	<CheckBoxPreference
 		android:summary="Automatically starts in the account set as the primary."
 		android:title="Default to Primary" android:key="primary_default"
 		android:defaultValue="false" />

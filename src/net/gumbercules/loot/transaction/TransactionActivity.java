@@ -196,7 +196,12 @@ public class TransactionActivity extends ListActivity
     	
     	ListView view = getListView();
         registerForContextMenu(view);
-        view.setStackFromBottom(true);
+        
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!prefs.getBoolean("top_sort", false))
+        {
+        	view.setStackFromBottom(true);
+        }
         
         CheckBox cb = (CheckBox)findViewById(R.id.show_posted);
         cb.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener()
