@@ -92,7 +92,7 @@
 	</PreferenceScreen>
 	<PreferenceScreen android:key="color_cat"
 		android:title="Colors" android:summary="Various options regarding colors.">
-		<CheckBoxPreference android:defaultValue="false"
+		<CheckBoxPreference android:defaultValue="true"
 			android:title="Colors" android:key="color"
 			android:summary="Display transactions in color based on type." />
 		<net.gumbercules.loot.preferences.ColorSchemePreference
@@ -101,11 +101,11 @@
 			android:dependency="color" />
 		<CheckBoxPreference
 			android:summary="Change the color of the background instead of the text."
-			android:defaultValue="false" android:dependency="color" android:key="color_background"
+			android:defaultValue="true" android:dependency="color" android:key="color_background"
 			android:title="Color Backgrounds" />
 		<CheckBoxPreference android:title="Negative Balance"
 			android:summary="Color negative balances in account summaries."
-			android:key="color_balance" />
+			android:key="color_balance" android:defaultValue="true" />
 	</PreferenceScreen>
 	<CheckBoxPreference android:key="running_balance"
 		android:title="Running Balance"

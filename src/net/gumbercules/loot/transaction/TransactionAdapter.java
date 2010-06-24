@@ -77,8 +77,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		final int Color_LTCYAN = Color.rgb(185, 255, 255);
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		mShowColors = prefs.getBoolean("color", false);
-		mColorBackgrounds = prefs.getBoolean("color_background", false);
+		mShowColors = prefs.getBoolean("color", true);
+		mColorBackgrounds = prefs.getBoolean("color_background", true);
 		mShowRunningBalance = prefs.getBoolean("running_balance", false);
 		
 		mColorCheckBudget = prefs.getInt("color_budget_check", prefs.getInt("bc_color", Color_LTCYAN));
