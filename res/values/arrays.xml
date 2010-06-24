@@ -74,6 +74,7 @@
 	<string-array name="changelog">
 	    <item>\n
 &#8226; Made the option to show colors on by default\n
+&#8226; Added option to sort transactions with most recent on top\n
 &#8226; Fixed bug which caused force closing when calculating running balances\n
 &#8226; Added option to show no balance on widgets (Premium)\n
 	    </item>
