@@ -166,9 +166,9 @@ public class TransactionActivity extends ListActivity
     		mTa.setResource(layoutResId);
     		mTa.setContext(this);
     		setListAdapter(mTa);
+    		mTa.updatePreferenceValues();
     		setBalances();
     	}
-		mTa.updatePreferenceValues();
 
 		final TransactionAdapter.TransactionFilter filter = 
 			(TransactionAdapter.TransactionFilter)mTa.getFilter();
@@ -605,6 +605,7 @@ public class TransactionActivity extends ListActivity
     	}
 
     	mTa.clear();
+    	mTa.updatePreferenceValues();
     	mTa.add(mAcct.getTransactions());
 		mTa.sort();
 		mTa.calculateRunningBalances();
@@ -699,6 +700,10 @@ public class TransactionActivity extends ListActivity
 		{
 			mCurrentBundle = data.getExtras();
 		}
+		
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        getListView().setStackFromBottom(!prefs.getBoolean("top_sort", false));
+        mTa.sort();
 		
 		mTa.updatePreferenceValues();
 		mTa.notifyDataSetChanged();

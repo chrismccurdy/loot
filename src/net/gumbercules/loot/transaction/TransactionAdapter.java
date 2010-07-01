@@ -50,6 +50,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private boolean mShowColors;
 	private boolean mColorBackgrounds;
 	private boolean mShowRunningBalance;
+	private boolean mTopSort;
 	
 	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
 	{
@@ -87,14 +88,108 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		mColorWithdraw = prefs.getInt("color_withdraw", prefs.getInt("aw_color", Color.YELLOW));
 		mColorDepositBudget = prefs.getInt("color_budget_deposit", prefs.getInt("bd_color", Color_LTGREEN));
 		mColorDeposit = prefs.getInt("color_deposit", prefs.getInt("ad_color", Color.GREEN));
+		
+		mTopSort = prefs.getBoolean("top_sort", false);
 	}
 	
 	public void calculateRunningBalances()
 	{
-		calculateRunningBalances(0);
+		if (mTopSort)
+		{
+			calculateRunningBalancesTopSort();
+		}
+		else
+		{
+			calculateRunningBalancesBottomSort();
+		}
+	}
+
+	public void calculateRunningBalances(int pos)
+	{
+		if (mTopSort)
+		{
+			calculateRunningBalancesTopSort(pos);
+		}
+		else
+		{
+			calculateRunningBalancesBottomSort(pos);
+		}
 	}
 	
-	public void calculateRunningBalances(int pos)
+	private void calculateRunningBalancesTopSort()
+	{
+		calculateRunningBalancesTopSort(-1);
+	}
+	
+	private void calculateRunningBalancesTopSort(int pos)
+	{
+		if (!mShowRunningBalance)
+		{
+			return;
+		}
+
+		int len = mOriginalList.size();
+		int len_diff = mRunningBalances.size() - len;
+
+		for (int i = 0; i < len_diff; ++i)
+		{
+			mRunningBalances.remove(0);
+		}
+
+		if (!mRunningBalances.isEmpty())
+		{
+			mRunningBalances.subList(0, pos + 1).clear();
+		}
+		
+		len_diff = (len_diff > 0 ? 0 : len_diff);
+		
+		double cur_balance, prev_balance, amount;
+		Transaction trans;
+		
+		if (pos == (len - 1) || mRunningBalances.isEmpty())
+		{
+			Account acct = Account.getAccountById(mAcctId);
+			prev_balance = acct.initialBalance;
+		}
+		else
+		{
+			prev_balance = mRunningBalances.get(0);
+		}
+		
+		int start = (pos == -1 ? len - 1 : pos - len_diff);
+		
+		for (int i = start; i >= 0; --i)
+		{
+			if (i > mOriginalList.size())
+			{
+				continue;
+			}
+			
+			trans = mOriginalList.get(i);
+			if (trans.type == Transaction.DEPOSIT)
+			{
+				amount = trans.amount;
+			}
+			else
+			{
+				amount = -trans.amount;
+			}
+			
+			cur_balance = prev_balance + amount;
+			mRunningBalances.add(0, cur_balance);
+			
+			prev_balance = cur_balance;
+		}
+		
+		notifyDataSetChanged();
+	}
+	
+	private void calculateRunningBalancesBottomSort()
+	{
+		calculateRunningBalancesBottomSort(0);
+	}
+	
+	private void calculateRunningBalancesBottomSort(int pos)
 	{
 		// don't waste time with the calculations if it's not being shown
 		if (!mShowRunningBalance)

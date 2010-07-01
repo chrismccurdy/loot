@@ -72,6 +72,9 @@
 		<item>Automatic backups will run 5 minutes after your most recent change when the option is enabled.</item>
 	</string-array>
 	<string-array name="changelog">
+		<item>\n
+&#8226; Fixed bug calculating running balance while sorting from top\n
+		</item>
 	    <item>\n
 &#8226; Made the option to show colors on by default\n
 &#8226; Added option to sort transactions with most recent on top\n
@@ -190,6 +193,7 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
+		<item>2.2.3</item>
 	    <item>2.2.2</item>
 	    <item>2.2.1</item>
 	    <item>2.2.0</item>
