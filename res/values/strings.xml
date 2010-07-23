@@ -42,6 +42,8 @@
 	<string name="backup_successful">Database backed up to SD card.</string>
 	<string name="backup_failed">Database could not be backed up to SD card.
 	</string>
+	<string name="restore_confirm">Are you sure you wish to restore the database?</string>
+	<string name="confirm_string">Do not ask next time.</string>
 	<string name="restore_successful">Database restored from SD card. Application will be
 		stopped to reload the database.</string>
 	<string name="restore_failed">Database could not be restored from the SD card.

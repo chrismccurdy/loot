@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Currency;
 
 import net.gumbercules.loot.ChangeLogActivity;
+import net.gumbercules.loot.ConfirmationDialog;
 import net.gumbercules.loot.PinActivity;
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.TipsDialog;
@@ -162,8 +163,7 @@ public class AccountChooser extends ListActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		CopyThread ct;
-		ProgressDialog pd = new ProgressDialog(this);
+		final ProgressDialog pd = new ProgressDialog(this);
 		pd.setCancelable(true);
 		pd.setMax(100);
 		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -189,7 +189,7 @@ public class AccountChooser extends ListActivity
     	case BACKUP_ID:
     		if (MemoryStatus.checkMemoryStatus(this, true))
     		{
-	    		ct = new CopyThread(CopyThread.BACKUP, pd, this);
+	    		CopyThread ct = new CopyThread(CopyThread.BACKUP, pd, this);
 	    		pd.setMessage(getResources().getText(R.string.backing_up));
 	    		pd.show();
 	    		ct.start();
@@ -199,10 +199,38 @@ public class AccountChooser extends ListActivity
     	case BU_RESTORE_ID:
     		if (MemoryStatus.checkMemoryStatus(this, false))
     		{
-	    		ct = new CopyThread(CopyThread.RESTORE, pd, this);
+    			// ensure the user wishes to really restore the database
+    			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    			
+	    		final CopyThread ct = new CopyThread(CopyThread.RESTORE, pd, getBaseContext());
 	    		pd.setMessage(getResources().getText(R.string.restoring));
-	    		pd.show();
-	    		ct.start();
+
+	    		if (prefs.getBoolean("show_confirmation_on_restore", true))
+    			{
+	    			ConfirmationDialog cd = new ConfirmationDialog(this);
+	    			cd.setButton(ConfirmationDialog.BUTTON_POSITIVE, getResources().getText(R.string.yes),
+	    					new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface dialog, int which)
+							{
+					    		pd.show();
+					    		ct.start();
+							}
+						});
+	    			cd.setButton(ConfirmationDialog.BUTTON_NEGATIVE, getResources().getText(R.string.no),
+	    					new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface dialog, int which) { }
+						});
+	    			cd.show();
+    			}
+    			else
+    			{
+		    		pd.show();
+		    		ct.start();
+    			}
     		}
     		return true;
     		
