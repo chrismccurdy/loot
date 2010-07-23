@@ -65,7 +65,8 @@ public class SettingsActivity extends PreferenceActivity
 		String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
 				"color_budget_deposit", "color_check", "color_budget_check", 
 				"use_custom_colors", "date_format", "csv_order", "csv_debit_type",
-				"csv_credit_type", "auto_backup", /*"cal_enabled", "calendar_tag"*/};
+				"csv_credit_type", "auto_backup", "import_search",
+				/*"cal_enabled", "calendar_tag"*/};
 
 		if (type != null)
 		{
@@ -225,7 +226,8 @@ public class SettingsActivity extends PreferenceActivity
 	{
 		final String[] cr_keys = {"aw", "bw", "ad", "bd", "ac", "bc",
 				 "custom", "date_format", "order", "debit_type",
-				 "credit_type", "auto_backup", "calendar", "tag"};
+				 "credit_type", "auto_backup", "import_search", 
+				 "calendar", "tag"};
 		
 		int i = 0;
 		final ContentResolver cr = getContentResolver();
@@ -249,7 +251,7 @@ public class SettingsActivity extends PreferenceActivity
 					}
 				});
 			}
-			else if (pref.equals("auto_backup"))
+			else if (pref.equals("auto_backup") || pref.equals("import_search"))
 			{
 				CheckBoxPreference backup = (CheckBoxPreference)findPreference(pref);
 				backup.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()

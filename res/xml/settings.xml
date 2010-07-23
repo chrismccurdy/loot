@@ -34,6 +34,9 @@
 			android:negativeButtonText="@string/cancel"
 			android:summary="Specifies a date format to use for importing and exporting."
 			android:dialogMessage="@string/date_format_message" />
+		<CheckBoxPreference android:key="import_search"
+			android:summary="Only search the &quot;loot&quot; directory on the external storage device."
+			android:title="Restrict Import Search" android:defaultValue="false" />
 		<CheckBoxPreference android:key="auto_backup"
 			android:summary="Backup the database automatically after changes."
 			android:title="Automatic Backup" android:defaultValue="false" />
