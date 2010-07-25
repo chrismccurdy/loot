@@ -60,4 +60,6 @@
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
 	<uses-feature android:name="android.hardware.touchscreen" />
 	<supports-screens />
+	<meta-data android:name="com.google.android.backup.api_key"
+		android:value="AEdPqrEAAAAIQziDGE8ySN-KD7SlsbPnsZL6l_6-goAC9Zi9iw" />
 </manifest> 
