@@ -23,4 +23,24 @@
 			android:layout_weight="1" android:gravity="right" android:text="$0.00"
 			android:textSize="16dip" />
 	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:minHeight="32dp"
+		android:id="@+id/ActionLayout">
+		<ImageButton android:id="@+id/new_account_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@drawable/action_add" android:layout_marginRight="1dp" />
+		<ImageButton android:id="@+id/backup_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@drawable/action_backup" android:layout_marginRight="1dp" />
+		<ImageButton android:id="@+id/export_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@drawable/action_export" android:layout_marginRight="1dp" />
+		<ImageButton android:id="@+id/chart_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@drawable/action_chart" />
+	</LinearLayout>
 </LinearLayout>

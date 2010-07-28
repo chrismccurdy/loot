@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -111,6 +112,63 @@ public class AccountChooser extends ListActivity
 				.show();
 		}
 	}
+	
+	private void setupActionBar()
+	{
+    	final Context context = this;
+    	final PremiumCaller pc = new PremiumCaller(this);
+    	
+    	ImageButton button = (ImageButton)findViewById(R.id.new_account_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				createAccount();
+			}
+		});
+    	
+    	button = (ImageButton)findViewById(R.id.backup_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+	    		if (MemoryStatus.checkMemoryStatus(context, true))
+	    		{
+	    			ProgressDialog pd = new ProgressDialog(context);
+	    			pd.setCancelable(true);
+	    			pd.setMax(100);
+	    			pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+		    		CopyThread ct = new CopyThread(CopyThread.BACKUP, pd, context);
+		    		pd.setMessage(getResources().getText(R.string.backing_up));
+		    		pd.show();
+		    		ct.start();
+	    		}
+			}
+		});
+    	
+    	button = (ImageButton)findViewById(R.id.export_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				pc.showActivity(PremiumCaller.EXPORT);
+			}
+		});
+
+    	button = (ImageButton)findViewById(R.id.chart_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				pc.showActivity(PremiumCaller.CHART);
+			}
+		});
+	}
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id)
@@ -127,35 +185,23 @@ public class AccountChooser extends ListActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		menu.add(0, NEW_ACCT_ID, 0, R.string.new_account)
-			.setShortcut('1', 'n')
-			.setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, RESTORE_ID, 0, R.string.restore_account)
-			.setShortcut('2', 'h')
+			.setShortcut('1', 'h')
 			.setIcon(android.R.drawable.ic_menu_revert);
 		menu.add(0, CLEAR_ID, 0, R.string.clear_account)
-			.setShortcut('3', 'c')
+			.setShortcut('2', 'c')
 			.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
-		menu.add(0, BACKUP_ID, 0, R.string.backup)
-			.setShortcut('4', 'b')
-			.setIcon(android.R.drawable.ic_menu_save);
 		menu.add(0, BU_RESTORE_ID, 0, R.string.restore_db)
-			.setShortcut('5', 'r')
+			.setShortcut('3', 'r')
 			.setIcon(android.R.drawable.ic_menu_set_as);
 		menu.add(0, RMANAGER_ID, 0, R.string.repeat_manager)
-			.setShortcut('6', 'm')
+			.setShortcut('4', 'm')
 			.setIcon(android.R.drawable.ic_menu_recent_history);
-		menu.add(0, EXPORT_ID, 0, R.string.export)
-			.setShortcut('7', 'x')
-			.setIcon(android.R.drawable.ic_menu_upload);
-		menu.add(0, CHART_ID, 0, R.string.chart)
-			.setShortcut('8', 'g')
-			.setIcon(android.R.drawable.ic_menu_report_image);
 		menu.add(0, CHANGELOG_ID, 0, R.string.changelog)
-			.setShortcut('9', 'l')
+			.setShortcut('5', 'l')
 			.setIcon(android.R.drawable.ic_menu_agenda);
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
-			.setShortcut('0', 's')
+			.setShortcut('6', 's')
 			.setIcon(android.R.drawable.ic_menu_preferences);
 		return true;
 	}
@@ -163,17 +209,8 @@ public class AccountChooser extends ListActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		final ProgressDialog pd = new ProgressDialog(this);
-		pd.setCancelable(true);
-		pd.setMax(100);
-		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		
 		switch (item.getItemId())
     	{
-    	case NEW_ACCT_ID:
-    		createAccount();
-    		return true;
-    		
     	case RESTORE_ID:
     		restoreAccount();
     		return true;
@@ -186,19 +223,14 @@ public class AccountChooser extends ListActivity
     		showSettings();
     		return true;
     		
-    	case BACKUP_ID:
-    		if (MemoryStatus.checkMemoryStatus(this, true))
-    		{
-	    		CopyThread ct = new CopyThread(CopyThread.BACKUP, pd, this);
-	    		pd.setMessage(getResources().getText(R.string.backing_up));
-	    		pd.show();
-	    		ct.start();
-    		}
-    		return true;
-    		
     	case BU_RESTORE_ID:
     		if (MemoryStatus.checkMemoryStatus(this, false))
     		{
+    			final ProgressDialog pd = new ProgressDialog(this);
+    			pd.setCancelable(true);
+    			pd.setMax(100);
+    			pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
     			// ensure the user wishes to really restore the database
     			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     			
@@ -232,16 +264,6 @@ public class AccountChooser extends ListActivity
 		    		ct.start();
     			}
     		}
-    		return true;
-    		
-    	case EXPORT_ID:
-    		PremiumCaller export = new PremiumCaller(this);
-    		export.showActivity(PremiumCaller.EXPORT);
-    		return true;
-    		
-    	case CHART_ID:
-    		PremiumCaller graph = new PremiumCaller(this);
-    		graph.showActivity(PremiumCaller.CHART);
     		return true;
     		
     	case CHANGELOG_ID:
@@ -552,6 +574,7 @@ public class AccountChooser extends ListActivity
 		}
 		
 		setContentView(content_res);
+		setupActionBar();
 		mTbLayout = (LinearLayout)findViewById(R.id.total_balance_layout);
 		mTotalBalance = (TextView)findViewById(R.id.total_balance);
 	}

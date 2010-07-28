@@ -22,63 +22,61 @@
 			android:layout_width="fill_parent">
 			<Button android:id="@+id/Button01" android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
 				android:textStyle="bold" android:text="1" android:tag="1"
-				android:typeface="normal" android:height="65dip" android:textSize="24dip" />
+				android:typeface="normal" android:height="65dip" android:textSize="24dip"
+				android:background="@drawable/gradient_button" />
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
+				android:layout_marginLeft="1dip" android:layout_marginRight="1dip"
 				android:textStyle="bold" android:textSize="24dip" android:id="@+id/Button02"
 				android:tag="2" android:text="2" android:typeface="normal"
-				android:height="65dip" />
+				android:height="65dip" android:background="@drawable/gradient_button" />
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
 				android:textStyle="bold" android:textSize="24dip" android:tag="3"
 				android:text="3" android:typeface="normal" android:id="@+id/Button03"
-				android:height="65dip" />
+				android:height="65dip" android:background="@drawable/gradient_button" />
 		</TableRow>
 		<TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content"
 			android:layout_width="fill_parent">
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
 				android:textStyle="bold" android:textSize="24dip" android:typeface="normal"
 				android:tag="4" android:text="4" android:id="@+id/Button04"
-				android:height="65dip" />
+				android:height="65dip" android:background="@drawable/gradient_button"
+				android:layout_marginTop="1dp" android:layout_marginBottom="1dp" />
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
+				android:layout_marginLeft="1dip" android:layout_marginRight="1dip"
 				android:textStyle="bold" android:textSize="24dip" android:typeface="normal"
 				android:id="@+id/Button05" android:tag="5" android:text="5"
-				android:height="65dip" />
+				android:height="65dip" android:background="@drawable/gradient_button"
+				android:layout_marginTop="1dp" android:layout_marginBottom="1dp" />
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
 				android:textStyle="bold" android:textSize="24dip" android:typeface="normal"
 				android:tag="6" android:text="6" android:id="@+id/Button06"
-				android:height="65dip" />
+				android:height="65dip" android:background="@drawable/gradient_button"
+				android:layout_marginTop="1dp" android:layout_marginBottom="1dp" />
 		</TableRow>
 		<TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content"
 			android:layout_width="fill_parent">
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
 				android:textStyle="bold" android:textSize="24dip" android:typeface="normal"
 				android:id="@+id/Button07" android:tag="7" android:text="7"
-				android:height="65dip" />
+				android:height="65dip" android:background="@drawable/gradient_button" />
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
+				android:layout_marginLeft="1dip" android:layout_marginRight="1dip"
 				android:textStyle="bold" android:textSize="24dip" android:typeface="normal"
 				android:text="8" android:tag="8" android:id="@+id/Button08"
-				android:height="65dip" />
+				android:height="65dip" android:background="@drawable/gradient_button" />
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
-				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
 				android:textStyle="bold" android:textSize="24dip" android:typeface="normal"
 				android:id="@+id/Button09" android:tag="9" android:text="9"
-				android:height="65dip" />
+				android:height="65dip" android:background="@drawable/gradient_button" />
 		</TableRow>
 		<TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content"
 			android:layout_width="fill_parent">
@@ -87,11 +85,12 @@
 				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"
 				android:text="" android:visibility="invisible" android:id="@+id/ButtonHolder" />
 			<Button android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:layout_marginLeft="5dip"
-				android:layout_marginRight="5dip" android:textStyle="bold"
+				android:layout_height="wrap_content" android:layout_marginLeft="1dip"
+				android:layout_marginRight="1dip" android:textStyle="bold"
 				android:textSize="24dip" android:typeface="normal" android:text="0"
 				android:tag="0" android:id="@+id/Button00" android:height="65dip"
-				android:layout_weight="1" />
+				android:layout_weight="1" android:background="@drawable/gradient_button"
+				android:layout_marginTop="1dp" android:layout_marginBottom="1dp" />
 			<Button android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_weight="1"
 				android:layout_marginLeft="5dip" android:layout_marginRight="5dip"

@@ -90,7 +90,7 @@
 	<string name="total_balance">Total Balance:</string>
 	<string name="p_features">Features in Loot Premium include:</string>
 	<string name="p_importing">&#8226; Importing and exporting CSV and Quicken
-		files</string>
+		(2006 and earlier QIF) files</string>
 	<string name="p_colors">&#8226; Custom color schemes</string>
 	<string name="p_charts">&#8226; Charting across all accounts</string>
 	<string name="p_widget">&#8226; Widget for quick account access</string>

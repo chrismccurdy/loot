@@ -194,6 +194,8 @@ public class TransactionActivity extends ListActivity
     	};
     	searchEdit.addTextChangedListener(searchChanged);
     	
+    	setupActionBar();
+    	
     	ListView view = getListView();
         registerForContextMenu(view);
         
@@ -321,39 +323,17 @@ public class TransactionActivity extends ListActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
     	boolean result = super.onCreateOptionsMenu(menu);
-    	menu.add(0, NEW_TRANSACT_ID, 0, R.string.new_trans)
-    		.setShortcut('1', 'n')
-    		.setIcon(android.R.drawable.ic_menu_add);
-    	
-    	// only show transfers if there is more than one account
-    	if (Account.getAccountIds().length > 1)
-    		menu.add(0, NEW_TRANSFER_ID, 0, R.string.transfer)
-    			.setShortcut('2', 't')
-    			.setIcon(android.R.drawable.ic_menu_send);
-    	
     	menu.add(0, SORT_ID, 0, R.string.sort)
-    		.setShortcut('3', 'o')
+    		.setShortcut('1', 'o')
     		.setIcon(android.R.drawable.ic_menu_sort_by_size);
-    	menu.add(0, SEARCH_ID, 0, R.string.search)
-    		.setShortcut('4', 'e')
-    		.setIcon(android.R.drawable.ic_menu_search);
     	menu.add(0, PURGE_ID, 0, R.string.purge)
-    		.setShortcut('5', 'p')
+    		.setShortcut('2', 'p')
     		.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
-    	menu.add(0, IMPORT_ID, 0, R.string.import_)
-    		.setShortcut('6', 'i')
-    		.setIcon(android.R.drawable.ic_menu_more);
-    	menu.add(0, EXPORT_ID, 0, R.string.export)
-    		.setShortcut('7', 'x')
-    		.setIcon(android.R.drawable.ic_menu_upload);
-    	menu.add(0, CHART_ID, 0, R.string.chart)
-    		.setShortcut('8', 'g')
-    		.setIcon(android.R.drawable.ic_menu_report_image);
     	menu.add(0, RMANAGER_ID, 0, R.string.repeat_manager)
-    		.setShortcut('9', 'm')
+    		.setShortcut('3', 'm')
     		.setIcon(android.R.drawable.ic_menu_recent_history);
     	menu.add(0, SETTINGS_ID, 0, R.string.settings)
-    		.setShortcut('0', 's')
+    		.setShortcut('4', 's')
     		.setIcon(android.R.drawable.ic_menu_preferences);
     	
     	return result;
@@ -364,39 +344,12 @@ public class TransactionActivity extends ListActivity
     {
     	switch (item.getItemId())
     	{
-    	case NEW_TRANSACT_ID:
-    		createTransaction();
-    		return true;
-    		
-    	case NEW_TRANSFER_ID:
-    		createTransfer();
-    		return true;
-    		
     	case SORT_ID:
     		sortDialog();
     		return true;
     		
-    	case SEARCH_ID:
-    		toggleSearch();
-    		return true;
-    		
     	case PURGE_ID:
     		purgeDialog();
-    		return true;
-    		
-    	case IMPORT_ID:
-    		PremiumCaller imp = new PremiumCaller(this);
-    		imp.showActivity(PremiumCaller.IMPORT, mAcct.id(), ACTIVITY_CREATE);
-    		return true;
-    		
-    	case EXPORT_ID:
-    		PremiumCaller export = new PremiumCaller(this);
-    		export.showActivity(PremiumCaller.EXPORT, mAcct.id());
-    		return true;
-    		
-    	case CHART_ID:
-    		PremiumCaller graph = new PremiumCaller(this);
-    		graph.showActivity(PremiumCaller.CHART, mAcct.id());
     		return true;
     		
     	case SETTINGS_ID:
@@ -411,6 +364,71 @@ public class TransactionActivity extends ListActivity
     	}
     	
     	return super.onOptionsItemSelected(item);
+    }
+    
+    private void setupActionBar()
+    {
+    	final PremiumCaller pc = new PremiumCaller(this);
+    	ImageButton button = (ImageButton)findViewById(R.id.new_transaction_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				createTransaction();
+			}
+		});
+    	button = (ImageButton)findViewById(R.id.new_transfer_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				createTransfer();
+			}
+		});
+    	// disable the transfer button if there is only one account
+    	if (Account.getAccountIds().length <= 1)
+    	{
+    		button.setEnabled(false);
+    	}
+    	
+    	button = (ImageButton)findViewById(R.id.search_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				toggleSearch();
+			}
+		});
+    	button = (ImageButton)findViewById(R.id.import_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				pc.showActivity(PremiumCaller.IMPORT, mAcct.id(), ACTIVITY_CREATE);
+			}
+		});
+    	button = (ImageButton)findViewById(R.id.export_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				pc.showActivity(PremiumCaller.EXPORT, mAcct.id());
+			}
+		});
+    	button = (ImageButton)findViewById(R.id.chart_button);
+    	button.setOnClickListener(new ImageButton.OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				pc.showActivity(PremiumCaller.CHART, mAcct.id());
+			}
+		});
     }
     
 	private void showSettings()
@@ -573,10 +591,12 @@ public class TransactionActivity extends ListActivity
 		NumberFormat nf = NumberFormat.getCurrencyInstance();
 		String new_currency = Database.getOptionString("override_locale");
 		if (new_currency != null && !new_currency.equals(""))
+		{
 			nf.setCurrency(Currency.getInstance(new_currency));
+		}
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean color = prefs.getBoolean("color_balance", false);
+		boolean color = prefs.getBoolean("color_balance", true);
 		
 		setBalance(postedValue, posted, color, nf);
 		setBalance(balanceValue, balance, color, nf);
