@@ -10,7 +10,7 @@
 			<MultiAutoCompleteTextView
 				android:layout_width="wrap_content" android:layout_weight="1"
 				android:id="@+id/SearchEdit" android:layout_height="fill_parent"
-				android:hint="Search" />
+				android:hint="Search" android:completionThreshold="1" />
 			<ImageButton android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/ClearButton"
 				android:src="@android:drawable/ic_input_delete" />
@@ -26,8 +26,8 @@
 		</LinearLayout>
 	</LinearLayout>
 	<ListView android:layout_height="wrap_content" android:id="@android:id/list"
-	android:layout_width="fill_parent" android:layout_weight="100"
-	android:fastScrollEnabled="true" />
+		android:layout_width="fill_parent" android:layout_weight="100"
+		android:fastScrollEnabled="false" android:fadeScrollbars="true" />
 	<TextView android:layout_height="wrap_content" android:id="@android:id/empty"
 		android:text="Use the menu to add new transactions."
 		android:layout_width="fill_parent" android:layout_weight="100"
@@ -71,5 +71,38 @@
 				android:gravity="top|right" android:layout_width="fill_parent"
 				android:layout_weight="1" android:id="@+id/budgetValue" />
 		</LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:minHeight="32dp"
+		android:id="@+id/ActionLayout">
+		<ImageButton android:id="@+id/new_transaction_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@android:drawable/ic_menu_add"
+			android:layout_marginRight="1dp" />
+		<ImageButton android:id="@+id/new_transfer_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@android:drawable/ic_menu_send"
+			android:layout_marginRight="1dp" />
+		<ImageButton android:id="@+id/search_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@android:drawable/ic_menu_search"
+			android:layout_marginRight="1dp" />
+		<ImageButton android:id="@+id/import_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@android:drawable/ic_menu_more"
+			android:layout_marginRight="1dp" />
+		<ImageButton android:id="@+id/export_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@android:drawable/ic_menu_upload"
+			android:layout_marginRight="1dp" />
+		<ImageButton android:id="@+id/chart_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:background="@drawable/gradient_button" android:layout_weight="1"
+			android:src="@android:drawable/ic_menu_report_image" />
 	</LinearLayout>
 </LinearLayout>
