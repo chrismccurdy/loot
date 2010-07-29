@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Currency;
+import java.util.Date;
 
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.account.Account;
@@ -269,6 +270,19 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			if (mOriginalList.get(i).id() == id)
 				return i;
+		}
+		
+		return -1;
+	}
+	
+	public int findItemByDate(Date d)
+	{
+		for (int i = 0; i < mTransList.size(); ++i)
+		{
+			if (mTransList.get(i).date.after(d))
+			{
+				return i - 1;
+			}
 		}
 		
 		return -1;

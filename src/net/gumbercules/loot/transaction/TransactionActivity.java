@@ -99,6 +99,7 @@ public class TransactionActivity extends ListActivity
 	private static boolean showSearch = false;
 	private static String searchString = "";
 	
+	private boolean new_account;
 	private boolean mLargeFonts;
 	
 	private Bundle mCurrentBundle;
@@ -117,7 +118,7 @@ public class TransactionActivity extends ListActivity
 		
 		Bundle bun = getIntent().getExtras();
     	int acct_id = bun.getInt(Account.KEY_ID);
-    	boolean new_account = false;
+    	new_account = false;
     	if (mAcct == null || acct_id != mAcct.id())
     	{
     		new_account = true;
@@ -241,6 +242,8 @@ public class TransactionActivity extends ListActivity
 	{
 		super.onResume();
 		
+		int scroll_pos = -1;
+		
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     	boolean new_large_fonts = prefs.getBoolean("large_fonts", false); 
     	if (mLargeFonts != new_large_fonts)
@@ -255,7 +258,8 @@ public class TransactionActivity extends ListActivity
 				Bundle extras = mCurrentBundle;
 				if (extras.containsKey(Transaction.KEY_ID))
 				{
-					updateList(extras.getInt(Transaction.KEY_ID), extras.getInt(KEY_REQ));
+					int trans_id = extras.getInt(Transaction.KEY_ID);
+					scroll_pos = updateList(trans_id, extras.getInt(KEY_REQ));
 				}
 				else if (extras.containsKey(KEY_CHANGES))
 				{
@@ -268,6 +272,7 @@ public class TransactionActivity extends ListActivity
 							array[i] = list.get(i);
 						}
 						updateList(array, ACTIVITY_CREATE);
+						scroll_pos = mTa.getPosition(Transaction.getTransactionById(array[0]));
 					}
 				}
 			}
@@ -276,7 +281,23 @@ public class TransactionActivity extends ListActivity
 				Logger.logStackTrace(e, this);
 			}
     	}
+    	
+    	if (scroll_pos == -1 && new_account)
+    	{
+    		Date d = new Date();
+    		d.setHours(0);
+    		d.setMinutes(0);
+    		d.setSeconds(0);
+    		scroll_pos = mTa.findItemByDate(d);
+    	}
+    	
+		// if the SDK supports autoscrolling, scroll to this position
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO && scroll_pos != -1)
+		{
+			getListView().smoothScrollToPosition(scroll_pos);
+		}
 
+		new_account = false;
 		mCurrentBundle = null;
 	}
 
@@ -639,7 +660,7 @@ public class TransactionActivity extends ListActivity
     	fillList(true);
     }
     
-    private void updateList(int trans_id, int request)
+    private int updateList(int trans_id, int request)
     {
     	addRepeatedTransactions();
     	TransactionAdapter ta = mTa;
@@ -668,6 +689,8 @@ public class TransactionActivity extends ListActivity
 
     	ta.calculateRunningBalances(pos);
 		setBalances();
+		
+		return pos;
     }
     
     private void updateList(int[] ids, int request)
