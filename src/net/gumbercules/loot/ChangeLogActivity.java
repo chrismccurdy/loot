@@ -2,21 +2,36 @@ package net.gumbercules.loot;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class ChangeLogActivity extends ListActivity
 {
+	private BitmapDrawable mCollapsed;
+	private BitmapDrawable mExpanded;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
+		Bitmap bmp = BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_menu_more);
+		Matrix mtx = new Matrix();
+		mtx.postRotate(-90.0f);
+		Bitmap new_bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), mtx, true);
+		mCollapsed = new BitmapDrawable(new_bmp);
+		mExpanded = new BitmapDrawable(bmp);
 		
 		setTitle(R.string.changelog);
 		setListAdapter(new ChangeLogAdapter(this));
@@ -88,6 +103,7 @@ public class ChangeLogActivity extends ListActivity
 	public class ChangeLogView extends LinearLayout
 	{
 		private TextView mTitle;
+		private ImageView mImage;
 		private TextView mLog;
 		
 		public ChangeLogView(Context context, String title, String log, boolean expanded)
@@ -96,10 +112,20 @@ public class ChangeLogActivity extends ListActivity
 			
 			setOrientation(VERTICAL);
 			
+			LinearLayout header = new LinearLayout(context);
+			header.setOrientation(LinearLayout.HORIZONTAL);
+			
 			mTitle = new TextView(context);
 			mTitle.setText(title);
 			mTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-            addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 
+            header.addView(mTitle, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 
+            		LayoutParams.WRAP_CONTENT, 1.0f));
+            mImage = new ImageView(context);
+            mImage.setImageDrawable(mCollapsed);
+            header.addView(mImage, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+            		LayoutParams.WRAP_CONTENT));
+            
+            addView(header, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
             		LayoutParams.WRAP_CONTENT));
 			
 			mLog = new TextView(context);
@@ -124,6 +150,7 @@ public class ChangeLogActivity extends ListActivity
         public void setExpanded(boolean expanded)
         {
             mLog.setVisibility(expanded ? VISIBLE : GONE);
+            mImage.setImageDrawable(expanded ? mExpanded : mCollapsed);
         }
 	}
 }

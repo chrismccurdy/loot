@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class Database
 {
-	private final static String DB_PATH		= "/data/data/net.gumbercules.loot/LootDB.db";
+	public final static String DB_PATH		= "/data/data/net.gumbercules.loot/LootDB.db";
 	private final static int DB_VERSION		= 6;
 	private static SQLiteDatabase lootDB	= null;
 	

@@ -37,9 +37,14 @@
 		<CheckBoxPreference android:key="import_search"
 			android:summary="Only search the &quot;loot&quot; directory on the external storage device."
 			android:title="Restrict Import Search" android:defaultValue="false" />
-		<CheckBoxPreference android:key="auto_backup"
-			android:summary="Backup the database automatically after changes."
-			android:title="Automatic Backup" android:defaultValue="false" />
+		<PreferenceCategory android:title="Backup Options" android:key="backup_opts">
+			<CheckBoxPreference android:key="auto_backup"
+				android:summary="Backup the database automatically after changes."
+				android:title="Automatic Backup" android:defaultValue="false" />
+			<CheckBoxPreference android:key="online_backup"
+			    android:summary="Backup the database using online service (requires 2.2 or greater)."
+			    android:title="Online Backup" android:defaultValue="false" />
+		</PreferenceCategory>
 		<PreferenceCategory android:title="CSV Options"
 			android:key="premium_csv">
 			<EditTextPreference android:defaultValue="%d,%c,%p,%a,%t"
