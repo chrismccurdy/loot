@@ -463,7 +463,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		CheckBox postedCheck = holder.check;
 		
 		if (postedCheck == null)
+		{
 			return convertView;
+		}
 		
 		postedCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
@@ -593,7 +595,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 		else
 		{
-			v.top.setBackgroundColor(v.top.getRootView().getDrawingCacheBackgroundColor());
+			v.top.setBackgroundDrawable(v.top.getRootView().getBackground());
 		}
 		
 		if (dateStr == null)

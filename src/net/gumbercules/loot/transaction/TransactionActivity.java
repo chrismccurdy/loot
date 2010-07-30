@@ -199,6 +199,7 @@ public class TransactionActivity extends ListActivity
     	
     	ListView view = getListView();
         registerForContextMenu(view);
+        //view.setSelector(R.drawable.gradient_button_focused);
         
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (!prefs.getBoolean("top_sort", false))

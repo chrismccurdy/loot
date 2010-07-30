@@ -31,12 +31,12 @@
 		<item>Date</item>
 	</string-array>
 	<string-array name="color_schemes">
-		<item>#ffff00 #ffffb9 #00ff00 #b9ffb9 #00ffff #b9ffff</item>
-		<item>#ffff00 #ffffaa #00ff00 #aaffaa #ff9933 #ffcc99</item>
-		<item>#b1009b #d861c9 #58e000 #a0f06c #ffec00 #fff573</item>
-		<item>#ff1300 #ff7d73 #057d9f #61b7cf #9fee00 #c9f76f</item>
-		<item>#f5330b #fc7e63 #154ca2 #6798e6 #b5e90a #d6f962</item>
-		<item>#07a863 #5be8ab #f5aa0b #fccb63 #c10878 #ee5eb6</item>
+		<item>#efffff00 #efffffb9 #ef00ff00 #efb9ffb9 #ef00ffff #efb9ffff</item>
+		<item>#efffff00 #efffffaa #ef00ff00 #efaaffaa #efff9933 #efffcc99</item>
+		<item>#efb1009b #efd861c9 #ef58e000 #efa0f06c #efffec00 #effff573</item>
+		<item>#efff1300 #efff7d73 #ef057d9f #ef61b7cf #ef9fee00 #efc9f76f</item>
+		<item>#eff5330b #effc7e63 #ef154ca2 #ef6798e6 #efb5e90a #efd6f962</item>
+		<item>#ef07a863 #ef5be8ab #eff5aa0b #effccb63 #efc10878 #efee5eb6</item>
 	</string-array>
 	<string-array name="input_type_name">
 		<item>Phone Keypad</item>
@@ -76,6 +76,7 @@
 &#8226; Added action bars to account and transaction list screens\n
 &#8226; Added feature to jump to transactions when added/jump to current date when loading account\n
 &#8226; Improved aesthetics of the changelog\n
+&#8226; Improved usability selecting transactions on non-touchscreen devices\n
 	    </item>
 		<item>\n
 &#8226; Fixed bug calculating running balance while sorting from top\n

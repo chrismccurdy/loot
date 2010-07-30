@@ -308,7 +308,8 @@ public class ColorPickerPreference extends DialogPreference
 	{
 		if (positiveResult)
 		{
-			mCurrentColor = mCPView.getColor();
+			// set alpha to 0xEF
+			mCurrentColor = (mCPView.getColor() & 0x00FFFFFF) | 0xEF000000;
 			SharedPreferences.Editor editor = getEditor();
 			editor.putInt(getKey(), mCurrentColor);
 			editor.commit();
