@@ -163,23 +163,25 @@ public class AccountChooser extends ListActivity
 	private void initiateBackup(Context context)
 	{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		CopyThread ct = null;
+		ProgressDialog pd = new ProgressDialog(context);
+		pd.setCancelable(true);
+		pd.setMax(100);
+		pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		pd.setMessage(getResources().getText(R.string.backing_up));
+		pd.show();
 		
 		// if the api level is at froyo or later and the preference is selected for online backups
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO &&
 				prefs.getBoolean("online_backup", false))
 		{
+    		ct = new CopyThread(CopyThread.BACKUP, CopyThread.ONLINE, pd, context);
+    		ct.start();
 			new BackupManager(this).dataChanged();
 		}
 		else if (MemoryStatus.checkMemoryStatus(context, true))
 		{
-			ProgressDialog pd = new ProgressDialog(context);
-			pd.setCancelable(true);
-			pd.setMax(100);
-			pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-
-    		CopyThread ct = new CopyThread(CopyThread.BACKUP, pd, context);
-    		pd.setMessage(getResources().getText(R.string.backing_up));
-    		pd.show();
+    		ct = new CopyThread(CopyThread.BACKUP, CopyThread.OFFLINE, pd, context);
     		ct.start();
 		}
 	}
@@ -248,7 +250,8 @@ public class AccountChooser extends ListActivity
     			// ensure the user wishes to really restore the database
     			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     			
-	    		final CopyThread ct = new CopyThread(CopyThread.RESTORE, pd, getBaseContext());
+	    		final CopyThread ct = new CopyThread(CopyThread.RESTORE,
+	    				CopyThread.OFFLINE, pd, getBaseContext());
 	    		pd.setMessage(getResources().getText(R.string.restoring));
 
 	    		if (prefs.getBoolean("show_confirmation_on_restore", true))

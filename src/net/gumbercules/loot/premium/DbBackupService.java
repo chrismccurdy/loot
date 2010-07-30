@@ -20,7 +20,7 @@ public class DbBackupService extends Service
 	@Override
 	public void onStart(Intent intent, int startId)
 	{
-		CopyThread ct = new CopyThread(CopyThread.BACKUP, null, getBaseContext());
+		CopyThread ct = new CopyThread(CopyThread.BACKUP, CopyThread.OFFLINE, null, getBaseContext());
 		ct.start();
 		Log.i(TAG + ".onStart", "database backup started at " + System.currentTimeMillis());
 	}
