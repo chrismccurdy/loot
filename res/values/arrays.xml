@@ -74,6 +74,7 @@
 	<string-array name="changelog">
 	    <item>\n
 &#8226; Added action bars to account and transaction list screens\n
+&#8226; Added feature to jump to transactions when added/jump to current date when loading account\n
 &#8226; Improved aesthetics of the changelog\n
 	    </item>
 		<item>\n

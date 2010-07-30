@@ -291,11 +291,36 @@ public class TransactionActivity extends ListActivity
     		scroll_pos = mTa.findItemByDate(d);
     	}
     	
-		// if the SDK supports autoscrolling, scroll to this position
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO && scroll_pos != -1)
-		{
-			getListView().smoothScrollToPosition(scroll_pos);
-		}
+    	if (scroll_pos != -1)
+    	{
+    		final ListView lv = getListView();
+    		final int pos = scroll_pos >= 1 ? scroll_pos - 1 : 0;
+    		Thread thrd = new Thread()
+    		{
+    			@Override
+    			public void run()
+    			{
+    				try
+					{
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+    				lv.setSelection(pos);
+    			}
+    		};
+    		
+    		if (new_account)
+    		{
+    			thrd.start();
+    		}
+    		else
+    		{
+    			lv.setSelection(pos);
+    		}
+    	}
 
 		new_account = false;
 		mCurrentBundle = null;
