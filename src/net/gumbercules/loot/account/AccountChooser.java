@@ -20,7 +20,6 @@ import net.gumbercules.loot.transaction.TransactionActivity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -177,7 +176,7 @@ public class AccountChooser extends ListActivity
 		{
     		ct = new CopyThread(CopyThread.BACKUP, CopyThread.ONLINE, pd, context);
     		ct.start();
-			new BackupManager(this).dataChanged();
+			//new BackupManager(this).dataChanged();
 		}
 		else if (MemoryStatus.checkMemoryStatus(context, true))
 		{

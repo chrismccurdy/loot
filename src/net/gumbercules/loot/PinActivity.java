@@ -168,15 +168,18 @@ public class PinActivity extends Activity
 			cal.add(Calendar.DAY_OF_YEAR, -purge_days);
 			Date date = cal.getTime();
 			int[] acctIds = Account.getAccountIds();
-			Account[] accounts = new Account[acctIds.length];
-			for (int i = 0; i < accounts.length; ++i)
+			if (acctIds != null)
 			{
-				accounts[i] = Account.getAccountById(acctIds[i]);
-			}
-			
-			for (Account acct : accounts)
-			{
-				acct.purgeTransactions(date);
+				Account[] accounts = new Account[acctIds.length];
+				for (int i = 0; i < accounts.length; ++i)
+				{
+					accounts[i] = Account.getAccountById(acctIds[i]);
+				}
+				
+				for (Account acct : accounts)
+				{
+					acct.purgeTransactions(date);
+				}
 			}
 		}
 	}

@@ -77,6 +77,7 @@
 &#8226; Added feature to jump to transactions when added/jump to current date when loading account\n
 &#8226; Improved aesthetics of the changelog\n
 &#8226; Improved usability selecting transactions on non-touchscreen devices\n
+&#8226; Fixed bug which caused crash on launch when automatic purging was turned on when no accounts are present\n
 	    </item>
 		<item>\n
 &#8226; Fixed bug calculating running balance while sorting from top\n
