@@ -13,7 +13,11 @@ import net.gumbercules.loot.backend.Database;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -591,11 +595,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		
 		if (mShowColors && mColorBackgrounds)
 		{
-			v.top.setBackgroundColor(color);
+			//v.top.setBackgroundColor(color);
+			v.top.setBackgroundDrawable(createSLD(color));
 		}
 		else
 		{
-			v.top.setBackgroundDrawable(v.top.getRootView().getBackground());
+			v.top.setBackgroundDrawable(null);
 		}
 		
 		if (dateStr == null)
@@ -633,6 +638,29 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			v.image.setVisibility(View.GONE);
 		}
+	}
+	
+	private StateListDrawable createSLD(int color)
+	{
+		StateListDrawable sld = new StateListDrawable();
+		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		bmp.setPixel(0, 0, Color.rgb(255, 130, 35));
+		Drawable focusedDrawable = new BitmapDrawable(Bitmap.createBitmap(bmp));
+		bmp.setPixel(0, 0, Color.rgb(255, 159, 104));
+		Drawable pressedDrawable = new BitmapDrawable(Bitmap.createBitmap(bmp));
+		bmp.setPixel(0, 0, color);
+		
+		int stateFocused = android.R.attr.state_focused;
+		int stateSelected = android.R.attr.state_selected;
+		int statePressed = android.R.attr.state_pressed;
+		int stateActive = android.R.attr.state_active;
+		
+		sld.addState(new int[] { stateFocused }, focusedDrawable);
+		sld.addState(new int[] { statePressed }, pressedDrawable);
+		sld.addState(new int[] { stateSelected }, focusedDrawable);
+		sld.addState(new int[] { stateActive }, pressedDrawable);
+		
+		return sld;
 	}
 	
 	private void setText(TextView text, String str, int color, boolean colors, boolean bg)

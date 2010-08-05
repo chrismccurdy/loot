@@ -199,7 +199,7 @@ public class TransactionActivity extends ListActivity
     	
     	ListView view = getListView();
         registerForContextMenu(view);
-        
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (!prefs.getBoolean("top_sort", false))
         {
