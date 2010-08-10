@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashMap;
 
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.account.Account;
@@ -13,6 +14,7 @@ import net.gumbercules.loot.backend.Database;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -46,16 +48,32 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	private static NumberFormat mNf = null;
 	
 	// preferences
-	private int mColorCheck;
-	private int mColorCheckBudget;
-	private int mColorWithdraw;
-	private int mColorWithdrawBudget;
-	private int mColorDeposit;
-	private int mColorDepositBudget;
 	private boolean mShowColors;
 	private boolean mColorBackgrounds;
 	private boolean mShowRunningBalance;
 	private boolean mTopSort;
+	
+	private static final int COLOR_BUDGET	= 1;
+	private static final int COLOR_CHECK	= 1 << 1;
+	private static final int COLOR_WITHDRAW	= 2 << 1;
+	private static final int COLOR_DEPOSIT	= 3 << 1;
+	
+	private HashMap<Integer, ColorDrawableCombo> mColors;
+	
+	private Drawable mFocusedDrawable;
+	private Drawable mPressedDrawable;
+	
+	private class ColorDrawableCombo
+	{
+		public int color;
+		public Drawable drawable;
+		
+		public ColorDrawableCombo(int c, Drawable d)
+		{
+			color = c;
+			drawable = d;
+		}
+	}
 	
 	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
 	{
@@ -71,7 +89,17 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		String new_currency = Database.getOptionString("override_locale");
 		if (new_currency != null && !new_currency.equals("") &&
 				!new_currency.equals(mNf.getCurrency().getCurrencyCode()))
+		{
 			mNf.setCurrency(Currency.getInstance(new_currency));
+		}
+
+		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
+		bmp.setPixel(0, 0, Color.rgb(255, 130, 35));
+		mFocusedDrawable = new BitmapDrawable(getContext().getResources(),
+				bmp.copy(Bitmap.Config.RGB_565, true));
+		bmp.setPixel(0, 0, Color.rgb(255, 159, 104));
+		mPressedDrawable = new BitmapDrawable(getContext().getResources(),
+				bmp.copy(Bitmap.Config.RGB_565, true));
 		
 		mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -87,12 +115,34 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		mColorBackgrounds = prefs.getBoolean("color_background", true);
 		mShowRunningBalance = prefs.getBoolean("running_balance", false);
 		
-		mColorCheckBudget = prefs.getInt("color_budget_check", prefs.getInt("bc_color", Color_LTCYAN));
-		mColorCheck = prefs.getInt("color_check", prefs.getInt("ac_color", Color.CYAN));
-		mColorWithdrawBudget = prefs.getInt("color_budget_withdraw", prefs.getInt("bw_color", Color_LTYELLOW));
-		mColorWithdraw = prefs.getInt("color_withdraw", prefs.getInt("aw_color", Color.YELLOW));
-		mColorDepositBudget = prefs.getInt("color_budget_deposit", prefs.getInt("bd_color", Color_LTGREEN));
-		mColorDeposit = prefs.getInt("color_deposit", prefs.getInt("ad_color", Color.GREEN));
+		mColors = new HashMap<Integer, ColorDrawableCombo>();
+		
+		int[] colors = new int[6];
+		colors[0] = prefs.getInt("color_check", prefs.getInt("ac_color", Color.CYAN)); 
+		colors[1] = prefs.getInt("color_budget_check", prefs.getInt("bc_color", Color_LTCYAN));
+		colors[2] = prefs.getInt("color_withdraw", prefs.getInt("aw_color", Color.YELLOW));
+		colors[3] = prefs.getInt("color_budget_withdraw", prefs.getInt("bw_color", Color_LTYELLOW));
+		colors[4] = prefs.getInt("color_deposit", prefs.getInt("ad_color", Color.GREEN));
+		colors[5] = prefs.getInt("color_budget_deposit", prefs.getInt("bd_color", Color_LTGREEN));
+		
+		int[] color_spec = new int[6];
+		color_spec[0] = COLOR_CHECK;
+		color_spec[1] = COLOR_CHECK | COLOR_BUDGET;
+		color_spec[2] = COLOR_WITHDRAW;
+		color_spec[3] = COLOR_WITHDRAW | COLOR_BUDGET;
+		color_spec[4] = COLOR_DEPOSIT;
+		color_spec[5] = COLOR_DEPOSIT | COLOR_BUDGET;
+		
+		Resources resources = getContext().getResources();
+		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
+		ColorDrawableCombo cdc;
+		for (int i = 0; i < colors.length; ++i)
+		{
+			bmp.setPixel(0, 0, colors[i]);
+			cdc = new ColorDrawableCombo(colors[i], new BitmapDrawable(resources, 
+					bmp.copy(Bitmap.Config.RGB_565, true)));
+			mColors.put(color_spec[i], cdc);
+		}
 		
 		mTopSort = prefs.getBoolean("top_sort", false);
 	}
@@ -553,39 +603,23 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		if (trans.type == Transaction.CHECK)
 		{
 			partyStr += trans.check_num;
-			if (trans.budget)
-			{
-				color = mColorCheckBudget;
-			}
-			else
-			{
-				color = mColorCheck;
-			}
+			color = COLOR_CHECK;
 		}
 		else if (trans.type == Transaction.WITHDRAW)
 		{
 			partyStr += "W";
-			if (trans.budget)
-			{
-				color = mColorWithdrawBudget;
-			}
-			else
-			{
-				color = mColorWithdraw;
-			}
+			color = COLOR_WITHDRAW;
 		}
 		else
 		{
 			partyStr += "D";
-			if (trans.budget)
-			{
-				color = mColorDepositBudget;
-			}
-			else
-			{
-				color = mColorDeposit;
-			}
+			color = COLOR_DEPOSIT;
 		}
+		if (trans.budget)
+		{
+			color |= COLOR_BUDGET;
+		}
+		
 		partyStr += ":" + trans.party;
 		
 		TextView dateText = v.date;
@@ -595,7 +629,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		
 		if (mShowColors && mColorBackgrounds)
 		{
-			//v.top.setBackgroundColor(color);
 			v.top.setBackgroundDrawable(createSLD(color));
 		}
 		else
@@ -640,30 +673,81 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 	}
 	
+	private class SLD extends StateListDrawable
+	{
+		private HashMap<Integer, String> states;
+		
+		public SLD()
+		{
+			states = new HashMap<Integer, String>();
+			
+			states.put(android.R.attr.state_focused, "state_focused");
+			states.put(android.R.attr.state_selected, "state_selected");
+			states.put(android.R.attr.state_pressed, "state_pressed");
+			states.put(android.R.attr.state_active, "state_active");
+			states.put(android.R.attr.state_window_focused, "state_window_focused");
+			states.put(android.R.attr.state_enabled, "state_enabled");
+		}
+
+		@Override
+		protected boolean onStateChange(int[] stateSet)
+		{
+			/*Log.i("TEEEEEEEEEEEEEEST", "size: " + stateSet.length);
+			for (int state : stateSet)
+			{
+				if (states.containsKey(state))
+				{
+					Log.i("TEEEEEEEEEEEEEEEEST", " " + states.get(state));
+				}
+				else
+				{
+					Log.i("TEEEEEEEEEEEEEEEEST", " " + state);
+				}
+			}*/
+//			Log.i("TEEEEEEEEEEEST", ""+((BitmapDrawable)this.getCurrent()).getBitmap().getPixel(0, 0));
+			
+			if (this.getCurrent() == null)
+			{
+				this.invalidateSelf();
+				//Log.i("TEEEEEEEEEEEEEST", "drawable is null");
+			}
+			return super.onStateChange(stateSet);
+		}
+	}
+	
 	private StateListDrawable createSLD(int color)
 	{
-		StateListDrawable sld = new StateListDrawable();
-		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-		bmp.setPixel(0, 0, Color.rgb(255, 130, 35));
-		Drawable focusedDrawable = new BitmapDrawable(Bitmap.createBitmap(bmp));
-		bmp.setPixel(0, 0, Color.rgb(255, 159, 104));
-		Drawable pressedDrawable = new BitmapDrawable(Bitmap.createBitmap(bmp));
-		bmp.setPixel(0, 0, color);
+		//StateListDrawable sld = new StateListDrawable();
+		StateListDrawable sld = new SLD();
 		
-		int stateFocused = android.R.attr.state_focused;
-		int stateSelected = android.R.attr.state_selected;
-		int statePressed = android.R.attr.state_pressed;
-		int stateActive = android.R.attr.state_active;
+		final int stateFocused = android.R.attr.state_focused;
+		final int stateSelected = android.R.attr.state_selected;
+		final int statePressed = android.R.attr.state_pressed;
+		final int stateActive = android.R.attr.state_active;
+		final int stateEnabled = android.R.attr.state_enabled;
+		final int stateWFocused = android.R.attr.state_window_focused;
 		
-		sld.addState(new int[] { stateFocused }, focusedDrawable);
-		sld.addState(new int[] { statePressed }, pressedDrawable);
-		sld.addState(new int[] { stateSelected }, focusedDrawable);
-		sld.addState(new int[] { stateActive }, pressedDrawable);
+		Drawable defaultDrawable = mColors.get(color).drawable;
+		
+		sld.addState(new int[] { stateWFocused, stateActive }, mPressedDrawable);
+		sld.addState(new int[] { stateWFocused, statePressed }, mPressedDrawable);
+		sld.addState(new int[] { stateWFocused, stateEnabled, statePressed }, mPressedDrawable);
+		sld.addState(new int[] { stateWFocused, stateFocused, stateSelected, statePressed }, mPressedDrawable);
+		sld.addState(new int[] { stateWFocused, stateFocused, -statePressed }, mFocusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateSelected, -statePressed }, mFocusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateFocused, stateSelected, -statePressed }, mFocusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateEnabled, stateSelected, -statePressed }, mFocusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateEnabled }, defaultDrawable);
+		sld.addState(new int[] { stateWFocused, -stateEnabled }, defaultDrawable);
+		sld.addState(new int[] { stateEnabled }, defaultDrawable);
+		sld.addState(new int[] { -stateEnabled }, defaultDrawable);
+		sld.addState(new int[] { }, defaultDrawable);
+		sld.addState(null, defaultDrawable);
 		
 		return sld;
 	}
 	
-	private void setText(TextView text, String str, int color, boolean colors, boolean bg)
+	private void setText(TextView text, String str, int color_key, boolean colors, boolean bg)
 	{
 		if (text != null)
 		{
@@ -672,6 +756,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 
 		if (colors)
 		{
+			int color = mColors.get(color_key).color;
 			if (bg)
 			{
 				int red = Color.red(color);

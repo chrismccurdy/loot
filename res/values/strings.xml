@@ -159,4 +159,6 @@
     <string name="csv_credit_type">Enter comma-separated values for credit
         transactions (default: credit, deposit):</string>
     <string name="tips">Show tips at startup</string>
+    <string name="balance_display">Balance Display</string>
+    <string name="credit_label">Credit Account</string>
 </resources>

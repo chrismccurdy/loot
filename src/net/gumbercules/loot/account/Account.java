@@ -20,12 +20,15 @@ public class Account
 	private static final int POSTED			= 0x1 << 1;
 	private static final int BUDGET			= 0x1 << 2;
 	
-	private int id;
 	public String name;
 	public double initialBalance;
-	int priority;
-	boolean primary;
+	public int priority;
+	public boolean primary;
+	public int balanceDisplay;
+	public boolean credit; 
+	
 	private static int currentAccount;
+	private int id;
 	private double actual_balance;
 	private double posted_balance;
 	private double budget_balance;
@@ -44,6 +47,8 @@ public class Account
 		this.initialBalance = initialBalance;
 		this.priority = 1;
 		this.primary = false;
+		this.credit = false;
+		this.balanceDisplay = 0;
 		calculated_balances = 0;
 	}
 	
@@ -63,10 +68,11 @@ public class Account
 	private int newAccount()
 	{
 		// insert the new row into the database
-		String insert = "insert into accounts (name,balance,timestamp,priority,primary_account) " +
-				"values (?,?,strftime('%s','now'),?,?)";
+		String insert = "insert into accounts (name,balance,timestamp,priority,primary_account," +
+				"display_balance,credit_account) values (?,?,strftime('%s','now'),?,?,?,?)";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance),
-				new Long(this.priority), new Boolean(this.primary)};
+				new Long(this.priority), new Boolean(this.primary),
+				new Long(this.balanceDisplay), new Boolean(this.credit)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -101,9 +107,11 @@ public class Account
 	{
 		// update the row in the database
 		String update = "update accounts set name = ?, balance = ?, priority = ?, " +
-						"primary_account = ?, timestamp = strftime('%s','now') where id = ?";
+						"primary_account = ?, display_balance = ?, credit_account = ?, " +
+						"timestamp = strftime('%s','now') where id = ?";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Long(this.priority),
-				new Boolean(this.primary), new Integer(this.id)};
+				new Boolean(this.primary), new Integer(this.balanceDisplay),
+				new Boolean(this.credit), new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -348,6 +356,8 @@ public class Account
 		this.initialBalance = cur.getDouble(2);
 		this.priority = cur.getInt(3);
 		this.primary = Database.getBoolean(cur.getInt(4));
+		this.balanceDisplay = cur.getInt(5);
+		this.credit = Database.getBoolean(cur.getInt(6));
 		cur.close();
 		
 		return true;
@@ -388,7 +398,8 @@ public class Account
 			limit = "1";
 		}
 		
-		String[] columns = {"id", "name", "balance", "priority", "primary_account"};
+		String[] columns = {"id", "name", "balance", "priority",
+				"primary_account", "display_balance", "credit_account"};
 		return lootDB.query("accounts", columns, where, sArgs, null, null, "priority", limit);
 	}
 	
