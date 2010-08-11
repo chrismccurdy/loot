@@ -427,7 +427,9 @@ public class Account
 			accounts[i].name = cur.getString(1);
 			accounts[i].initialBalance = cur.getDouble(2);
 			accounts[i].priority = cur.getInt(3);
-			accounts[i++].primary = Database.getBoolean(cur.getInt(4));
+			accounts[i].primary = Database.getBoolean(cur.getInt(4));
+			accounts[i].balanceDisplay = cur.getInt(5);
+			accounts[i++].credit = Database.getBoolean(cur.getInt(6));
 		} while (cur.moveToNext());
 		
 		cur.close();

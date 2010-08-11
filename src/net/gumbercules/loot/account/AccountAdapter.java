@@ -112,7 +112,22 @@ public class AccountAdapter extends ArrayAdapter<Account>
 			{
 				nf.setCurrency(Currency.getInstance(new_currency));
 			}
-			Double bal = acct.getActualBalance();
+			
+			Double bal = null;
+			
+			if (acct.balanceDisplay == 0)	// actual
+			{
+				bal = acct.getActualBalance();
+			}
+			else if (acct.balanceDisplay == 1)	// posted
+			{
+				bal = acct.getPostedBalance();
+			}
+			else if (acct.balanceDisplay == 2)	// budget
+			{
+				bal = acct.getBudgetBalance();
+			}
+			
 			String text;
 			if (bal != null)
 			{
