@@ -161,4 +161,10 @@
     <string name="tips">Show tips at startup</string>
     <string name="balance_display">Balance Display</string>
     <string name="credit_label">Credit Account</string>
+    <string name="deposit">Deposit</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="check">Check</string>
+    <string name="credit">Credit</string>
+    <string name="debit">Debit</string>
+    <string name="credit_limit">Credit Limit</string>
 </resources>

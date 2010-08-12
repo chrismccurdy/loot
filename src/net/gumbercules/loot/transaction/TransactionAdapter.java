@@ -717,8 +717,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	
 	private StateListDrawable createSLD(int color)
 	{
-		//StateListDrawable sld = new StateListDrawable();
-		StateListDrawable sld = new SLD();
+		StateListDrawable sld = new StateListDrawable();
+		//StateListDrawable sld = new SLD();
 		
 		final int stateFocused = android.R.attr.state_focused;
 		final int stateSelected = android.R.attr.state_selected;
@@ -733,14 +733,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		sld.addState(new int[] { stateWFocused, statePressed }, mPressedDrawable);
 		sld.addState(new int[] { stateWFocused, stateEnabled, statePressed }, mPressedDrawable);
 		sld.addState(new int[] { stateWFocused, stateFocused, stateSelected, statePressed }, mPressedDrawable);
-		sld.addState(new int[] { stateWFocused, stateFocused, -statePressed }, mFocusedDrawable);
-		sld.addState(new int[] { stateWFocused, stateSelected, -statePressed }, mFocusedDrawable);
-		sld.addState(new int[] { stateWFocused, stateFocused, stateSelected, -statePressed }, mFocusedDrawable);
-		sld.addState(new int[] { stateWFocused, stateEnabled, stateSelected, -statePressed }, mFocusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateFocused }, mFocusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateSelected }, mFocusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateFocused, stateSelected }, mFocusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateEnabled, stateSelected }, mFocusedDrawable);
 		sld.addState(new int[] { stateWFocused, stateEnabled }, defaultDrawable);
-		sld.addState(new int[] { stateWFocused, -stateEnabled }, defaultDrawable);
 		sld.addState(new int[] { stateEnabled }, defaultDrawable);
-		sld.addState(new int[] { -stateEnabled }, defaultDrawable);
 		sld.addState(new int[] { }, defaultDrawable);
 		sld.addState(null, defaultDrawable);
 		

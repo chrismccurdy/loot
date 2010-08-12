@@ -17,7 +17,7 @@ import android.util.Log;
 public class Database
 {
 	public final static String DB_PATH		= "/data/data/net.gumbercules.loot/LootDB.db";
-	private final static int DB_VERSION		= 7;
+	private final static int DB_VERSION		= 8;
 	private static SQLiteDatabase lootDB	= null;
 	
 	public Database()
@@ -88,7 +88,8 @@ public class Database
 					"	priority integer default 1,\n" +
 					"	primary_account bool default 0,\n" +
 					"   display_balance int default 0,\n" +
-					"   credit_account bool default 0)";
+					"   credit_account bool default 0,\n" +
+					"   credit_limit real default 0.0)";
 
 		createSQL[1] = "create table transactions(\n" +
 					"	id integer primary key autoincrement,\n" +
@@ -304,6 +305,26 @@ public class Database
 			
 			lootDB.setVersion(7);
 			current_version = 7;
+		}
+		if (current_version < 8)
+		{
+			lootDB.beginTransaction();
+			try
+			{
+				lootDB.execSQL("alter table accounts add column credit_limit real default 0.0");
+				lootDB.setTransactionSuccessful();
+			}
+			catch (SQLException e)
+			{
+				return false;
+			}
+			finally
+			{
+				lootDB.endTransaction();
+			}
+			
+			lootDB.setVersion(8);
+			current_version = 8;
 		}
 		
 		if ( current_version == max_version )

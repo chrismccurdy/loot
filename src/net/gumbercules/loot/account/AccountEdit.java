@@ -16,8 +16,11 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TableRow;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class AccountEdit extends Activity
 {
@@ -29,6 +32,7 @@ public class AccountEdit extends Activity
 	private EditText mPriorityEdit;
 	private CheckBox mPrimaryCheckBox;
 	private CheckBox mCreditCheckBox;
+	private EditText mCreditLimitEdit;
 	private Spinner mDisplaySpinner;
 	private int mRowId;
 	private int mFinishIntent;
@@ -51,6 +55,8 @@ public class AccountEdit extends Activity
 		mPriorityEdit.setKeyListener(new DigitsKeyListener());
 		mPrimaryCheckBox = (CheckBox)findViewById(R.id.PrimaryCheckBox);
 		mCreditCheckBox = (CheckBox)findViewById(R.id.CreditCheckBox);
+		mCreditLimitEdit = (EditText)findViewById(R.id.CreditLimitEdit);
+		mCreditLimitEdit.addTextChangedListener(mCurrencyWatcher);
 		mDisplaySpinner = (Spinner)findViewById(R.id.DisplaySpinner);
 		Button SaveButton = (Button)findViewById(R.id.SaveButton);
 		Button CancelButton = (Button)findViewById(R.id.CancelButton);
@@ -73,6 +79,16 @@ public class AccountEdit extends Activity
 			Bundle extras = getIntent().getExtras();
 			mRowId = extras != null ? extras.getInt(Account.KEY_ID) : 0;
 		}
+		
+		final TableRow creditLimitRow = (TableRow)findViewById(R.id.CreditLimitRow);
+		mCreditCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				creditLimitRow.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+			}
+		});
 		
 		SaveButton.setOnClickListener(new View.OnClickListener()
 		{
@@ -173,6 +189,7 @@ public class AccountEdit extends Activity
 		boolean primary = mPrimaryCheckBox.isChecked();
 		boolean credit = mCreditCheckBox.isChecked();
 		int display = mDisplaySpinner.getSelectedItemPosition();
+		String creditLimitText = mCreditLimitEdit.getText().toString();
 		
 		if (acct.name == "" || balText == "")
 		{
@@ -202,6 +219,15 @@ public class AccountEdit extends Activity
 		catch (NumberFormatException e)
 		{
 			acct.priority = 1;
+		}
+		
+		try
+		{
+			acct.creditLimit = new Double(creditLimitText);
+		}
+		catch (NumberFormatException e)
+		{
+			acct.creditLimit = 0.0;
 		}
 
 		acct.credit = credit;

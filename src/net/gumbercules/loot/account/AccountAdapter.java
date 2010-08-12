@@ -139,16 +139,32 @@ public class AccountAdapter extends ArrayAdapter<Account>
 			}
 			AccountBal.setText(text);
 			
-			if (bal < 0.0)
+			int textColor = Color.LTGRAY;
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+			if (prefs.getBoolean("color_balance", false))
 			{
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-				if (prefs.getBoolean("color_balance", false))
-					AccountBal.setTextColor(Color.rgb(255, 50, 50));
+				final int red = Color.rgb(255, 50, 50);
+				if (acct.credit)
+				{
+					if (bal > acct.creditLimit)
+					{
+						textColor = red;
+					}
+					else if (bal >= (acct.creditLimit * 0.9))
+					{
+						textColor = Color.YELLOW;
+					}
+				}
+				else
+				{
+					if (bal < 0.0)
+					{
+						textColor = red;
+					}
+				}
 			}
-			else
-			{
-				AccountBal.setTextColor(Color.LTGRAY);
-			}
+
+			AccountBal.setTextColor(textColor);
 		}
 		
 		int visibility = View.GONE;

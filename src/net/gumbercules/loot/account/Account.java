@@ -26,6 +26,7 @@ public class Account
 	public boolean primary;
 	public int balanceDisplay;
 	public boolean credit; 
+	public double creditLimit;
 	
 	private static int currentAccount;
 	private int id;
@@ -69,10 +70,10 @@ public class Account
 	{
 		// insert the new row into the database
 		String insert = "insert into accounts (name,balance,timestamp,priority,primary_account," +
-				"display_balance,credit_account) values (?,?,strftime('%s','now'),?,?,?,?)";
+				"display_balance,credit_account) values (?,?,strftime('%s','now'),?,?,?,?,?)";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance),
 				new Long(this.priority), new Boolean(this.primary),
-				new Long(this.balanceDisplay), new Boolean(this.credit)};
+				new Long(this.balanceDisplay), new Boolean(this.credit), new Double(this.creditLimit)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -108,10 +109,10 @@ public class Account
 		// update the row in the database
 		String update = "update accounts set name = ?, balance = ?, priority = ?, " +
 						"primary_account = ?, display_balance = ?, credit_account = ?, " +
-						"timestamp = strftime('%s','now') where id = ?";
+						"credit_limit = ?, timestamp = strftime('%s','now') where id = ?";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Long(this.priority),
 				new Boolean(this.primary), new Integer(this.balanceDisplay),
-				new Boolean(this.credit), new Integer(this.id)};
+				new Boolean(this.credit), new Double(this.creditLimit), new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -358,6 +359,7 @@ public class Account
 		this.primary = Database.getBoolean(cur.getInt(4));
 		this.balanceDisplay = cur.getInt(5);
 		this.credit = Database.getBoolean(cur.getInt(6));
+		this.creditLimit = cur.getDouble(7);
 		cur.close();
 		
 		return true;
@@ -399,7 +401,7 @@ public class Account
 		}
 		
 		String[] columns = {"id", "name", "balance", "priority",
-				"primary_account", "display_balance", "credit_account"};
+				"primary_account", "display_balance", "credit_account", "credit_limit"};
 		return lootDB.query("accounts", columns, where, sArgs, null, null, "priority", limit);
 	}
 	
@@ -429,7 +431,8 @@ public class Account
 			accounts[i].priority = cur.getInt(3);
 			accounts[i].primary = Database.getBoolean(cur.getInt(4));
 			accounts[i].balanceDisplay = cur.getInt(5);
-			accounts[i++].credit = Database.getBoolean(cur.getInt(6));
+			accounts[i].credit = Database.getBoolean(cur.getInt(6));
+			accounts[i++].creditLimit = cur.getDouble(7);
 		} while (cur.moveToNext());
 		
 		cur.close();

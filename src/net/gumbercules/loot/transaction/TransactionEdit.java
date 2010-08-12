@@ -219,6 +219,7 @@ public class TransactionEdit extends Activity
 		{
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
+				int visibility = View.GONE;
 				if (isChecked)
 				{
 					if (checkEdit.getText().toString().equals(""))
@@ -228,11 +229,13 @@ public class TransactionEdit extends Activity
 						int check_num = acct.getNextCheckNum();
 						checkEdit.setText(new Integer(check_num).toString());
 					}
+					visibility = View.VISIBLE;
 				}
-				checkEdit.setEnabled(isChecked);
+				//checkEdit.setEnabled(isChecked);
+				findViewById(R.id.checkRow).setVisibility(visibility);
 			}
 		});
-		checkEdit.setEnabled(false);
+		//checkEdit.setEnabled(false);
 
         // load the transaction if mTransId > 0
         Transaction trans = null;
@@ -812,21 +815,33 @@ public class TransactionEdit extends Activity
 		// set the autocompletion values for partyEdit
 		String[] parties = Transaction.getAllParties();
 		if (parties == null)
+		{
 			parties = new String[0];
+		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_dropdown_item_1line, parties);
 		partyEdit.setAdapter(adapter);
+		
+		// make changes for credit accounts
+		Account acct = Account.getAccountById(mAccountId);
+		if (acct.credit)
+		{
+			checkRadio.setVisibility(View.GONE);
+			withdrawRadio.setText(R.string.credit);
+			depositRadio.setText(R.string.debit);
+			depositRadio.setSelected(true);
+			
+			TableRow row = (TableRow)findViewById(R.id.checkRow);
+			row.setVisibility(View.GONE);
+		}
 	}
 	
 	private ArrayAdapter<CharSequence> showTransferFields()
 	{
-		// if we're showing a transfer window, hide the check button, check field, and party field
-		//checkRadio.setVisibility(RadioButton.GONE);
-		
+		// if we're showing a transfer window, hide the party field and show the account field
+		// don't hide the check options, as one could write a check to deposit into another account
 		TableRow row = (TableRow)findViewById(R.id.partyRow);
 		row.setVisibility(TableRow.GONE);
-		//row = (TableRow)findViewById(R.id.checkRow);
-		//row.setVisibility(TableRow.GONE);
 		row = (TableRow)findViewById(R.id.accountRow);
 		row.setVisibility(TableRow.VISIBLE);
 		

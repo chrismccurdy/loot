@@ -15,15 +15,15 @@
 					android:layout_height="wrap_content" android:orientation="horizontal"
 					android:layout_width="fill_parent" android:checkedButton="@+id/withdrawRadio">
 					<RadioButton android:layout_width="wrap_content"
-						android:layout_height="wrap_content" android:text="Deposit"
+						android:layout_height="wrap_content" android:text="@string/deposit"
 						android:layout_weight="1" android:id="@+id/depositRadio"
 						android:checked="false" />
 					<RadioButton android:layout_width="wrap_content"
-						android:layout_height="wrap_content" android:text="Withdraw"
+						android:layout_height="wrap_content" android:text="@string/withdraw"
 						android:layout_weight="1" android:id="@+id/withdrawRadio"
 						android:checked="true" />
 					<RadioButton android:layout_width="wrap_content"
-						android:layout_height="wrap_content" android:text="Check"
+						android:layout_height="wrap_content" android:text="@string/check"
 						android:layout_weight="1" android:id="@+id/checkRadio" />
 				</RadioGroup>
 			</LinearLayout>
@@ -92,7 +92,8 @@
 						android:id="@+id/repeatAccountSpinner" />
 				</TableRow>
 				<TableRow android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:id="@+id/checkRow">
+					android:layout_height="wrap_content" android:id="@+id/checkRow"
+					android:visibility="gone">
 					<TextView android:layout_width="wrap_content"
 						android:layout_height="fill_parent" android:gravity="left|center_vertical"
 						android:id="@+id/checkLabel" android:minWidth="65dip"
@@ -152,8 +153,8 @@
 			</TableLayout>
 			<LinearLayout android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:orientation="vertical"
-				android:id="@+id/imageLayout">
-			</LinearLayout>
+				android:id="@+id/imageLayout" />
+
 		</LinearLayout>
 	</ScrollView>
 	<LinearLayout android:id="@+id/LinearLayout03"

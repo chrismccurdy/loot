@@ -67,31 +67,29 @@ public class RepeatManagerActivity extends ListActivity
 		RepeatAdapter ra = (RepeatAdapter)getListAdapter();
 		ra.clear();
 		int[] ids = RepeatSchedule.getRepeatIds();
-		if (ids == null)
+		if (ids != null)
 		{
-			return;
-		}
-
-		for (int id : ids)
-		{
-			rs = RepeatSchedule.getSchedule(id);
-			if (rs == null)
+			for (int id : ids)
 			{
-				continue;
+				rs = RepeatSchedule.getSchedule(id);
+				if (rs == null)
+				{
+					continue;
+				}
+				
+				rs.trans = rs.getTransaction();
+				if (rs.trans == null)
+				{
+					continue;
+				}
+				
+				if (mAccountId != 0 && rs.trans.account != mAccountId)
+				{
+					continue;
+				}
+				
+				ra.add(rs);
 			}
-			
-			rs.trans = rs.getTransaction();
-			if (rs.trans == null)
-			{
-				continue;
-			}
-			
-			if (mAccountId != 0 && rs.trans.account != mAccountId)
-			{
-				continue;
-			}
-			
-			ra.add(rs);
 		}
 		
 		ra.notifyDataSetChanged();

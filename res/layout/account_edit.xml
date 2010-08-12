@@ -56,15 +56,26 @@
 					android:layout_height="wrap_content" android:layout_marginLeft="10dp"
 					android:layout_width="wrap_content" />
 			</TableRow>
-            <TableRow android:layout_height="wrap_content"
-                android:layout_width="fill_parent" android:id="@+id/CreditRow">
-                <TextView android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:minWidth="100dip"
-                    android:id="@+id/PrimaryLabel" android:text="@string/credit_label" />
-                <CheckBox android:id="@+id/CreditCheckBox"
-                    android:layout_height="wrap_content" android:layout_marginLeft="10dp"
-                    android:layout_width="wrap_content" />
-            </TableRow>
+			<TableRow android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:id="@+id/CreditRow">
+				<TextView android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:minWidth="100dip"
+					android:id="@+id/PrimaryLabel" android:text="@string/credit_label" />
+				<CheckBox android:id="@+id/CreditCheckBox"
+					android:layout_height="wrap_content" android:layout_marginLeft="10dp"
+					android:layout_width="wrap_content" />
+			</TableRow>
+			<TableRow android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:id="@+id/CreditLimitRow"
+				android:visibility="gone">
+				<TextView android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:minWidth="100dip"
+					android:id="@+id/CreditLimitLabel" android:text="@string/credit_limit" />
+				<EditText android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_marginLeft="10dip"
+					android:layout_weight="2" android:id="@+id/CreditLimitEdit"
+					android:inputType="phone" android:hint="@string/credit_limit" />
+			</TableRow>
 		</TableLayout>
 	</ScrollView>
 	<LinearLayout android:id="@+id/LinearLayout01"
@@ -76,5 +87,4 @@
 			android:layout_height="wrap_content" android:id="@+id/CancelButton"
 			android:text="@string/cancel" android:layout_weight="1" />
 	</LinearLayout>
-
 </LinearLayout>

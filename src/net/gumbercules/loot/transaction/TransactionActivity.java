@@ -653,14 +653,38 @@ public class TransactionActivity extends ListActivity
     {
     	String str = "Error";
     	if (bal != null)
+    	{
     		str = nf.format(bal);
+    	}
     	
     	view.setText(str);
     	
-    	if (bal < 0 && color)
-    		view.setTextColor(Color.rgb(255, 50, 50));
-    	else
-    		view.setTextColor(Color.LTGRAY);
+    	int textColor = Color.LTGRAY;
+    	
+    	if (color)
+    	{
+			final int red = Color.rgb(255, 50, 50);
+			if (mAcct.credit)
+			{
+				if (bal > mAcct.creditLimit)
+				{
+					textColor = red;
+				}
+				else if (bal >= (mAcct.creditLimit * 0.9))
+				{
+					textColor = Color.YELLOW;
+				}
+			}
+			else
+			{
+				if (bal < 0.0)
+				{
+					textColor = red;
+				}
+			}
+    	}
+    	
+    	view.setTextColor(textColor);
     }
     
     private void fillList(boolean repeat)
