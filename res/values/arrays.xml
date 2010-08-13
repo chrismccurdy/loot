@@ -83,6 +83,10 @@
 &#8226; Improved aesthetics of the changelog\n
 &#8226; Improved usability selecting transactions on non-touchscreen devices\n
 &#8226; Fixed bug which caused crash on launch when automatic purging was turned on when no accounts are present\n
+&#8226; Added option for credit accounts\n
+&#8226; Added option to display different balance on account summary screen\n
+&#8226; Added additional sidebar coloring option\n
+&#8226; Added option to remove transaction type prefixes\n
 	    </item>
 		<item>\n
 &#8226; Fixed bug calculating running balance while sorting from top\n

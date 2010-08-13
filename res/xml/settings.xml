@@ -111,9 +111,15 @@
 			android:summary="Change the color of the background instead of the text."
 			android:defaultValue="true" android:dependency="color" android:key="color_background"
 			android:title="Color Backgrounds" />
+		<CheckBoxPreference android:summary="Only change the background on the side."
+		    android:defaultValue="false" android:dependency="color_background" android:key="color_bg_side"
+		    android:title="Color Side" />
 		<CheckBoxPreference android:title="Negative Balance"
 			android:summary="Color negative balances in account summaries."
 			android:key="color_balance" android:defaultValue="true" />
+		<CheckBoxPreference android:title="Prefix Transactions"
+		    android:summary="Show type of transaction before the party name. Useful without colors."
+		    android:key="prefix_party" android:defaultValue="false" />
 	</PreferenceScreen>
 	<CheckBoxPreference android:key="running_balance"
 		android:title="Running Balance"

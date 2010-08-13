@@ -168,6 +168,7 @@ public class TransactionActivity extends ListActivity
     		mTa.setContext(this);
     		setListAdapter(mTa);
     		mTa.updatePreferenceValues();
+    		nullifyChildBackgrounds();
     		setBalances();
     	}
 
@@ -234,6 +235,16 @@ public class TransactionActivity extends ListActivity
     		toggleSearch();
 			searchEdit.setText(searchString);
 			filter.publish(searchString, filter.filtering(searchString));
+    	}
+    }
+    
+    private void nullifyChildBackgrounds()
+    {
+    	ListView lv = getListView();
+    	int child_count = lv.getChildCount();
+    	for (int i = 0; i < child_count; ++i)
+    	{
+    		lv.getChildAt(i).setBackgroundDrawable(null);
     	}
     }
     
@@ -696,6 +707,7 @@ public class TransactionActivity extends ListActivity
 
     	mTa.clear();
     	mTa.updatePreferenceValues();
+		nullifyChildBackgrounds();
     	mTa.add(mAcct.getTransactions());
 		mTa.sort();
 		mTa.calculateRunningBalances();
@@ -798,6 +810,7 @@ public class TransactionActivity extends ListActivity
         mTa.sort();
 		
 		mTa.updatePreferenceValues();
+		nullifyChildBackgrounds();
 		mTa.notifyDataSetChanged();
 	}
 	

@@ -50,15 +50,17 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	// preferences
 	private boolean mShowColors;
 	private boolean mColorBackgrounds;
+	private boolean mColorSide;
 	private boolean mShowRunningBalance;
 	private boolean mTopSort;
 	
 	private static final int COLOR_BUDGET	= 1;
 	private static final int COLOR_CHECK	= 1 << 1;
-	private static final int COLOR_WITHDRAW	= 2 << 1;
-	private static final int COLOR_DEPOSIT	= 3 << 1;
+	private static final int COLOR_WITHDRAW	= 1 << 2;
+	private static final int COLOR_DEPOSIT	= 1 << 3;
 	
 	private HashMap<Integer, ColorDrawableCombo> mColors;
+	private HashMap<Integer, StateListDrawable> mSLD;
 	
 	private Drawable mFocusedDrawable;
 	private Drawable mPressedDrawable;
@@ -113,9 +115,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		mShowColors = prefs.getBoolean("color", true);
 		mColorBackgrounds = prefs.getBoolean("color_background", true);
+		mColorSide = prefs.getBoolean("color_bg_side", false);
 		mShowRunningBalance = prefs.getBoolean("running_balance", false);
 		
 		mColors = new HashMap<Integer, ColorDrawableCombo>();
+		mSLD = new HashMap<Integer, StateListDrawable>();
 		
 		int[] colors = new int[6];
 		colors[0] = prefs.getInt("color_check", prefs.getInt("ac_color", Color.CYAN)); 
@@ -142,6 +146,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			cdc = new ColorDrawableCombo(colors[i], new BitmapDrawable(resources, 
 					bmp.copy(Bitmap.Config.RGB_565, true)));
 			mColors.put(color_spec[i], cdc);
+			mSLD.put(color_spec[i], createSLD(color_spec[i]));
 		}
 		
 		mTopSort = prefs.getBoolean("top_sort", false);
@@ -496,6 +501,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			holder.running_balance = (TextView)convertView.findViewById(R.id.RunningBalanceText);
 			holder.image = (ImageView)convertView.findViewById(R.id.image_view);
 			holder.top = (LinearLayout)convertView.findViewById(R.id.LinearLayout01);
+			holder.sidebar = (LinearLayout)convertView.findViewById(R.id.SideBar);
 			
 			convertView.setTag(holder);
 		}
@@ -600,19 +606,36 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			}
 		}
 		
+		Account acct = Account.getAccountById(trans.account);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+		boolean prefix = prefs.getBoolean("prefix_party", false);
+		
 		if (trans.type == Transaction.CHECK)
 		{
-			partyStr += trans.check_num;
+			partyStr += trans.check_num + ":";
 			color = COLOR_CHECK;
 		}
 		else if (trans.type == Transaction.WITHDRAW)
 		{
-			partyStr += "W";
+			if (prefix)
+			{
+				if (acct.credit)
+				{
+					partyStr += "C:";
+				}
+				else
+				{
+					partyStr += "W:";
+				}
+			}
 			color = COLOR_WITHDRAW;
 		}
 		else
 		{
-			partyStr += "D";
+			if (prefix)
+			{
+				partyStr += "D:";
+			}
 			color = COLOR_DEPOSIT;
 		}
 		if (trans.budget)
@@ -620,7 +643,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			color |= COLOR_BUDGET;
 		}
 		
-		partyStr += ":" + trans.party;
+		partyStr += trans.party;
 		
 		TextView dateText = v.date;
 		TextView partyText = v.party;
@@ -629,7 +652,19 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		
 		if (mShowColors && mColorBackgrounds)
 		{
-			v.top.setBackgroundDrawable(createSLD(color));
+			if (mColorSide)
+			{
+				v.sidebar.setBackgroundColor(mColors.get(color).color);
+				v.sidebar.setVisibility(View.VISIBLE);
+				v.top.setBackgroundDrawable(null);
+			}
+			else
+			//if (v.top.getBackground() == null)
+			{
+				v.sidebar.setVisibility(View.GONE);
+				//v.top.setBackgroundDrawable(createSLD(color));
+				v.top.setBackgroundDrawable(createSLD(color));
+			}
 		}
 		else
 		{
@@ -672,53 +707,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			v.image.setVisibility(View.GONE);
 		}
 	}
-	
-	private class SLD extends StateListDrawable
-	{
-		private HashMap<Integer, String> states;
-		
-		public SLD()
-		{
-			states = new HashMap<Integer, String>();
-			
-			states.put(android.R.attr.state_focused, "state_focused");
-			states.put(android.R.attr.state_selected, "state_selected");
-			states.put(android.R.attr.state_pressed, "state_pressed");
-			states.put(android.R.attr.state_active, "state_active");
-			states.put(android.R.attr.state_window_focused, "state_window_focused");
-			states.put(android.R.attr.state_enabled, "state_enabled");
-		}
 
-		@Override
-		protected boolean onStateChange(int[] stateSet)
-		{
-			/*Log.i("TEEEEEEEEEEEEEEST", "size: " + stateSet.length);
-			for (int state : stateSet)
-			{
-				if (states.containsKey(state))
-				{
-					Log.i("TEEEEEEEEEEEEEEEEST", " " + states.get(state));
-				}
-				else
-				{
-					Log.i("TEEEEEEEEEEEEEEEEST", " " + state);
-				}
-			}*/
-//			Log.i("TEEEEEEEEEEEST", ""+((BitmapDrawable)this.getCurrent()).getBitmap().getPixel(0, 0));
-			
-			if (this.getCurrent() == null)
-			{
-				this.invalidateSelf();
-				//Log.i("TEEEEEEEEEEEEEST", "drawable is null");
-			}
-			return super.onStateChange(stateSet);
-		}
-	}
-	
 	private StateListDrawable createSLD(int color)
 	{
 		StateListDrawable sld = new StateListDrawable();
-		//StateListDrawable sld = new SLD();
 		
 		final int stateFocused = android.R.attr.state_focused;
 		final int stateSelected = android.R.attr.state_selected;
@@ -727,7 +719,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		final int stateEnabled = android.R.attr.state_enabled;
 		final int stateWFocused = android.R.attr.state_window_focused;
 		
-		Drawable defaultDrawable = mColors.get(color).drawable;
+		final Drawable defaultDrawable = mColors.get(color).drawable.mutate();
+//		Log.i("TEEEEEEEEEEEST", "trans_type: " + String.format("%x", color));
+//		Log.i("TEEEEEEEEEEEST", "color:  " + String.format("%x", mColors.get(color).color));
+//		Log.i("TEEEEEEEEEEEST", "dcolor: " + String.format("%x", ((BitmapDrawable)defaultDrawable).getBitmap().getPixel(0, 0)));
 		
 		sld.addState(new int[] { stateWFocused, stateActive }, mPressedDrawable);
 		sld.addState(new int[] { stateWFocused, statePressed }, mPressedDrawable);
@@ -739,8 +734,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		sld.addState(new int[] { stateWFocused, stateEnabled, stateSelected }, mFocusedDrawable);
 		sld.addState(new int[] { stateWFocused, stateEnabled }, defaultDrawable);
 		sld.addState(new int[] { stateEnabled }, defaultDrawable);
-		sld.addState(new int[] { }, defaultDrawable);
-		sld.addState(null, defaultDrawable);
 		
 		return sld;
 	}
@@ -755,7 +748,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		if (colors)
 		{
 			int color = mColors.get(color_key).color;
-			if (bg)
+			if (bg && !mColorSide)
 			{
 				int red = Color.red(color);
 				int green = Color.green(color);
@@ -784,6 +777,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		TextView running_balance;
 		ImageView image;
 		LinearLayout top;
+		LinearLayout sidebar;
 	}
 
 	public class TransactionFilter extends Filter
