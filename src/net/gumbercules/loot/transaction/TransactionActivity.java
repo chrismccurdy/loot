@@ -25,7 +25,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -197,11 +201,11 @@ public class TransactionActivity extends ListActivity
     	searchEdit.addTextChangedListener(searchChanged);
     	
     	setupActionBar();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     	
     	ListView view = getListView();
         registerForContextMenu(view);
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
         if (!prefs.getBoolean("top_sort", false))
         {
         	view.setStackFromBottom(true);
@@ -237,6 +241,42 @@ public class TransactionActivity extends ListActivity
 			filter.publish(searchString, filter.filtering(searchString));
     	}
     }
+
+	private StateListDrawable createSLD()
+	{
+		StateListDrawable sld = new StateListDrawable();
+		
+		final int stateFocused = android.R.attr.state_focused;
+		final int stateSelected = android.R.attr.state_selected;
+		final int statePressed = android.R.attr.state_pressed;
+		final int stateActive = android.R.attr.state_active;
+		final int stateEnabled = android.R.attr.state_enabled;
+		final int stateWFocused = android.R.attr.state_window_focused;
+		
+		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		bmp.setPixel(0, 0, Color.argb(85, 255, 130, 35));
+		final Drawable focusedDrawable = new BitmapDrawable(getResources(),
+				bmp.copy(Bitmap.Config.ARGB_8888, true));
+		bmp.setPixel(0, 0, Color.argb(85, 255, 159, 104));
+		final Drawable pressedDrawable = new BitmapDrawable(getResources(),
+				bmp.copy(Bitmap.Config.ARGB_8888, true));
+		bmp.setPixel(0, 0, Color.argb(0, 0, 0, 0));
+		final Drawable defaultDrawable = new BitmapDrawable(getResources(),
+				bmp.copy(Bitmap.Config.ARGB_8888, true));
+		
+		sld.addState(new int[] { stateWFocused, stateActive }, pressedDrawable);
+		sld.addState(new int[] { stateWFocused, statePressed }, pressedDrawable);
+		sld.addState(new int[] { stateWFocused, stateEnabled, statePressed }, pressedDrawable);
+		sld.addState(new int[] { stateWFocused, stateFocused, stateSelected, statePressed }, pressedDrawable);
+		sld.addState(new int[] { stateWFocused, stateFocused }, focusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateSelected }, focusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateFocused, stateSelected }, focusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateEnabled, stateSelected }, focusedDrawable);
+		sld.addState(new int[] { stateWFocused, stateEnabled }, defaultDrawable);
+		sld.addState(new int[] { stateEnabled }, defaultDrawable);
+		
+		return sld;
+	}
     
     private void nullifyChildBackgrounds()
     {
@@ -262,6 +302,24 @@ public class TransactionActivity extends ListActivity
     		createContent();
     	}
 
+        // only mess with the selector if we're drawing the background
+        if (prefs.getBoolean("color_background", true))
+        {
+    		ListView view = getListView();
+        	if (!prefs.getBoolean("color_bg_side", false))
+        	{
+	        	view.setSelector(createSLD());
+	        	view.setDrawSelectorOnTop(true);
+        	}
+        	else
+        	{
+        		ListView temp = new ListView(this);
+        		view.setSelector(temp.getSelector());
+        		temp = null;
+        		view.setDrawSelectorOnTop(false);
+        	}
+        }
+    	
     	if (mCurrentBundle != null)
     	{
 			try
