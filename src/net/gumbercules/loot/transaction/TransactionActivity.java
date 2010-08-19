@@ -383,7 +383,7 @@ public class TransactionActivity extends ListActivity
     		
     		if (new_account)
     		{
-    			thrd.start();
+    			runOnUiThread(thrd);
     		}
     		else
     		{

@@ -61,7 +61,7 @@ public class AccountProvider extends ContentProvider
 	@Override
 	public boolean onCreate()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
@@ -113,5 +113,4 @@ public class AccountProvider extends ContentProvider
 	{
 		return 0;
 	}
-
 }

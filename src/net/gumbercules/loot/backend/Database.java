@@ -17,7 +17,7 @@ import android.util.Log;
 public class Database
 {
 	public final static String DB_PATH		= "/data/data/net.gumbercules.loot/LootDB.db";
-	private final static int DB_VERSION		= 8;
+	private final static int DB_VERSION		= 9;
 	private static SQLiteDatabase lootDB	= null;
 	
 	public Database()
@@ -77,7 +77,7 @@ public class Database
 	
 	private static boolean createDB(SQLiteDatabase db)
 	{
-		String[] createSQL = new String[15];
+		String[] createSQL = new String[16];
 		
 		createSQL[0] = "create table accounts(\n" + 
 					"	id integer primary key autoincrement,\n" +
@@ -142,15 +142,19 @@ public class Database
 		createSQL[7] = "create table images(\n" +
 					"	trans_id integer not null,\n" +
 					"	uri varchar(256))";
+		
+		createSQL[8] = "create table synchronizations(\n" +
+					"   device_uuid varchar(36) not null,\n" +
+					"   timestamp integer default 0)";
 
-		createSQL[8] = "insert into options values ('sort_column','0')";
-		createSQL[9] = "insert into options values ('auto_purge_days','-1')";
-		createSQL[10] = "insert into options values ('post_repeats_early','2')";
+		createSQL[9] = "insert into options values ('sort_column','0')";
+		createSQL[10] = "insert into options values ('auto_purge_days','-1')";
+		createSQL[11] = "insert into options values ('post_repeats_early','2')";
 
-		createSQL[11] = "create index idx_trans_id on transactions ( id asc )";
-		createSQL[12] = "create index idx_account on transactions ( account, purged )";
-		createSQL[13] = "create index idx_tags on tags ( trans_id asc )";
-		createSQL[14] = "create index idx_images on images ( trans_id asc )";
+		createSQL[12] = "create index idx_trans_id on transactions ( id asc )";
+		createSQL[13] = "create index idx_account on transactions ( account, purged )";
+		createSQL[14] = "create index idx_tags on tags ( trans_id asc )";
+		createSQL[15] = "create index idx_images on images ( trans_id asc )";
 		
 		try
 		{
@@ -325,6 +329,27 @@ public class Database
 			
 			lootDB.setVersion(8);
 			current_version = 8;
+		}
+		if (current_version < 9)
+		{
+			lootDB.beginTransaction();
+			try
+			{
+				lootDB.execSQL("create table synchronizations(device_uuid varchar(36) not null," +
+					" timestamp integer default 0)");
+				lootDB.setTransactionSuccessful();
+			}
+			catch (SQLException e)
+			{
+				return false;
+			}
+			finally
+			{
+				lootDB.endTransaction();
+			}
+			
+			lootDB.setVersion(9);
+			current_version = 9;
 		}
 		
 		if ( current_version == max_version )
