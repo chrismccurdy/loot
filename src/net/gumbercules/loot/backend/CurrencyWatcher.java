@@ -19,7 +19,7 @@ import android.widget.EditText;
 
 public class CurrencyWatcher implements TextWatcher
 {
-	private static final String TAG			= "net.gumbercules.loot.CurrencyWatcher";
+	private static final String TAG			= "net.gumbercules.loot.backend.CurrencyWatcher";
 	private static final String PHONE_TYPE	= "PHONE";
 	private static final String NUMBER_TYPE	= "NUMBER";
 	
@@ -93,7 +93,7 @@ public class CurrencyWatcher implements TextWatcher
 			s.append(str);
 		}
 		
-		Log.i(TAG + ".afterTextChanged()", "Attempting input: " + str);
+		//Log.i(TAG + ".afterTextChanged()", "Attempting input: " + str);
 
 		final ArrayList<Character> accepted = new ArrayList<Character>(Arrays.asList(mAccepted));
 		int pos = 0;

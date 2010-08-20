@@ -59,6 +59,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	public TransactionAdapter(Context con, int row, ArrayList<Transaction> tr, int acct_id)
 	{
 		super(con, 0);
+		if (tr == null)
+		{
+			tr = new ArrayList<Transaction>();
+		}
 		this.mTransList = tr;
 		this.mOriginalList = tr;
 		this.mRunningBalances = new ArrayList<Double>();
@@ -269,6 +273,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 	@Override
 	public int getCount()
 	{
+		if (mTransList == null)
+		{
+			return 0;
+		}
+		
 		return mTransList.size();
 	}
 
