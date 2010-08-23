@@ -823,13 +823,18 @@ public class TransactionEdit extends Activity
 		partyEdit.setAdapter(adapter);
 		
 		// make changes for credit accounts
+		makeCreditChanges();
+	}
+	
+	private void makeCreditChanges()
+	{
 		Account acct = Account.getAccountById(mAccountId);
 		if (acct.credit)
 		{
 			checkRadio.setVisibility(View.GONE);
 			withdrawRadio.setText(R.string.credit);
 			depositRadio.setText(R.string.debit);
-			depositRadio.setSelected(true);
+			depositRadio.setChecked(true);
 			
 			TableRow row = (TableRow)findViewById(R.id.checkRow);
 			row.setVisibility(View.GONE);
@@ -867,7 +872,9 @@ public class TransactionEdit extends Activity
 				acctNames[i++] = name;
 			}
 		}
-		
+
+		makeCreditChanges();
+
 		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
 				android.R.layout.simple_spinner_item, acctNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -609,7 +609,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 					partyStr += "W:";
 				}
 			}
-			color = COLOR_WITHDRAW;
+			color = (acct.credit ? COLOR_DEPOSIT : COLOR_WITHDRAW);
 		}
 		else
 		{
@@ -617,7 +617,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			{
 				partyStr += "D:";
 			}
-			color = COLOR_DEPOSIT;
+			color = (acct.credit ? COLOR_WITHDRAW : COLOR_DEPOSIT);
 		}
 		if (trans.budget)
 		{
@@ -635,17 +635,13 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		{
 			if (mColorSide)
 			{
-				//v.sidebar.setBackgroundColor(mColors.get(color).color);
 				v.sidebar.setBackgroundColor(mColors.get(color));
 				v.sidebar.setVisibility(View.VISIBLE);
 				v.top.setBackgroundDrawable(null);
 			}
 			else
-			//if (v.top.getBackground() == null)
 			{
 				v.sidebar.setVisibility(View.GONE);
-				//v.top.setBackgroundDrawable(createSLD(color));
-				//v.top.setBackgroundColor(mColors.get(color).color);
 				v.top.setBackgroundColor(mColors.get(color));
 			}
 		}

@@ -558,7 +558,8 @@ public class Account
 			return null;
 		}
 		
-		String[] columns = {"id", "name", "balance"};
+		String[] columns = {"id", "name", "balance", "priority",
+				"primary_account", "display_balance", "credit_account", "credit_limit"};
 		String[] sArgs = {name};
 		Cursor cur = lootDB.query("accounts", columns, "name = ? and purged = 0", sArgs,
 				null, null, null, "1");
@@ -572,6 +573,11 @@ public class Account
 		acct.id = cur.getInt(0);
 		acct.name = cur.getString(1);
 		acct.initialBalance = cur.getDouble(2);
+		acct.priority = cur.getInt(3);
+		acct.primary = Database.getBoolean(cur.getInt(4));
+		acct.balanceDisplay = cur.getInt(5);
+		acct.credit = Database.getBoolean(cur.getInt(6));
+		acct.creditLimit = cur.getDouble(7);
 		cur.close();
 		
 		return acct;

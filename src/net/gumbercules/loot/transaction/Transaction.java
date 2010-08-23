@@ -795,9 +795,25 @@ public class Transaction
 
 		if ( this.type == Transaction.DEPOSIT )
 		{
-			detail1 = "from ";
-			detail2 = "to ";
-			trans2.type = Transaction.WITHDRAW;
+			if (acct1.credit || acct2.credit)
+			{
+				if (acct1.credit && acct2.credit)
+				{
+					trans2.type = Transaction.WITHDRAW;
+				}
+				else
+				{
+					trans2.type = Transaction.DEPOSIT;
+				}
+				detail1 = "to ";
+				detail2 = "from ";
+			}
+			else
+			{
+				trans2.type = Transaction.WITHDRAW;
+				detail1 = "from ";
+				detail2 = "to ";
+			}
 		}
 		else
 		{
@@ -808,7 +824,26 @@ public class Transaction
 			
 			detail1 = "to ";
 			detail2 = "from ";
-			trans2.type = Transaction.DEPOSIT;
+			
+			if (acct1.credit || acct2.credit)
+			{
+				if (acct1.credit && acct2.credit)
+				{
+					trans2.type = Transaction.DEPOSIT;
+				}
+				else
+				{
+					trans2.type = Transaction.WITHDRAW;
+				}
+				detail1 = "from ";
+				detail2 = "to ";
+			}
+			else
+			{
+				trans2.type = Transaction.DEPOSIT;
+				detail1 = "to ";
+				detail2 = "from ";
+			}
 		}
 
 		// sqlite craps out if we wrap all this in a transaction block
@@ -819,7 +854,9 @@ public class Transaction
 		this.party = "Transfer " + detail1 + acct2.name;
 		int ret = this.write(acct1.id());
 		if (ret == -1)
+		{
 			return -1;
+		}
 		
 		trans2.party = "Transfer " + detail2 + acct1.name;
 		int transfer_id = trans2.write(acct2.id());
@@ -867,7 +904,6 @@ public class Transaction
 				}
 			}
 		}
-		
 		
 		return ret;
 	}
