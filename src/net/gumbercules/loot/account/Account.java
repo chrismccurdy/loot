@@ -70,7 +70,7 @@ public class Account
 	{
 		// insert the new row into the database
 		String insert = "insert into accounts (name,balance,timestamp,priority,primary_account," +
-				"display_balance,credit_account) values (?,?,strftime('%s','now'),?,?,?,?,?)";
+				"display_balance,credit_account,credit_limit) values (?,?,strftime('%s','now'),?,?,?,?,?)";
 		Object[] bindArgs = {this.name, new Double(this.initialBalance),
 				new Long(this.priority), new Boolean(this.primary),
 				new Long(this.balanceDisplay), new Boolean(this.credit), new Double(this.creditLimit)};
