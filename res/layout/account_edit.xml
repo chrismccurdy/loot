@@ -80,11 +80,13 @@
 	</ScrollView>
 	<LinearLayout android:id="@+id/LinearLayout01"
 		android:layout_height="wrap_content" android:layout_width="fill_parent">
-		<Button android:layout_width="wrap_content"
+		<ImageButton android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:id="@+id/SaveButton"
-			android:text="@string/save" android:layout_weight="1" />
-		<Button android:layout_width="wrap_content"
+			android:layout_weight="1" android:background="@drawable/gradient_button"
+			android:src="@drawable/action_save" android:layout_marginRight="1dp" />
+		<ImageButton android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:id="@+id/CancelButton"
-			android:text="@string/cancel" android:layout_weight="1" />
+			android:layout_weight="1" android:background="@drawable/gradient_button"
+			android:src="@drawable/action_cancel" />
 	</LinearLayout>
 </LinearLayout>

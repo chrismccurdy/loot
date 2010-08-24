@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class PinActivity extends Activity
@@ -32,7 +33,7 @@ public class PinActivity extends Activity
 	
 	private static final String TAG	= "net.gumbercules.loot.PinActivity";
 	
-	private Button mUnlockButton;
+	private ImageButton mUnlockButton;
 	private EditText mPinEdit;
 	private TextView mInvalidView;
 	private Bundle mBundle;
@@ -60,11 +61,11 @@ public class PinActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pin);
 		
-		mUnlockButton = (Button)findViewById(R.id.unlockButton);
+		mUnlockButton = (ImageButton)findViewById(R.id.unlockButton);
 		mPinEdit = (EditText)findViewById(R.id.pinEdit);
 		mInvalidView = (TextView)findViewById(R.id.invalidView);
 		
-		Button clearButton = (Button)findViewById(R.id.clearButton);
+		ImageButton clearButton = (ImageButton)findViewById(R.id.clearButton);
 		clearButton.setOnClickListener(new Button.OnClickListener()
 		{
 			public void onClick(View v)

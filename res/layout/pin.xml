@@ -17,7 +17,8 @@
 		android:focusableInTouchMode="false" android:inputType="textPassword" />
 	<TableLayout android:id="@+id/TableLayout01"
 		android:layout_height="wrap_content" android:layout_width="fill_parent"
-		android:layout_marginLeft="15dip" android:layout_marginRight="15dip">
+		android:layout_marginLeft="15dip" android:layout_marginRight="15dip"
+		android:layout_weight="1">
 		<TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content"
 			android:layout_width="fill_parent">
 			<Button android:id="@+id/Button01" android:layout_width="wrap_content"
@@ -100,14 +101,14 @@
 	<LinearLayout android:id="@+id/LinearLayout01"
 		android:layout_height="wrap_content" android:layout_width="fill_parent"
 		android:layout_marginTop="15dip">
-		<Button android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:textSize="24dip"
-			android:textStyle="bold" android:text="Clear" android:layout_weight="1"
-			android:layout_marginLeft="10dip" android:id="@+id/clearButton" />
-		<Button android:layout_height="wrap_content" android:text="@string/unlock"
-			android:layout_width="wrap_content" android:textSize="24dip"
-			android:id="@+id/unlockButton" android:textStyle="bold"
-			android:layout_weight="1" android:layout_marginRight="10dip"
-			android:layout_marginLeft="35dip" />
+		<ImageButton android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="Clear"
+			android:layout_weight="1" android:layout_marginRight="1dp"
+			android:id="@+id/clearButton" android:background="@drawable/gradient_button"
+			android:src="@drawable/action_clear" />
+		<ImageButton android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/unlockButton"
+			android:layout_weight="1" android:background="@drawable/gradient_button"
+			android:src="@drawable/action_unlock" />
 	</LinearLayout>
 </LinearLayout>

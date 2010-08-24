@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.ToggleButton;
@@ -83,20 +84,16 @@ public class RepeatActivity extends TabActivity
                 		getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel))
                 .setContent(R.id.repeat_none));
         tabHost.addTab(tabHost.newTabSpec("Daily")
-                .setIndicator("",
-                		getResources().getDrawable(android.R.drawable.ic_menu_day))
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_day))
                 .setContent(R.id.repeat_daily));
         tabHost.addTab(tabHost.newTabSpec("Weekly")
-                .setIndicator("",
-                		getResources().getDrawable(android.R.drawable.ic_menu_week))
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_week))
                 .setContent(R.id.repeat_weekly));
         tabHost.addTab(tabHost.newTabSpec("Monthly")
-                .setIndicator("",
-                		getResources().getDrawable(android.R.drawable.ic_menu_month))
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_month))
                 .setContent(R.id.repeat_monthly));
         tabHost.addTab(tabHost.newTabSpec("Yearly")
-                .setIndicator("",
-                		getResources().getDrawable(android.R.drawable.ic_menu_today))
+                .setIndicator("", getResources().getDrawable(android.R.drawable.ic_menu_today))
                 .setContent(R.id.repeat_yearly));
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
         {
@@ -115,7 +112,7 @@ public class RepeatActivity extends TabActivity
 
     private void setup(String tabId)
 	{
-    	Button saveButton, cancelButton;
+    	ImageButton saveButton, cancelButton;
 
     	int save = 0,
     		cancel = 1,
@@ -124,7 +121,7 @@ public class RepeatActivity extends TabActivity
     		id = 4;
     	int[] resources = getResources(tabId);
 
-    	saveButton = (Button)findViewById(resources[save]);
+    	saveButton = (ImageButton)findViewById(resources[save]);
     	if (saveButton != null)
     	{
     		final int tab_id = resources[id];
@@ -138,7 +135,7 @@ public class RepeatActivity extends TabActivity
     		});
     	}
 
-    	cancelButton = (Button)findViewById(resources[cancel]);
+    	cancelButton = (ImageButton)findViewById(resources[cancel]);
     	if (cancelButton != null)
     		cancelButton.setOnClickListener(new Button.OnClickListener()
     		{

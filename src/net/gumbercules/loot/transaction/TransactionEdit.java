@@ -102,8 +102,8 @@ public class TransactionEdit extends Activity
 	private RadioButton budgetRadio;
 	private RadioButton actualRadio;
 	
-	private Button saveButton;
-	private Button cancelButton;
+	private ImageButton saveButton;
+	private ImageButton cancelButton;
 	
 	private boolean restarted;
 	
@@ -203,8 +203,8 @@ public class TransactionEdit extends Activity
         actualRadio = (RadioButton)findViewById(R.id.ActualRadio);
 		budgetRadio = (RadioButton)findViewById(R.id.BudgetRadio);
 		
-		saveButton = (Button)findViewById(R.id.saveButton);
-		cancelButton = (Button)findViewById(R.id.cancelButton);
+		saveButton = (ImageButton)findViewById(R.id.saveButton);
+		cancelButton = (ImageButton)findViewById(R.id.cancelButton);
 		
         dateButton.setOnClickListener(new View.OnClickListener()
         {

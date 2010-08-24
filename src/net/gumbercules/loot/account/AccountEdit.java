@@ -7,17 +7,16 @@ import java.util.Currency;
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.backend.CurrencyWatcher;
 import net.gumbercules.loot.backend.Database;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -58,8 +57,8 @@ public class AccountEdit extends Activity
 		mCreditLimitEdit = (EditText)findViewById(R.id.CreditLimitEdit);
 		mCreditLimitEdit.addTextChangedListener(mCurrencyWatcher);
 		mDisplaySpinner = (Spinner)findViewById(R.id.DisplaySpinner);
-		Button SaveButton = (Button)findViewById(R.id.SaveButton);
-		Button CancelButton = (Button)findViewById(R.id.CancelButton);
+		ImageButton SaveButton = (ImageButton)findViewById(R.id.SaveButton);
+		ImageButton CancelButton = (ImageButton)findViewById(R.id.CancelButton);
 		
 		mBalanceEdit.setOnFocusChangeListener(new OnFocusChangeListener()
 		{
