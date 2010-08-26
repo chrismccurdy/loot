@@ -231,11 +231,10 @@ public class TransactionEdit extends Activity
 					}
 					visibility = View.VISIBLE;
 				}
-				//checkEdit.setEnabled(isChecked);
 				findViewById(R.id.checkRow).setVisibility(visibility);
 			}
 		});
-		//checkEdit.setEnabled(false);
+		makeCreditChanges();
 
         // load the transaction if mTransId > 0
         Transaction trans = null;
@@ -320,14 +319,36 @@ public class TransactionEdit extends Activity
 					}
 				}
 				
+				RadioButton radio = checkRadio;
+	    		Account acct = Account.getAccountById(trans.account);
+	    		Log.i("TEEEEEEEEEEEEEEST", "credit? " + acct.credit);
 				if (trans.type == Transaction.WITHDRAW)
 				{
-					withdrawRadio.setChecked(true);
+//					if (acct.credit)
+//					{
+//			    		Log.i("TEEEEEEEEEEEEEEST", "type?   CREDIT");
+//						radio = depositRadio;
+//					}
+//					else
+					{
+//			    		Log.i("TEEEEEEEEEEEEEEST", "type?   WITHDRAW");
+						radio = withdrawRadio;
+					}
 				}
 				else if (trans.type == Transaction.DEPOSIT)
 				{
-					depositRadio.setChecked(true);
+//					if (acct.credit)
+//					{
+//			    		Log.i("TEEEEEEEEEEEEEEST", "type?   DEBIT");
+//						radio = withdrawRadio;
+//					}
+//					else
+					{
+//			    		Log.i("TEEEEEEEEEEEEEEST", "type?   DEPOSIT");
+						radio = depositRadio;
+					}
 				}
+				radio.setChecked(true);
 				
 				if (trans.budget && !trans.isPosted())
 				{
@@ -821,9 +842,6 @@ public class TransactionEdit extends Activity
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_dropdown_item_1line, parties);
 		partyEdit.setAdapter(adapter);
-		
-		// make changes for credit accounts
-		makeCreditChanges();
 	}
 	
 	private void makeCreditChanges()
@@ -872,9 +890,7 @@ public class TransactionEdit extends Activity
 				acctNames[i++] = name;
 			}
 		}
-
-		makeCreditChanges();
-
+		
 		ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,
 				android.R.layout.simple_spinner_item, acctNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

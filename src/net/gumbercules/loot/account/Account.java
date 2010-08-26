@@ -211,9 +211,17 @@ public class Account
 	
 	public static Double getTotalBalance()
 	{
+		return getTotalBalance(false) - getTotalBalance(true);
+	}
+	
+	private static Double getTotalBalance(boolean credit)
+	{
+		// get total balance for all non-credit accounts
 		SQLiteDatabase lootDB = Database.getDatabase();
 		String query = "select sum(t.amount) from transactions t, accounts a where " +
-				"t.account = a.id and a.purged = 0 and t.purged = 0 and t.budget = 0"; 
+				"t.account = a.id and a.purged = 0 and t.purged = 0 and t.budget = 0 and a.credit_account = ";
+		query += (credit ? "1" : "0");
+		
 		Cursor cur = lootDB.rawQuery(query, null);
 		
 		Double bal = null;
@@ -223,7 +231,8 @@ public class Account
 		}
 		cur.close();
 		
-		query = "select sum(balance) from accounts where purged = 0";
+		query = "select sum(balance) from accounts where purged = 0 and credit_account = ";
+		query += (credit ? "1" : "0");
 		cur = lootDB.rawQuery(query, null);
 		
 		if (cur.moveToFirst())

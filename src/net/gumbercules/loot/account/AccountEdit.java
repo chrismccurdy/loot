@@ -137,20 +137,12 @@ public class AccountEdit extends Activity
 			Account acct = Account.getAccountById(mRowId);
 			
 			if (mNameEdit != null)
+			{
 				mNameEdit.setText(acct.name);
+			}
 			if (mBalanceEdit != null)
 			{
-				NumberFormat nf = NumberFormat.getCurrencyInstance();
-				String new_currency = Database.getOptionString("override_locale");
-				if (new_currency != null && !new_currency.equals(""))
-					nf.setCurrency(Currency.getInstance(new_currency));
-				String num = nf.format(acct.initialBalance);
-				StringBuilder sb = new StringBuilder();
-				sb.append(mCurrencyWatcher.getAcceptedChars());
-				String accepted = "[^\\Q" + sb.toString() + "\\E]";
-				num = num.replaceAll(accepted, "");
-				
-				mBalanceEdit.setText(num);
+				setupCurrencyEdit(mBalanceEdit, acct.initialBalance);
 			}
 			if (mPriorityEdit != null)
 			{
@@ -168,7 +160,28 @@ public class AccountEdit extends Activity
 			{
 				mDisplaySpinner.setSelection(acct.balanceDisplay);
 			}
+			if (mCreditLimitEdit != null)
+			{
+				setupCurrencyEdit(mCreditLimitEdit, acct.creditLimit);
+			}
 		}
+	}
+	
+	private void setupCurrencyEdit(EditText edit, double value)
+	{
+		NumberFormat nf = NumberFormat.getCurrencyInstance();
+		String new_currency = Database.getOptionString("override_locale");
+		if (new_currency != null && !new_currency.equals(""))
+		{
+			nf.setCurrency(Currency.getInstance(new_currency));
+		}
+		String num = nf.format(value);
+		StringBuilder sb = new StringBuilder();
+		sb.append(mCurrencyWatcher.getAcceptedChars());
+		String accepted = "[^\\Q" + sb.toString() + "\\E]";
+		num = num.replaceAll(accepted, "");
+		
+		edit.setText(num);
 	}
 	
 	private void saveState()
