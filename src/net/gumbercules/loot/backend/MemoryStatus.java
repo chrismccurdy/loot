@@ -76,6 +76,7 @@ public class MemoryStatus
 		{
 			// less than 1% total memory is available
 			Toast.makeText(c, R.string.low_external_memory, Toast.LENGTH_LONG).show();
+			Log.i(TAG + ".checkMemoryStatus", "available: " + available + ", total: " + total);
 		}
 		
 		return ret;
