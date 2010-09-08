@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="horizontal" android:id="@+id/LinearLayout01"
 	android:paddingRight="5dip">
 	<CheckBox android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"
+		android:layout_height="fill_parent" android:id="@+id/PostedCheckBox"
 		android:focusable="false" android:focusableInTouchMode="false" />
 	<LinearLayout android:id="@+id/LinearLayout02"
 		android:layout_width="wrap_content" android:layout_height="fill_parent"
@@ -34,15 +34,15 @@
 				android:layout_weight="1" android:layout_height="fill_parent"
 				android:minWidth="100dip" android:layout_width="wrap_content"
 				android:textSize="16dip" />
-            <TextView android:text="1215.00" android:gravity="right"
-                android:id="@+id/RunningBalanceText" android:layout_gravity="right|center_vertical"
-                android:layout_weight="1" android:layout_height="fill_parent"
-                android:minWidth="100dip" android:layout_width="wrap_content"
-                android:textSize="16dip" android:visibility="gone" />
+			<TextView android:text="1215.00" android:gravity="right"
+				android:id="@+id/RunningBalanceText" android:layout_gravity="right|center_vertical"
+				android:layout_weight="1" android:layout_height="fill_parent"
+				android:minWidth="100dip" android:layout_width="wrap_content"
+				android:textSize="16dip" android:visibility="gone" />
 		</LinearLayout>
 	</LinearLayout>
-    <LinearLayout android:id="@+id/SideBar" android:layout_width="wrap_content"
-        android:layout_height="fill_parent" android:minWidth="7dp"
-        android:layout_marginLeft="2dp"
-        android:visibility="gone" />
+	<LinearLayout android:id="@+id/SideBar"
+		android:layout_width="wrap_content" android:layout_height="fill_parent"
+		android:minWidth="7dp" android:layout_marginLeft="2dp"
+		android:visibility="gone" />
 </LinearLayout>

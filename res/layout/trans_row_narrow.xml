@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/LinearLayout01"
-	android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:orientation="horizontal"
 	android:paddingRight="5dip">
 	<CheckBox android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:id="@+id/PostedCheckBox"
+		android:layout_height="fill_parent" android:id="@+id/PostedCheckBox"
 		android:focusable="false" android:focusableInTouchMode="false"
 		android:layout_marginTop="-5dip" android:layout_marginBottom="-6dip" />
 	<LinearLayout android:id="@+id/LinearLayout02"
