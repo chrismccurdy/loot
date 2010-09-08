@@ -78,28 +78,23 @@
 		<ImageButton android:id="@+id/new_transaction_button"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"
 			android:background="@drawable/gradient_button" android:layout_weight="1"
-			android:src="@drawable/action_add"
-			android:layout_marginRight="1dp" />
+			android:src="@drawable/action_add" android:layout_marginRight="1dp" />
 		<ImageButton android:id="@+id/new_transfer_button"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"
 			android:background="@drawable/gradient_button" android:layout_weight="1"
-			android:src="@drawable/action_exchange"
-			android:layout_marginRight="1dp" />
+			android:src="@drawable/action_exchange" android:layout_marginRight="1dp" />
 		<ImageButton android:id="@+id/search_button"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"
 			android:background="@drawable/gradient_button" android:layout_weight="1"
-			android:src="@drawable/action_search"
-			android:layout_marginRight="1dp" />
+			android:src="@drawable/action_search" android:layout_marginRight="1dp" />
 		<ImageButton android:id="@+id/import_button"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"
 			android:background="@drawable/gradient_button" android:layout_weight="1"
-			android:src="@drawable/action_import"
-			android:layout_marginRight="1dp" />
+			android:src="@drawable/action_import" android:layout_marginRight="1dp" />
 		<ImageButton android:id="@+id/export_button"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"
 			android:background="@drawable/gradient_button" android:layout_weight="1"
-			android:src="@drawable/action_export"
-			android:layout_marginRight="1dp" />
+			android:src="@drawable/action_export" android:layout_marginRight="1dp" />
 		<ImageButton android:id="@+id/chart_button"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"
 			android:background="@drawable/gradient_button" android:layout_weight="1"
