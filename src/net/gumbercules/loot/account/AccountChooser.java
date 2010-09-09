@@ -55,6 +55,7 @@ public class AccountChooser extends ListActivity
 	public static final int CHART_ID		= Menu.FIRST + 7;
 	public static final int CHANGELOG_ID	= Menu.FIRST + 8;
 	public static final int RMANAGER_ID		= Menu.FIRST + 9;
+	public static final int SYNC_ID			= Menu.FIRST + 10;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_DEL		= Menu.FIRST + 1;
@@ -64,7 +65,7 @@ public class AccountChooser extends ListActivity
 	public static final int CONTEXT_PRIMARY	= Menu.FIRST + 5;
 	
 	@SuppressWarnings("unused")
-	private static final String TAG			= "net.gumbercules.loot.AccountChooser"; 
+	private static final String TAG			= "net.gumbercules.loot.AccountChooser";
 
 	private ArrayList<Account> accountList;
 	private TextView mTotalBalance;
@@ -209,14 +210,17 @@ public class AccountChooser extends ListActivity
 		menu.add(0, BU_RESTORE_ID, 0, R.string.restore_db)
 			.setShortcut('3', 'r')
 			.setIcon(android.R.drawable.ic_menu_set_as);
+		menu.add(0, SYNC_ID, 0, R.string.sync)
+			.setShortcut('4', 'z');
+			// .setIcon(android.R.drawable.whatever) TODO: put an icon here;
 		menu.add(0, RMANAGER_ID, 0, R.string.repeat_manager)
-			.setShortcut('4', 'm')
+			.setShortcut('5', 'm')
 			.setIcon(android.R.drawable.ic_menu_recent_history);
 		menu.add(0, CHANGELOG_ID, 0, R.string.changelog)
-			.setShortcut('5', 'l')
+			.setShortcut('6', 'l')
 			.setIcon(android.R.drawable.ic_menu_agenda);
 		menu.add(0, SETTINGS_ID, 0, R.string.settings)
-			.setShortcut('6', 's')
+			.setShortcut('7', 's')
 			.setIcon(android.R.drawable.ic_menu_preferences);
 		return true;
 	}
@@ -289,9 +293,19 @@ public class AccountChooser extends ListActivity
     	case RMANAGER_ID:
     		showRepeatManager();
     		return true;
+    		
+    	case SYNC_ID:
+    		showSync();
+    		return true;
     	}
     	
 		return false;
+	}
+	
+	private void showSync()
+	{
+		PremiumCaller imp = new PremiumCaller(this);
+		imp.showActivity(PremiumCaller.SYNC);
 	}
 
 	private void showRepeatManager()

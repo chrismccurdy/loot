@@ -15,6 +15,7 @@ public class PremiumCaller
 	public static final String IMPORT	= "net.gumbercules.loot.premium.IMPORT";
 	public static final String EXPORT	= "net.gumbercules.loot.premium.EXPORT";
 	public static final String CHART	= "net.gumbercules.loot.premium.CHART";
+	public static final String SYNC		= "net.gumbercules.loot.premium.SYNC";
 	
 	private Activity mActivity;
 	
