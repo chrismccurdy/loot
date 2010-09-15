@@ -324,29 +324,11 @@ public class TransactionEdit extends Activity
 	    		Log.i("TEEEEEEEEEEEEEEST", "credit? " + acct.credit);
 				if (trans.type == Transaction.WITHDRAW)
 				{
-//					if (acct.credit)
-//					{
-//			    		Log.i("TEEEEEEEEEEEEEEST", "type?   CREDIT");
-//						radio = depositRadio;
-//					}
-//					else
-					{
-//			    		Log.i("TEEEEEEEEEEEEEEST", "type?   WITHDRAW");
-						radio = withdrawRadio;
-					}
+					radio = withdrawRadio;
 				}
 				else if (trans.type == Transaction.DEPOSIT)
 				{
-//					if (acct.credit)
-//					{
-//			    		Log.i("TEEEEEEEEEEEEEEST", "type?   DEBIT");
-//						radio = withdrawRadio;
-//					}
-//					else
-					{
-//			    		Log.i("TEEEEEEEEEEEEEEST", "type?   DEPOSIT");
-						radio = depositRadio;
-					}
+					radio = depositRadio;
 				}
 				radio.setChecked(true);
 				

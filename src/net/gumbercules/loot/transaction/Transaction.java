@@ -210,7 +210,7 @@ public class Transaction
 		for ( String tag : tags )
 			tag_str += " " + tag;
 		
-		return tag_str;
+		return tag_str.trim();
 	}
 	
 	public String[] getTagList()
