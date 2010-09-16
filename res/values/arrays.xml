@@ -79,7 +79,7 @@
 	<string-array name="changelog">
 	    <item>\n
 &#8226; Added action bars to account and transaction list screens\n
-&#8226; Added feature to jump to transactions when added/jump to current date when loading account\n
+&#8226; Added feature to jump to transactions when added\n
 &#8226; Improved aesthetics of the changelog\n
 &#8226; Improved usability selecting transactions on non-touchscreen devices\n
 &#8226; Fixed bug which caused crash on launch when automatic purging was turned on when no accounts are present\n
@@ -88,6 +88,11 @@
 &#8226; Added additional sidebar coloring option\n
 &#8226; Added option to remove transaction type prefixes\n
 	    </item>
+        <item>\n
+&#8226; Fixed layout issue for Simply Stunning ROM\n
+&#8226; Fixed force close bug when opening an account\n
+&#8226; Fixed SD card space availability calculation (Premium)\n
+        </item>
 		<item>\n
 &#8226; Fixed bug calculating running balance while sorting from top\n
 &#8226; Added optional confirmation when restoring the database\n
@@ -211,7 +216,8 @@
 		</item>
 	</string-array>
 	<string-array name="versions">
-	    <item>2.3.0</item>
+	    <item>3.0.0</item>
+	    <item>2.2.4</item>
 		<item>2.2.3</item>
 	    <item>2.2.2</item>
 	    <item>2.2.1</item>

@@ -503,10 +503,12 @@ public class TransactionActivity extends ListActivity
 			}
 		});
     	// disable the transfer button if there is only one account
-    	if (Account.getAccountIds().length <= 1)
+    	int[] ids = Account.getAccountIds();
+    	if (ids != null && ids.length <= 1)
     	{
     		button.setEnabled(false);
     	}
+    	ids = null;
     	
     	button = (ImageButton)findViewById(R.id.search_button);
     	button.setOnClickListener(new ImageButton.OnClickListener()
