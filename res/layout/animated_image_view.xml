@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:id="@+id/ImageSwitcher">
+	<ImageView android:id="@+id/FirstImage"
+		android:layout_height="fill_parent" android:layout_width="fill_parent"
+		android:adjustViewBounds="true" android:scaleType="fitCenter" />
+	<ImageView android:id="@+id/SecondImage"
+		android:layout_height="fill_parent" android:layout_width="fill_parent"
+		android:adjustViewBounds="true" android:scaleType="fitCenter" />
+</ImageSwitcher>

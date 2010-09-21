@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="fill_parent" android:layout_width="fill_parent"
+	android:orientation="vertical">
+	<LinearLayout android:id="@+id/LinearLayout01"
+		android:layout_height="wrap_content" android:layout_width="fill_parent"
+		android:orientation="vertical" android:layout_weight="1">
+		<TextView android:layout_height="wrap_content" android:text="@string/about"
+			android:layout_width="fill_parent" android:textSize="24dip"
+			android:textStyle="bold" android:gravity="center_horizontal"
+			android:layout_marginBottom="8dip" />
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:gravity="center_horizontal"
+			android:text="@string/created_by" android:layout_marginBottom="8dip" />
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:text="@string/comments"
+			android:autoLink="email" android:textSize="16dip"
+			android:layout_marginBottom="5dip" />
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:autoLink="email"
+			android:text="@string/donate" android:textSize="16dip"
+			android:layout_marginBottom="5dip" />
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:text="@string/javacsv"
+			android:textSize="12dip" android:autoLink="web" />
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:autoLink="web"
+			android:text="@string/flot" android:textSize="12dip" />
+	</LinearLayout>
+	<LinearLayout android:id="@+id/LinearLayout02"
+		android:layout_height="wrap_content" android:layout_width="fill_parent"
+		android:gravity="center_horizontal">
+		<Button android:text="@string/paypal" android:id="@+id/pp_button"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:layout_gravity="center_horizontal" />
+
+	</LinearLayout>
+</LinearLayout>

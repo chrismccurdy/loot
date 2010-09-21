@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="net.gumbercules.loot" android:installLocation="auto"
+	android:versionName="2.2.4" android:versionCode="53">
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+		<activity android:label="@string/app_name"
+			android:launchMode="singleTask" android:clearTaskOnLaunch="true"
+			android:name="net.gumbercules.loot.account.AccountChooser" />
+		<activity android:name="net.gumbercules.loot.transaction.TransactionActivity" />
+		<activity android:name="net.gumbercules.loot.transaction.TransactionEdit" />
+		<activity android:name="net.gumbercules.loot.account.AccountEdit" />
+		<activity android:name="net.gumbercules.loot.repeat.RepeatActivity" />
+		<activity android:name="net.gumbercules.loot.preferences.SettingsActivity" />
+		<activity android:launchMode="singleTask" android:label="@string/app_name"
+			android:clearTaskOnLaunch="true" android:name="net.gumbercules.loot.PinActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+		<activity android:name="net.gumbercules.loot.premium.WidgetInterceptor">
+			<intent-filter>
+				<action android:name="net.gumbercules.action.WIDGET" />
+				<category android:name="net.gumbercules.category.LAUNCHER" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:scheme="widget" android:host="net.gumbercules.loot" />
+			</intent-filter>
+		</activity>
+		<activity android:name="net.gumbercules.loot.DonateActivity" />
+		<activity android:name="net.gumbercules.loot.premium.PremiumNotFoundActivity" />
+		<activity android:name="net.gumbercules.loot.AboutActivity">
+			<intent-filter>
+				<action android:name="net.gumbercules.loot.intent.action.ABOUT" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+		<activity android:name="net.gumbercules.loot.ChangeLogActivity" />
+		<activity android:name="net.gumbercules.loot.repeat.RepeatManagerActivity" />
+		<activity android:name="net.gumbercules.loot.premium.ViewImage"
+			android:theme="@android:style/Theme.Dialog" />
+		<provider android:authorities="net.gumbercules.loot.transactionprovider"
+			android:name="net.gumbercules.loot.transaction.TransactionProvider" />
+		<provider android:name="net.gumbercules.loot.account.AccountProvider"
+			android:authorities="net.gumbercules.loot.accountprovider" />
+		<provider android:name="net.gumbercules.loot.backend.OptionsProvider"
+			android:authorities="net.gumbercules.loot.optionsprovider" />
+		<receiver android:name="net.gumbercules.loot.backend.DbUpdateReceiver">
+			<intent-filter>
+				<action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
+			</intent-filter>
+		</receiver>
+		<service android:name="net.gumbercules.loot.premium.DbBackupService">
+			<intent-filter>
+				<action android:name="net.gumbercules.action.BACKUP_DATABASE" />
+			</intent-filter>
+		</service>
+	</application>
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
+	<uses-feature android:name="android.hardware.touchscreen" />
+	<supports-screens />
+</manifest> 
