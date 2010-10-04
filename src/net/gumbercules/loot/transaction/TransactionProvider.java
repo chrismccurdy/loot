@@ -230,8 +230,7 @@ public class TransactionProvider extends ContentProvider
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs)
+	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
 	{
 		return 0;
 	}
