@@ -87,6 +87,7 @@
 &#8226; Added option to display different balance on account summary screen\n
 &#8226; Added additional sidebar coloring option\n
 &#8226; Added option to remove transaction type prefixes\n
+&#8226; Fixed a bug which caused crashing when charting based on words with apostrophes in them (Premium)\n
 	    </item>
         <item>\n
 &#8226; Fixed layout issue for Simply Stunning ROM\n
