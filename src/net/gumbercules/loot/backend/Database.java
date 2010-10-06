@@ -63,6 +63,7 @@ public class Database
 			// something went wrong creating the database
 			catch ( SQLiteException e )
 			{
+				e.printStackTrace();
 				lootDB = null;
 			}
 		}

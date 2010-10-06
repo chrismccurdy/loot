@@ -957,30 +957,49 @@ public class TransactionActivity extends ListActivity
 		case CONTEXT_DEL:
 			final Transaction trans = Transaction.getTransactionById(id);
 			final Context c = this;
-			AlertDialog dialog = new AlertDialog.Builder(this)
-				.setTitle(R.string.account_del_box)
-				.setMessage("Are you sure you wish to delete " + trans.party + "?")
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int which)
+			AlertDialog dialog;
+			if (trans != null)
+			{
+				dialog = new AlertDialog.Builder(this)
+					.setTitle(R.string.account_del_box)
+					.setMessage("Are you sure you wish to delete " + trans.party + "?")
+					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 					{
-						try
+						public void onClick(DialogInterface dialog, int which)
 						{
-							int id = trans.id();
-							trans.erase();
-							updateList(id, ACTIVITY_DEL);
+							try
+							{
+								int id = trans.id();
+								trans.erase();
+								updateList(id, ACTIVITY_DEL);
+							}
+							catch (Exception e)
+							{
+								Logger.logStackTrace(e, c);
+							}
 						}
-						catch (Exception e)
+					})
+					.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int which) { }
+					})
+					.create();
+			}
+			else
+			{
+				dialog = new AlertDialog.Builder(this)
+					.setTitle(R.string.account_del_box)
+					.setMessage("Can not delete this transaction. Does it still exist?")
+					.setNeutralButton("Okay", new DialogInterface.OnClickListener()
 						{
-							Logger.logStackTrace(e, c);
-						}
-					}
-				})
-				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int which) { }
-				})
-				.create();
+							@Override
+							public void onClick(DialogInterface dialog, int which)
+							{
+								fillList();
+							}
+						})
+					.create();
+			}
 			dialog.show();
 			
 			return true;
