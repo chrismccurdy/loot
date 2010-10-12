@@ -42,14 +42,11 @@ public class SynchronizationProvider extends ContentProvider
 		}
 		else if (size == 2)
 		{
-			if (path.get(1).equals("latest"))
-			{
-				return TIMESTAMP_ITEM_MIME;
-			}
-			else
-			{
-				return SYNC_ITEM_MIME;
-			}
+			return SYNC_ITEM_MIME;
+		}
+		else if (size == 3 && path.get(2).equals("latest"))
+		{
+			return TIMESTAMP_ITEM_MIME;
 		}
 		
 		return null;
@@ -64,7 +61,7 @@ public class SynchronizationProvider extends ContentProvider
 		}
 		
 		Synchronization sync = new Synchronization(values.getAsString("device_uuid"),
-				values.getAsLong("timestamp"));
+				values.getAsInteger("account_id"), values.getAsLong("timestamp"));
 		if (sync.write())
 		{
 			if (uri.getPath() == null)
@@ -97,11 +94,16 @@ public class SynchronizationProvider extends ContentProvider
 		String type = getType(uri);
 		if (type.equals(TIMESTAMP_ITEM_MIME))
 		{
-			Synchronization sync = new Synchronization(uri.getPathSegments().get(0));
-			sync.getLatest();
-			MatrixCursor cur = new MatrixCursor(new String[] {"key", "value"});
-			cur.addRow(new Object[] {"timestamp", new Long(sync.timestamp)});
-			return cur;
+			try
+			{
+				List<String> segments = uri.getPathSegments();
+				Synchronization sync = new Synchronization(segments.get(0), Integer.valueOf(segments.get(1)));
+				sync.getLatest();
+				MatrixCursor cur = new MatrixCursor(new String[] {"key", "value"});
+				cur.addRow(new Object[] {"timestamp", new Long(sync.timestamp)});
+				return cur;
+			}
+			catch (NumberFormatException e) { }
 		}
 		
 		// TODO: maybe provide values for SYNC_DIR_MIME and SYNC_ITEM_MIME

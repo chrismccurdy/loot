@@ -17,7 +17,7 @@ import android.util.Log;
 public class Database
 {
 	public final static String DB_PATH		= "/data/data/net.gumbercules.loot/LootDB.db";
-	private final static int DB_VERSION		= 10;
+	private final static int DB_VERSION		= 11;
 	private static SQLiteDatabase lootDB	= null;
 	
 	public Database()
@@ -146,13 +146,15 @@ public class Database
 		
 		createSQL[8] = "create table synchronizations(\n" +
 					"   device_uuid varchar(36) not null,\n" +
+					"   account_id integer not null,\n" +
 					"   timestamp integer default 0)";
 		
 		createSQL[9] = "create table sync_mappings(\n" +
 					"   device_uuid varchar(36) not null,\n" +
 					"   their_id integer not null,\n" +
 					"   my_id integer not null,\n" +
-					"   type integer not null)";
+					"   type integer not null,\n" +
+					"   primary key (device_uuid, their_id, my_id, type))";
 
 		createSQL[10] = "insert into options values ('sort_column','0')";
 		createSQL[11] = "insert into options values ('auto_purge_days','-1')";
@@ -162,7 +164,7 @@ public class Database
 		createSQL[14] = "create index idx_account on transactions ( account, purged )";
 		createSQL[15] = "create index idx_tags on tags ( trans_id asc )";
 		createSQL[16] = "create index idx_images on images ( trans_id asc )";
-		createSQL[17] = "create index idx_synchronizations on synchronizations ( device_uuid )";
+		createSQL[17] = "create index idx_synchronizations on synchronizations ( device_uuid, account_id )";
 		createSQL[18] = "create index idx_mappings_type on sync_mappings ( device_uuid, type )";
 		
 		try
@@ -382,6 +384,38 @@ public class Database
 			
 			lootDB.setVersion(10);
 			current_version = 10;
+		}
+		if (current_version < 11)
+		{
+			lootDB.beginTransaction();
+			try
+			{
+				lootDB.execSQL("drop table synchronizations");
+				lootDB.execSQL("drop table sync_mappings");
+				lootDB.execSQL("drop index idx_synchronizations");
+				lootDB.execSQL("drop index idx_mappings_type");
+
+				lootDB.execSQL("create table synchronizations(device_uuid varchar(36) not null," +
+						"account_id integer not null,timestamp integer default 0)");
+				lootDB.execSQL("create table sync_mappings(device_uuid varchar(36) not null," +
+						"their_id integer not null,my_id integer not null,type integer not null," +
+						"primary key (device_uuid, their_id, my_id, type");
+				lootDB.execSQL("create index idx_synchronizations on synchronizations " +
+						"( device_uuid, account_id )");
+				lootDB.execSQL("create index idx_mappings_type on sync_mappings ( device_uuid, type )");
+				lootDB.setTransactionSuccessful();
+			}
+			catch (SQLException e)
+			{
+				return false;
+			}
+			finally
+			{
+				lootDB.endTransaction();
+			}
+			
+			lootDB.setVersion(11);
+			current_version = 11;
 		}
 		
 		if ( current_version == max_version )

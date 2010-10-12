@@ -9,22 +9,26 @@ public class Synchronization
 {
 	public long timestamp;
 	public String uuid;
+	public int account_id;
 	
-	public Synchronization(String uuid)
+	public Synchronization(String uuid, int account_id)
 	{
 		this.uuid = uuid;
+		this.account_id = account_id;
+		this.timestamp = 0;
 	}
 	
-	public Synchronization(String uuid, long ts)
+	public Synchronization(String uuid, int account_id, long ts)
 	{
 		this.timestamp = ts;
+		this.account_id = account_id;
 		this.uuid = uuid;
 	}
 	
 	public boolean write()
 	{
-		String insert = "insert into synchronizations (device_uuid,timestamp) values (?,?)";
-		Object[] bindArgs = new Object[] { uuid, new Long(timestamp) };
+		String insert = "insert into synchronizations (device_uuid,timestamp,account_id) values (?,?,?)";
+		Object[] bindArgs = new Object[] { uuid, new Long(timestamp), account_id };
 		boolean ret = true;
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
@@ -53,8 +57,9 @@ public class Synchronization
 		Cursor cur = null;
 		try
 		{
-			cur = lootDb.query("synchronizations", new String[] { "timestamp" }, "device_uuid = ?",
-					new String[] { uuid }, null, null, "timestamp desc", "1");
+			cur = lootDb.query("synchronizations", new String[] { "timestamp" },
+					"device_uuid = ? and account_id = ?",
+					new String[] { uuid, Integer.toString(account_id) }, null, null, "timestamp desc", "1");
 		}
 		catch (SQLException e)
 		{
