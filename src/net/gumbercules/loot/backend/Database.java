@@ -392,14 +392,14 @@ public class Database
 			{
 				lootDB.execSQL("drop table synchronizations");
 				lootDB.execSQL("drop table sync_mappings");
-				lootDB.execSQL("drop index idx_synchronizations");
-				lootDB.execSQL("drop index idx_mappings_type");
+				lootDB.execSQL("drop index if exists idx_synchronizations");
+				lootDB.execSQL("drop index if exists idx_mappings_type");
 
 				lootDB.execSQL("create table synchronizations(device_uuid varchar(36) not null," +
 						"account_id integer not null,timestamp integer default 0)");
 				lootDB.execSQL("create table sync_mappings(device_uuid varchar(36) not null," +
 						"their_id integer not null,my_id integer not null,type integer not null," +
-						"primary key (device_uuid, their_id, my_id, type");
+						"primary key (device_uuid, their_id, my_id, type))");
 				lootDB.execSQL("create index idx_synchronizations on synchronizations " +
 						"( device_uuid, account_id )");
 				lootDB.execSQL("create index idx_mappings_type on sync_mappings ( device_uuid, type )");
