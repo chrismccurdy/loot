@@ -12,8 +12,10 @@ import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.Logger;
 import net.gumbercules.loot.preferences.SettingsActivity;
-import net.gumbercules.loot.premium.PremiumCaller;
+import net.gumbercules.loot.premium.ImportActivity;
 import net.gumbercules.loot.premium.ViewImage;
+import net.gumbercules.loot.premium.chart.ChartMenuActivity;
+import net.gumbercules.loot.premium.export.ExportActivity;
 import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.repeat.RepeatSchedule;
 import android.app.AlertDialog;
@@ -483,7 +485,6 @@ public class TransactionActivity extends ListActivity
     
     private void setupActionBar()
     {
-    	final PremiumCaller pc = new PremiumCaller(this);
     	ImageButton button = (ImageButton)findViewById(R.id.new_transaction_button);
     	button.setOnClickListener(new ImageButton.OnClickListener()
     	{
@@ -525,7 +526,7 @@ public class TransactionActivity extends ListActivity
 			@Override
 			public void onClick(View v)
 			{
-				pc.showActivity(PremiumCaller.IMPORT, mAcct.id(), ACTIVITY_CREATE);
+				showImport();
 			}
 		});
     	button = (ImageButton)findViewById(R.id.export_button);
@@ -534,7 +535,7 @@ public class TransactionActivity extends ListActivity
 			@Override
 			public void onClick(View v)
 			{
-				pc.showActivity(PremiumCaller.EXPORT, mAcct.id());
+				showExport();
 			}
 		});
     	button = (ImageButton)findViewById(R.id.chart_button);
@@ -543,7 +544,7 @@ public class TransactionActivity extends ListActivity
 			@Override
 			public void onClick(View v)
 			{
-				pc.showActivity(PremiumCaller.CHART, mAcct.id());
+				showChart();
 			}
 		});
     }
@@ -696,6 +697,31 @@ public class TransactionActivity extends ListActivity
     	i.putExtra(Account.KEY_ID, mAcct.id());
     	i.putExtra(TransactionActivity.KEY_REQ, request);
     	startActivityForResult(i, request);
+    }
+    
+    private void showImport()
+    {
+    	Intent i = new Intent(this, ImportActivity.class);
+    	int request = ACTIVITY_CREATE;
+    	i.putExtra(Account.KEY_ID, mAcct.id());
+    	i.putExtra(Account.KEY_NAME, mAcct.name);
+    	startActivityForResult(i, request);
+    }
+    
+    private void showExport()
+    {
+    	Intent i = new Intent(this, ExportActivity.class);
+    	i.putExtra(Account.KEY_ID, mAcct.id());
+    	i.putExtra(Account.KEY_NAME, mAcct.name);
+    	startActivityForResult(i, -1);
+    }
+    
+    private void showChart()
+    {
+    	Intent i = new Intent(this, ChartMenuActivity.class);
+    	i.putExtra(Account.KEY_ID, mAcct.id());
+    	i.putExtra(Account.KEY_NAME, mAcct.name);
+    	startActivityForResult(i, -1);
     }
     
     public void setBalances()

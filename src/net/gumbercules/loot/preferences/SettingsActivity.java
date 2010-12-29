@@ -5,13 +5,8 @@ import java.security.NoSuchAlgorithmException;
 
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.backend.Database;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -58,37 +53,6 @@ public class SettingsActivity extends PreferenceActivity
 			}
 		});
 		
-		Preference premium = (Preference)findPreference("premium_enabled");
-		ContentResolver cr = getContentResolver();
-		String type = cr.getType(Uri.parse("content://net.gumbercules.loot.premium.settingsprovider/settings"));
-		
-		String[] prefs = {"color_withdraw", "color_budget_withdraw", "color_deposit",
-				"color_budget_deposit", "color_check", "color_budget_check", 
-				"use_custom_colors", "date_format", "csv_order", "csv_debit_type",
-				"csv_credit_type", "auto_backup", "online_backup", "import_search",
-				/*"cal_enabled", "calendar_tag"*/};
-
-		if (type != null)
-		{
-			premium.setTitle(R.string.premium_enabled_title);
-			premium.setSummary(R.string.premium_enabled_body);
-			
-			setupPremiumSettings(prefs);
-		}
-		else
-		{
-			premium.setTitle(R.string.premium_disabled_title);
-			premium.setSummary(R.string.premium_disabled_body);
-			
-			Preference cb_pref = null;
-			for (String pref : prefs)
-			{
-				cb_pref = (Preference)findPreference(pref);
-				cb_pref.setEnabled(false);
-			}
-			
-		}
-		
 		EditTextPreference pin = (EditTextPreference)findPreference("pin");
 		EditText pinEdit = pin.getEditText();
 		pinEdit.setKeyListener(new DigitsKeyListener());
@@ -117,6 +81,13 @@ public class SettingsActivity extends PreferenceActivity
 				return true;
 			}
 		});
+		
+		// online backup is not available before froyo
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.FROYO)
+		{
+			CheckBoxPreference backup = (CheckBoxPreference)findPreference("online_backup");
+			backup.setEnabled(false);
+		}
 		
 		CheckBoxPreference auto_purge = (CheckBoxPreference)findPreference("purge");
 		auto_purge.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
@@ -220,171 +191,5 @@ public class SettingsActivity extends PreferenceActivity
 				return true;
 			}
 		});
-	}
-	
-	private void setupPremiumSettings(String[] prefs)
-	{
-		final String[] cr_keys = {"aw", "bw", "ad", "bd", "ac", "bc",
-				 "custom", "date_format", "order", "debit_type",
-				 "credit_type", "auto_backup", "online_backup", 
-				 "import_search", "calendar", "tag"};
-		
-		int i = 0;
-		final ContentResolver cr = getContentResolver();
-		final String uri = "content://net.gumbercules.loot.premium.settingsprovider/";
-		for (String pref : prefs)
-		{
-			final String key = cr_keys[i++];
-			if (pref.equals("date_format"))
-			{
-				EditTextPreference date = (EditTextPreference)findPreference(pref);
-				date.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-				{
-					@Override
-					public boolean onPreferenceChange(Preference preference, Object newValue)
-					{
-						ContentValues cv = new ContentValues();
-						cv.put(key, (String)newValue);
-						cr.update(Uri.parse(uri + key), cv, null, null);
-						
-						return true;
-					}
-				});
-			}
-			else if (pref.equals("auto_backup") || pref.equals("import_search") ||
-					pref.equals("online_backup"))
-			{
-				CheckBoxPreference backup = (CheckBoxPreference)findPreference(pref);
-
-				if (pref.equals("online_backup") &&
-						android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.FROYO)
-				{
-					backup.setEnabled(false);
-				}
-				
-				backup.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-				{
-					@Override
-					public boolean onPreferenceChange(Preference preference, Object newValue)
-					{
-						ContentValues cv = new ContentValues();
-						cv.put(key, (Boolean)newValue);
-						cr.update(Uri.parse(uri + key), cv, null, null);
-						return true;
-					}
-				});
-			}
-			else if (pref.startsWith("csv"))
-			{
-				EditTextPreference edit = (EditTextPreference)findPreference(pref);
-				edit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-				{
-					@Override
-					public boolean onPreferenceChange(Preference preference, Object newValue)
-					{
-						ContentValues cv = new ContentValues();
-						cv.put(key, (String)newValue);
-						cr.update(Uri.parse(uri + "csv/" + key), cv, null, null);
-						
-						return true;
-					}
-				});
-			}
-			else if (pref.equals("calendar_tag"))
-			{
-				// set up edittext preference
-				EditTextPreference tag = (EditTextPreference)findPreference(pref);
-				tag.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-				{
-					public boolean onPreferenceChange(Preference preference, Object newValue)
-					{
-						if (newValue.equals(""))
-							return false;
-
-						ContentValues cv = new ContentValues();
-						cv.put(key, (String)newValue);
-						cr.update(Uri.parse(uri + "calendar/" + key), cv, null, null);
-						
-						return true;
-					}
-				});
-			}
-			else if (pref.equals("cal_enabled"))
-			{
-				// set up checkbox preference
-				CheckBoxPreference calendar = (CheckBoxPreference)findPreference(pref);
-				calendar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-				{
-					public boolean onPreferenceChange(Preference preference, Object newValue)
-					{
-						boolean val = new Boolean(newValue.toString());
-						ContentValues cv = new ContentValues();
-						cv.put(key, Boolean.toString(val));
-						cr.update(Uri.parse(uri + key), cv, null, null);
-						
-						return true;
-					}	
-				});
-			}
-			else if (pref.equals("use_custom_colors"))
-			{
-				CheckBoxPreference cb = (CheckBoxPreference)findPreference(pref);
-				cb.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-				{
-					public boolean onPreferenceChange(Preference preference, Object newValue)
-					{
-						String[] colors = {"color_withdraw", "color_budget_withdraw", "color_deposit",
-								"color_budget_deposit", "color_check", "color_budget_check"};
-						SharedPreferences.Editor editor = preference.getEditor();
-						ContentResolver cr = getContentResolver();
-						String uri = "content://net.gumbercules.loot.premium.settingsprovider/color/";
-						
-						boolean val = new Boolean(newValue.toString());
-						int j = 0;
-						Cursor cur;
-						for (String key : colors)
-						{
-							if (val)
-							{
-								cur = cr.query(Uri.parse(uri + cr_keys[j]), null, null, null, null);
-								if (cur != null)
-								{
-									if (cur.moveToFirst())
-										editor.putInt(key, cur.getInt(1));
-									cur.close();
-								}
-							}
-							else
-							{
-								editor.remove(key);
-							}
-							editor.commit();
-							++j;
-						}
-						
-						return true;
-					}
-				});
-			}
-			else
-			{
-				// set up color picker preference
-				ColorPickerPreference picker = (ColorPickerPreference)findPreference(pref);
-				picker.setDialogMessage(null);
-				picker.setDialogTitle(null);
-				picker.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-				{
-					public boolean onPreferenceChange(Preference preference, Object newValue)
-					{
-						int val = new Integer(newValue.toString());
-						ContentValues cv = new ContentValues();
-						cv.put(key, Integer.toString(val));
-						cr.update(Uri.parse(uri + "color/" + key), cv, null, null);
-						
-						return true;
-					}
-				});
-			}
-		}
 	}
 }

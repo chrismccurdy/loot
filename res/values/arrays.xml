@@ -55,6 +55,44 @@
         <item>Posted</item>
         <item>Budgeted</item>
     </string-array>
+    <string-array name="file_formats">
+        <item>Quicken</item>
+        <item>CSV (Excel, OO Calc, etc.)</item>
+    </string-array>
+    <string-array name="chart_type">
+        <item>Bar</item>
+        <item>Pie (ignores X-axis)</item>
+        <item>Line</item>
+    </string-array>
+    <string-array name="search_fields">
+        <item>Parties &amp; Tags</item>
+        <item>ONLY Parties</item>
+        <item>ONLY Tags</item>
+    </string-array>
+    <string-array name="x_axis">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Bi-Weekly</item>
+        <item>Monthly</item>
+        <item>Yearly</item>
+    </string-array>
+    <string-array name="y_axis">
+        <item>Total Amount</item>
+        <item>Transaction Count</item>
+        <item>Balance</item>
+    </string-array>
+    <string-array name="grouping">
+        <item>No Grouping</item>
+        <item>Group Accounts</item>
+        <item>Group Search Words</item>
+        <item>Group All</item>
+    </string-array>
+    <string-array name="p_balances">
+        <item>Actual</item>
+        <item>Posted</item>
+        <item>Budgeted</item>
+        <item>None</item>
+    </string-array>
 	<string-array name="tips">
 		<item>You can toggle between showing posted and unposted transactions in the search menu.</item>
 		<item>You can change the order of columns for importing and exporting CSV items through the settings.</item>

@@ -15,7 +15,6 @@ import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.backend.CurrencyWatcher;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.Logger;
-import net.gumbercules.loot.premium.PremiumNotFoundActivity;
 import net.gumbercules.loot.premium.ViewImage;
 import net.gumbercules.loot.repeat.RepeatActivity;
 import net.gumbercules.loot.repeat.RepeatSchedule;
@@ -486,18 +485,6 @@ public class TransactionEdit extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				Intent i;
-				
-				// bail if premium isn't present
-				if (getContentResolver().getType(Uri.parse(
-						"content://net.gumbercules.loot.premium.settingsprovider/settings")) == null)
-				{
-					i = new Intent(TransactionEdit.this, PremiumNotFoundActivity.class);
-					startActivity(i);
-
-					return;
-				}
-
 				AlertDialog dialog = new AlertDialog.Builder(TransactionEdit.this)
 					.setTitle(R.string.attach_receipt)
 					.setItems(R.array.receipt_capture_name, 

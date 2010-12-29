@@ -14,7 +14,10 @@ import net.gumbercules.loot.backend.CopyThread;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.MemoryStatus;
 import net.gumbercules.loot.preferences.SettingsActivity;
-import net.gumbercules.loot.premium.PremiumCaller;
+import net.gumbercules.loot.premium.ImportActivity;
+import net.gumbercules.loot.premium.chart.ChartMenuActivity;
+import net.gumbercules.loot.premium.export.ExportActivity;
+import net.gumbercules.loot.premium.synchronization.SyncActivity;
 import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.transaction.TransactionActivity;
 import android.app.AlertDialog;
@@ -117,7 +120,6 @@ public class AccountChooser extends ListActivity
 	private void setupActionBar()
 	{
     	final Context context = this;
-    	final PremiumCaller pc = new PremiumCaller(this);
     	
     	ImageButton button = (ImageButton)findViewById(R.id.new_account_button);
     	button.setOnClickListener(new ImageButton.OnClickListener()
@@ -145,7 +147,7 @@ public class AccountChooser extends ListActivity
 			@Override
 			public void onClick(View v)
 			{
-				pc.showActivity(PremiumCaller.EXPORT);
+				showExport();
 			}
 		});
 
@@ -155,7 +157,7 @@ public class AccountChooser extends ListActivity
 			@Override
 			public void onClick(View v)
 			{
-				pc.showActivity(PremiumCaller.CHART);
+				showChart();
 			}
 		});
 	}
@@ -210,9 +212,9 @@ public class AccountChooser extends ListActivity
 		menu.add(0, BU_RESTORE_ID, 0, R.string.restore_db)
 			.setShortcut('3', 'r')
 			.setIcon(android.R.drawable.ic_menu_set_as);
-		menu.add(0, SYNC_ID, 0, R.string.sync)
+		/* menu.add(0, SYNC_ID, 0, R.string.sync)
 			.setShortcut('4', 'z');
-			// .setIcon(android.R.drawable.whatever) TODO: put an icon here;
+			// .setIcon(android.R.drawable.whatever) TODO: put an icon here; */
 		menu.add(0, RMANAGER_ID, 0, R.string.repeat_manager)
 			.setShortcut('5', 'm')
 			.setIcon(android.R.drawable.ic_menu_recent_history);
@@ -302,10 +304,28 @@ public class AccountChooser extends ListActivity
 		return false;
 	}
 	
+	private void showImport()
+	{
+		Intent i = new Intent(this, ImportActivity.class);
+		startActivityForResult(i, ACTIVITY_CREATE);
+	}
+	
+	private void showExport()
+	{
+		Intent i = new Intent(this, ExportActivity.class);
+		startActivityForResult(i, -1);
+	}
+	
+	private void showChart()
+	{
+		Intent i = new Intent(this, ChartMenuActivity.class);
+		startActivityForResult(i, -1);
+	}
+	
 	private void showSync()
 	{
-		PremiumCaller imp = new PremiumCaller(this);
-		imp.showActivity(PremiumCaller.SYNC);
+		Intent i = new Intent(this, SyncActivity.class);
+		startActivityForResult(i, -1);
 	}
 
 	private void showRepeatManager()
@@ -524,18 +544,15 @@ public class AccountChooser extends ListActivity
 			return true;
 			
 		case CONTEXT_IMPORT:
-			PremiumCaller imp = new PremiumCaller(this);
-			imp.showActivity(PremiumCaller.IMPORT, id);
+			showImport();
 			return true;
 			
 		case CONTEXT_EXPORT:
-			PremiumCaller export = new PremiumCaller(this);
-			export.showActivity(PremiumCaller.EXPORT, id);
+			showExport();
 			return true;
 			
 		case CONTEXT_CHART:
-			PremiumCaller graph = new PremiumCaller(this);
-			graph.showActivity(PremiumCaller.CHART, id);
+			showChart();
 			return true;
 		}
 		return false;

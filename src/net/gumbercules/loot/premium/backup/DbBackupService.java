@@ -1,4 +1,4 @@
-package net.gumbercules.loot.premium;
+package net.gumbercules.loot.premium.backup;
 
 import net.gumbercules.loot.backend.CopyThread;
 import android.app.Service;

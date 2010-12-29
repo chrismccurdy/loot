@@ -1,6 +1,6 @@
 package net.gumbercules.loot.backend;
 
-import net.gumbercules.loot.premium.DbBackupService;
+import net.gumbercules.loot.premium.backup.DbBackupService;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;

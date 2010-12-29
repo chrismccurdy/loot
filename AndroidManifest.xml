@@ -40,19 +40,75 @@
 		<activity android:name="net.gumbercules.loot.repeat.RepeatManagerActivity" />
 		<activity android:name="net.gumbercules.loot.premium.ViewImage"
 			android:theme="@android:style/Theme.Dialog" />
-		<provider android:authorities="net.gumbercules.loot.transactionprovider"
+        <activity android:name="net.gumbercules.loot.premium.ExportActivity"
+            android:exported="true" android:windowSoftInputMode="stateAlwaysHidden"
+            android:excludeFromRecents="true">
+            <intent-filter android:label="net.gumbercules.loot.premium.EXPORT">
+                <action android:name="net.gumbercules.loot.premium.EXPORT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="net.gumbercules.loot.premium.ImportActivity"
+            android:exported="true" android:windowSoftInputMode="stateAlwaysHidden"
+            android:excludeFromRecents="true">
+            <intent-filter android:label="net.gumbercules.loot.premium.IMPORT">
+                <action android:name="net.gumbercules.loot.premium.IMPORT" />
+            </intent-filter>
+        </activity>
+        <activity android:excludeFromRecents="true" android:exported="true"
+            android:name="net.gumbercules.loot.premium.ChartMenuActivity">
+            <intent-filter android:label="net.gumbercules.loot.premium.CHART">
+                <action android:name="net.gumbercules.loot.premium.CHART" />
+            </intent-filter>
+        </activity>
+        <activity android:excludeFromRecents="true"
+            android:name="net.gumbercules.loot.premium.ChartActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name="net.gumbercules.loot.premium.widget.WidgetConfigure"
+            android:theme="@android:style/Theme.Dialog">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <!-- <activity android:name="net.gumbercules.loot.premium.synchronization.SyncActivity"
+            android:excludeFromRecents="true">
+            <intent-filter android:label="net.gumbercules.loot.premium.SYNC">
+                <action android:name="net.gumbercules.loot.premium.SYNC" />
+            </intent-filter>
+        </activity> -->
+        <service
+            android:name="net.gumbercules.loot.premium.synchronization.NetworkSyncService" 
+            android:process=":remote" />
+        <provider android:authorities="net.gumbercules.loot.transactionprovider"
 			android:name="net.gumbercules.loot.transaction.TransactionProvider" />
 		<provider android:name="net.gumbercules.loot.account.AccountProvider"
 			android:authorities="net.gumbercules.loot.accountprovider" />
 		<provider android:name="net.gumbercules.loot.backend.OptionsProvider"
 			android:authorities="net.gumbercules.loot.optionsprovider" />
-		<provider android:name="net.gumbercules.loot.premium.SynchronizationProvider"
-		    android:authorities="net.gumbercules.loot.synchronizationprovider" />
 		<receiver android:name="net.gumbercules.loot.backend.DbUpdateReceiver">
 			<intent-filter>
 				<action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
 			</intent-filter>
 		</receiver>
+        <receiver
+            android:name="net.gumbercules.loot.premium.widget.LootPremiumSmallWidgetProvider"
+            android:label="Loot Premium (Small)">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/premium_small_widget_provider" />
+        </receiver>
+        <receiver
+            android:name="net.gumbercules.loot.premium.widget.LootPremiumWidgetProvider"
+            android:label="Loot Premium">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/premium_widget_provider" />
+        </receiver>
 		<service android:name="net.gumbercules.loot.premium.DbBackupService">
 			<intent-filter>
 				<action android:name="net.gumbercules.action.BACKUP_DATABASE" />

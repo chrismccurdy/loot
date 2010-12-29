@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/tabcontent"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:id="@+id/accounts_tab"
+		android:layout_weight="1" android:orientation="vertical">
+		<ListView android:layout_height="wrap_content" android:id="@+id/list"
+			android:layout_width="fill_parent" android:layout_weight="10"
+			android:paddingRight="5dip" android:choiceMode="multipleChoice" />	
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:id="@+id/properties_tab"
+		android:layout_weight="1" android:orientation="vertical">
+		<ScrollView android:id="@+id/main_scrollview"
+			android:layout_weight="4" android:layout_height="fill_parent"
+			android:layout_width="fill_parent">
+			<LinearLayout android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:id="@+id/remaining_layout"
+				android:orientation="vertical">
+				<TableLayout android:id="@+id/TableLayout01"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:stretchColumns="1">
+					<TableRow android:layout_height="wrap_content"
+						android:layout_width="fill_parent" android:gravity="center_vertical">
+						<TextView android:text="@string/chart_type" android:id="@+id/chart_type_view"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:layout_marginLeft="3dip" />
+						<Spinner android:id="@+id/chart_type_spinner"
+							android:layout_height="wrap_content" android:layout_width="fill_parent"
+							android:layout_marginLeft="15dip" android:entries="@array/chart_type" />
+					</TableRow>
+                    <TableRow android:layout_height="wrap_content"
+                        android:layout_width="fill_parent" android:gravity="center_vertical">
+                        <TextView android:text="@string/x_axis" android:id="@+id/xaxis_view"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dip" />
+                        <Spinner android:id="@+id/xaxis_spinner"
+                            android:layout_height="wrap_content" android:layout_width="fill_parent"
+                            android:layout_marginLeft="15dip" android:entries="@array/x_axis" />
+                    </TableRow>
+                    <TableRow android:layout_height="wrap_content"
+                        android:layout_width="fill_parent" android:gravity="center_vertical">
+                        <TextView android:text="@string/y_axis" android:id="@+id/yaxis_view"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dip" />
+                        <Spinner android:id="@+id/yaxis_spinner"
+                            android:layout_height="wrap_content" android:layout_width="fill_parent"
+                            android:layout_marginLeft="15dip" android:entries="@array/y_axis" />
+                    </TableRow>
+                    <TableRow android:layout_height="wrap_content"
+                        android:layout_width="fill_parent" android:gravity="center_vertical">
+                        <TextView android:text="@string/grouping" android:id="@+id/group_view"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dip" />
+                        <Spinner android:id="@+id/grouping_spinner"
+                            android:layout_height="wrap_content" android:layout_width="fill_parent"
+                            android:layout_marginLeft="15dip" android:entries="@array/grouping" />
+                    </TableRow>
+					<TableRow android:layout_height="wrap_content"
+						android:layout_width="fill_parent" android:gravity="center_vertical">
+						<TextView android:text="@string/search_fields"
+							android:id="@+id/search_fields_view" android:layout_width="wrap_content"
+							android:layout_height="wrap_content" android:layout_marginLeft="3dip" />
+						<Spinner android:id="@+id/search_fields_spinner"
+							android:layout_height="wrap_content" android:layout_width="fill_parent"
+							android:layout_marginLeft="15dip" android:entries="@array/search_fields" />
+					</TableRow>
+				</TableLayout>
+				<LinearLayout android:layout_height="wrap_content"
+					android:layout_width="fill_parent" android:orientation="horizontal"
+					android:gravity="center_vertical">
+					<EditText android:layout_height="wrap_content"
+						android:layout_width="fill_parent" android:hint="@string/query_text"
+						android:id="@+id/query_edit" android:layout_marginLeft="10dip"
+						android:layout_marginRight="10dip" android:textSize="16dip"/>
+				</LinearLayout>
+				<TableLayout android:id="@+id/TableLayout01"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:stretchColumns="0,1">
+					<TableRow android:layout_height="wrap_content"
+						android:layout_width="fill_parent" android:gravity="center_horizontal">
+						<TextView android:text="@string/begin_date" android:id="@+id/date_begin_view"
+							android:layout_height="wrap_content" android:layout_width="fill_parent"
+							android:layout_gravity="center_horizontal" />
+						<TextView android:text="@string/end_date" android:id="@+id/date_end_view"
+							android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+							android:layout_width="fill_parent" />
+					</TableRow>
+					<TableRow android:layout_height="wrap_content"
+						android:layout_width="fill_parent" android:gravity="center_vertical">
+						<LinearLayout android:layout_height="wrap_content"
+							android:layout_width="fill_parent" android:orientation="horizontal">
+							<EditText android:layout_height="wrap_content"
+								android:layout_width="wrap_content" android:id="@+id/date_begin_edit"
+								android:layout_weight="1" android:maxWidth="100dip"
+								android:minWidth="100dip" />
+							<ImageButton android:id="@+id/date_begin_button"
+								android:layout_width="wrap_content" android:layout_height="wrap_content"
+								android:src="@drawable/ic_menu_today" />
+						</LinearLayout>
+						<LinearLayout android:layout_height="wrap_content"
+							android:layout_width="fill_parent" android:orientation="horizontal">
+							<EditText android:layout_height="wrap_content"
+								android:layout_width="wrap_content" android:id="@+id/date_end_edit"
+								android:layout_weight="1" android:maxWidth="100dip"
+								android:minWidth="100dip" />
+							<ImageButton android:id="@+id/date_end_button"
+								android:layout_width="wrap_content" android:layout_height="wrap_content"
+								android:src="@drawable/ic_menu_today" />
+						</LinearLayout>
+					</TableRow>
+				</TableLayout>
+			</LinearLayout>
+		</ScrollView>
+	</LinearLayout>
+</FrameLayout>

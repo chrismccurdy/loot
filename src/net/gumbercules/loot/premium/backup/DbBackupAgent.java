@@ -1,4 +1,4 @@
-package net.gumbercules.loot.premium;
+package net.gumbercules.loot.premium.backup;
 
 import java.io.IOException;
 

@@ -168,4 +168,56 @@
     <string name="debit">Debit</string>
     <string name="credit_limit">Credit Limit</string>
     <string name="sync">Sync</string>
+    <string name="accounts">Accounts</string>
+    <string name="formats">File Formats</string>
+    <string name="begin_date">Begin Date</string>
+    <string name="end_date">End Date</string>
+    <string name="export_done">The account has been exported to </string>
+    <string name="export_failed">The account could not be exported to the SD card.
+        It has been noted in the system log.</string>
+    <string name="export_no_rows">There was no data to export within the given
+        parameters.</string>
+    <string name="no_accounts">No accounts were found.</string>
+    <string name="chart_type">Chart Type</string>
+    <string name="search_fields">Search Fields</string>
+    <string name="x_axis">X-Axis</string>
+    <string name="y_axis">Y-Axis</string>
+    <string name="query_text">Comma-separated list of tags and/or parties. Leave
+        blank to include all.</string>
+    <string name="grouping">Grouping</string>
+    <string name="chart_it">Chart It!</string>
+    <string name="save_chart">Save Chart</string>
+    <string name="load_chart">Load Chart</string>
+    <string name="no_charts_to_load">No saved charts exist.</string>
+    <string name="import_empty">Could not find any files to import.</string>
+    <string name="import_warning">WARNING: This will import all data in the file and
+        insert it into the selected account, regardless of whether or not it
+        already exists.</string>
+    <string name="generating_chart">Generating Chart</string>
+    <string name="generating_chart_body">Gathering data for the chart. Please wait.</string>
+    <string name="save_error">An error occurred while saving the chart. It has
+        been logged.</string>
+    <string name="load_error">An error occurred while loading the chart. It has
+        been logged.</string>
+    <string name="enter_filename">Enter Filename:</string>
+    <string name="import_problem_title">Import Problems</string>
+    <string name="import_problem_csv">There was a problem importing some rows. Please
+        change the column order in the application settings, or make sure your
+        CSV is formatted as follows:\n\n
+        date, check_number,
+        party, amount, tags</string>
+    <string name="import_problem_qif">There was a problem importing some rows. Please
+        make sure the data is valid.</string>
+    <string name="import_successful"> transactions imported successfully.</string>
+    <string name="select_item">Please select a file to import.</string>
+    <string name="loot_not_installed">Please install the free version of Loot to use Loot
+        Premium properly.</string>
+    <string name="download_loot">Download Loot!</string>
+    <string name="m_connection_code">My Connection Code</string>
+    <string name="p_connection_code">Partner\'s Connection Code</string>
+    <string name="sync_title">Loot Synchronization</string>
+    <string name="sync_service_started">Synchronization service started.</string>
+    <string name="sync_service_stopped">Synchronization service stopped.</string>
+    <string name="sync_completed">Synchronization completed.</string>
+    <string name="sync_failed">Synchronization failed.</string>
 </resources>

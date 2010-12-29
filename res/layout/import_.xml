@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<ListView android:id="@+id/file_list" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_weight="10"
+		android:visibility="visible" />
+	<TextView android:layout_width="fill_parent" android:gravity="center"
+		android:id="@+id/empty_view" android:text="@string/import_empty"
+		android:layout_height="wrap_content" android:layout_weight="10"
+		android:visibility="gone" />
+	<TextView android:id="@+id/warning_view"
+		android:layout_height="wrap_content" android:layout_width="fill_parent"
+		android:gravity="center" android:text="@string/import_warning"
+		android:textColor="#ff0000" android:layout_marginLeft="5dip"
+		android:layout_marginRight="5dip" android:textStyle="bold" />
+	<ImageButton android:id="@+id/import_button"
+		android:text="@string/import_"
+		android:layout_height="wrap_content" android:background="@drawable/gradient_button" android:layout_width="fill_parent" android:src="@drawable/action_import"/>
+</LinearLayout>
