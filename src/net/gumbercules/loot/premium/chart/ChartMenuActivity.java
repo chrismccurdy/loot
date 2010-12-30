@@ -7,8 +7,8 @@ import java.util.Date;
 
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.MemoryStatus;
 import net.gumbercules.loot.premium.DateButton;
-import net.gumbercules.loot.premium.MemoryStatus;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TabActivity;

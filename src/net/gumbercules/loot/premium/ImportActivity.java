@@ -14,6 +14,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.MemoryStatus;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;

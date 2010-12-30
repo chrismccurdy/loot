@@ -11,8 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import net.gumbercules.loot.premium.R;
-import net.gumbercules.loot.premium.R.string;
+import net.gumbercules.loot.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

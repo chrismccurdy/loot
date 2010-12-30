@@ -6,8 +6,8 @@ import java.util.HashMap;
 
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.MemoryStatus;
 import net.gumbercules.loot.premium.DateButton;
-import net.gumbercules.loot.premium.MemoryStatus;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;

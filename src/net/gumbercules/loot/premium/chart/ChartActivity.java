@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import net.gumbercules.loot.R;
-import net.gumbercules.loot.premium.MemoryStatus;
+import net.gumbercules.loot.backend.MemoryStatus;
 
 import android.app.Activity;
 import android.app.AlertDialog;
