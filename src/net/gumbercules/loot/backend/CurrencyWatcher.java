@@ -63,10 +63,12 @@ public class CurrencyWatcher implements TextWatcher
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		if (prefs.getBoolean("key_input_no_decimal", false))
 		{
+			mNumbersOnly = true;
 			mAccepted = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 		}
 		else
 		{
+			mNumbersOnly = false;
 			mAccepted = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', mSeparator};
 		}
 		
