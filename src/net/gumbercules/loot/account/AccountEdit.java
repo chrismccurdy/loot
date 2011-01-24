@@ -48,7 +48,7 @@ public class AccountEdit extends Activity
 		
 		mNameEdit = (EditText)findViewById(R.id.NameEdit);
 		mBalanceEdit = (EditText)findViewById(R.id.BalanceEdit);
-		mCurrencyWatcher = new CurrencyWatcher();
+		mCurrencyWatcher = new CurrencyWatcher(this);
 		mBalanceEdit.addTextChangedListener(mCurrencyWatcher);
 		mPriorityEdit = (EditText)findViewById(R.id.PriorityEdit);
 		mPriorityEdit.setKeyListener(new DigitsKeyListener());

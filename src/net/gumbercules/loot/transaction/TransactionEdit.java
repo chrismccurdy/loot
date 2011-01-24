@@ -184,7 +184,7 @@ public class TransactionEdit extends Activity
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
 		checkEdit = (EditText)findViewById(R.id.checkEdit);
 		checkEdit.setKeyListener(new DigitsKeyListener());
-		mCurrencyWatcher = new CurrencyWatcher();
+		mCurrencyWatcher = new CurrencyWatcher(this);
 		amountEdit.addTextChangedListener(mCurrencyWatcher);
 		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
 		String[] tags = Transaction.getAllTags();

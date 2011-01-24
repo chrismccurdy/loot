@@ -145,6 +145,9 @@
 	<ListPreference android:key="key_input_type"
 		android:title="@string/keyboard_style" android:summary="@string/keyboard_style_message"
 		android:entries="@array/input_type_name" android:entryValues="@array/input_type" />
+	<CheckBoxPreference android:summary="Automatically place decimal separator."
+		android:key="key_input_no_decimal" android:title="Number-only Input"
+		android:defaultValue="false" />
 	<PreferenceCategory android:title="Security"
 		android:key="cat_security">
 		<CheckBoxPreference android:key="security"
