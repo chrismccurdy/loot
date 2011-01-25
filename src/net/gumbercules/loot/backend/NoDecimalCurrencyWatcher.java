@@ -1,6 +1,10 @@
 package net.gumbercules.loot.backend;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import android.text.Editable;
+import android.util.Log;
 
 public class NoDecimalCurrencyWatcher extends CurrencyWatcher
 {
@@ -27,7 +31,48 @@ public class NoDecimalCurrencyWatcher extends CurrencyWatcher
 	@Override
 	public void afterTextChanged(Editable s)
 	{
-		super.afterTextChanged(s);
+		String str = s.toString();
+		if (mChanged)
+		{
+			mChanged = false;
+			mOld = str;
+			return;
+		}
+		
+		final ArrayList<Character> accepted = new ArrayList<Character>(Arrays.asList(mAccepted));
+		int pos = 0;
+		for (char c : str.toCharArray())
+		{
+			if (!accepted.contains(c))
+			{
+				s.replace(pos, pos + 1, "", 0, 0);
+				Log.i(TAG + ".afterTextChanged()", "Input rejected because of invalid character: " + c);
+				return;
+			}
+			++pos;
+		}
+		
+		int index = 0;
+		while (index < str.length() && str.charAt(index) == '0')
+		{
+			++index;
+		}
+		str = str.substring(index);
+		str = str.replace(String.valueOf(mSeparator), ""); // remove the separator for now
+		final int min_length = mFractionDigits + 1; // number of fractional digits + one digit to the left of separator
+		while (str.length() < min_length)
+		{
+			str = "0" + str;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(str.substring(0, str.length() - 2))
+			.append(mSeparator)
+			.append(str.substring(str.length() - 2));
+		
+		str = sb.toString();
+		mChanged = true;
+		s.replace(0, s.length(), str);
 	}
 
 	@Override
