@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
