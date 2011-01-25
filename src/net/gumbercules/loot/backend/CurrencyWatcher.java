@@ -24,12 +24,11 @@ public class CurrencyWatcher implements TextWatcher
 	private static final String PHONE_TYPE	= "PHONE";
 	private static final String NUMBER_TYPE	= "NUMBER";
 	
-	private String mOld;
-	private final char mSeparator;
-	private boolean mChanged;
-	private final int mFractionDigits;
-	private Character[] mAccepted;
-	private boolean mNumbersOnly;
+	protected String mOld;
+	protected final char mSeparator;
+	protected boolean mChanged;
+	protected final int mFractionDigits;
+	protected Character[] mAccepted;
 	
 	// these phones seem to have issues with replacing periods with commas on the hard keyboard
 	private static final String[] mBadPhones = 
@@ -39,7 +38,7 @@ public class CurrencyWatcher implements TextWatcher
 		"sdk"		// not actually bad, but useful for testing purposes
 	};
 	
-	public CurrencyWatcher(Context context)
+	public CurrencyWatcher()
 	{
 		Log.i(TAG + ".CurrencyWatcher()", "Detected locale: " + Locale.getDefault().getDisplayName());
 		
@@ -58,19 +57,7 @@ public class CurrencyWatcher implements TextWatcher
 		dfs.setCurrency(cur);
 		mSeparator = dfs.getMonetaryDecimalSeparator();
 		mFractionDigits = cur.getDefaultFractionDigits();
-		
-		// if the user wants automatic separator placement, don't let them input a separator
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		if (prefs.getBoolean("key_input_no_decimal", false))
-		{
-			mNumbersOnly = true;
-			mAccepted = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-		}
-		else
-		{
-			mNumbersOnly = false;
-			mAccepted = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', mSeparator};
-		}
+		mAccepted = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', mSeparator};
 		
 		Log.i(TAG + ".CurrencyWatcher()", "Separator: " + mSeparator);
 		Log.i(TAG + ".CurrencyWatcher()", "Model: " + Build.MODEL);

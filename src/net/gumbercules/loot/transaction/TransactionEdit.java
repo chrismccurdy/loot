@@ -15,6 +15,7 @@ import net.gumbercules.loot.account.Account;
 import net.gumbercules.loot.backend.CurrencyWatcher;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.Logger;
+import net.gumbercules.loot.backend.NoDecimalCurrencyWatcher;
 import net.gumbercules.loot.premium.ViewImage;
 import net.gumbercules.loot.repeat.RepeatActivity;
 import net.gumbercules.loot.repeat.RepeatSchedule;
@@ -29,6 +30,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
@@ -184,7 +186,14 @@ public class TransactionEdit extends Activity
 		amountEdit = (EditText)findViewById(R.id.amountEdit);
 		checkEdit = (EditText)findViewById(R.id.checkEdit);
 		checkEdit.setKeyListener(new DigitsKeyListener());
-		mCurrencyWatcher = new CurrencyWatcher(this);
+		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("key_input_no_decimal", false))
+		{
+			mCurrencyWatcher = new NoDecimalCurrencyWatcher();
+		}
+		else
+		{
+			mCurrencyWatcher = new CurrencyWatcher();
+		}
 		amountEdit.addTextChangedListener(mCurrencyWatcher);
 		tagsEdit = (MultiAutoCompleteTextView)findViewById(R.id.tagsEdit);
 		String[] tags = Transaction.getAllTags();

@@ -7,9 +7,11 @@ import java.util.Currency;
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.backend.CurrencyWatcher;
 import net.gumbercules.loot.backend.Database;
+import net.gumbercules.loot.backend.NoDecimalCurrencyWatcher;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -48,7 +50,14 @@ public class AccountEdit extends Activity
 		
 		mNameEdit = (EditText)findViewById(R.id.NameEdit);
 		mBalanceEdit = (EditText)findViewById(R.id.BalanceEdit);
-		mCurrencyWatcher = new CurrencyWatcher(this);
+		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("key_input_no_decimal", false))
+		{
+			mCurrencyWatcher = new NoDecimalCurrencyWatcher();
+		}
+		else
+		{
+			mCurrencyWatcher = new CurrencyWatcher();
+		}
 		mBalanceEdit.addTextChangedListener(mCurrencyWatcher);
 		mPriorityEdit = (EditText)findViewById(R.id.PriorityEdit);
 		mPriorityEdit.setKeyListener(new DigitsKeyListener());
