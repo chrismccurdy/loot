@@ -210,9 +210,6 @@
         make sure the data is valid.</string>
     <string name="import_successful"> transactions imported successfully.</string>
     <string name="select_item">Please select a file to import.</string>
-    <string name="loot_not_installed">Please install the free version of Loot to use Loot
-        Premium properly.</string>
-    <string name="download_loot">Download Loot!</string>
     <string name="m_connection_code">My Connection Code</string>
     <string name="p_connection_code">Partner\'s Connection Code</string>
     <string name="sync_title">Loot Synchronization</string>

@@ -87,12 +87,6 @@
         <item>Group Search Words</item>
         <item>Group All</item>
     </string-array>
-    <string-array name="p_balances">
-        <item>Actual</item>
-        <item>Posted</item>
-        <item>Budgeted</item>
-        <item>None</item>
-    </string-array>
 	<string-array name="tips">
 		<item>You can toggle between showing posted and unposted transactions in the search menu.</item>
 		<item>You can change the order of columns for importing and exporting CSV items through the settings.</item>
