@@ -1,6 +1,5 @@
 package net.gumbercules.loot.premium.widget;
 
-import net.gumbercules.loot.R;
 import android.app.ListActivity;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;

@@ -6,7 +6,6 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 
-import net.gumbercules.loot.R;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;

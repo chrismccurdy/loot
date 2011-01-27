@@ -6,7 +6,7 @@
 		android:layout_width="fill_parent" android:layout_weight="1">
 		<TextView android:id="@android:id/empty" android:textSize="24dip"
 			android:gravity="center" android:layout_height="fill_parent"
-			android:layout_width="fill_parent" android:text="No accounts exist." />
+			android:layout_width="fill_parent" android:text="@string/no_accounts" />
 		<ListView android:id="@android:id/list" android:layout_width="fill_parent"
 			android:paddingRight="5dip" android:layout_height="fill_parent" />
 	</LinearLayout>

@@ -1,94 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.gumbercules.loot" android:installLocation="auto"
-	android:versionCode="53" android:versionName="3.0.0_alpha1">
-	<application android:icon="@drawable/icon" android:label="@string/app_name"
-	   android:backupAgent="net.gumbercules.loot.premium.DbBackupAgent">
-		<activity android:label="@string/app_name"
-			android:launchMode="singleTask" android:clearTaskOnLaunch="true"
-			android:name="net.gumbercules.loot.account.AccountChooser" />
-		<activity android:name="net.gumbercules.loot.transaction.TransactionActivity" />
-		<activity android:name="net.gumbercules.loot.transaction.TransactionEdit" />
-		<activity android:name="net.gumbercules.loot.account.AccountEdit" />
-		<activity android:name="net.gumbercules.loot.repeat.RepeatActivity" />
-		<activity android:name="net.gumbercules.loot.preferences.SettingsActivity" />
-		<activity android:launchMode="singleTask" android:label="@string/app_name"
-			android:clearTaskOnLaunch="true" android:name="net.gumbercules.loot.PinActivity">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name="net.gumbercules.loot.premium.WidgetInterceptor">
-			<intent-filter>
-				<action android:name="net.gumbercules.action.WIDGET" />
-				<category android:name="net.gumbercules.category.LAUNCHER" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<data android:scheme="widget" android:host="net.gumbercules.loot" />
-			</intent-filter>
-		</activity>
-		<activity android:name="net.gumbercules.loot.DonateActivity" />
-		<activity android:name="net.gumbercules.loot.premium.PremiumNotFoundActivity" />
-		<activity android:name="net.gumbercules.loot.AboutActivity">
-			<intent-filter>
-				<action android:name="net.gumbercules.loot.intent.action.ABOUT" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name="net.gumbercules.loot.ChangeLogActivity" />
-		<activity android:name="net.gumbercules.loot.repeat.RepeatManagerActivity" />
-		<activity android:name="net.gumbercules.loot.premium.ViewImage"
-			android:theme="@android:style/Theme.Dialog" />
-        <activity android:name="net.gumbercules.loot.premium.ExportActivity"
-            android:exported="true" android:windowSoftInputMode="stateAlwaysHidden"
-            android:excludeFromRecents="true">
-            <intent-filter android:label="net.gumbercules.loot.premium.EXPORT">
-                <action android:name="net.gumbercules.loot.premium.EXPORT" />
-            </intent-filter>
-        </activity>
-        <activity android:name="net.gumbercules.loot.premium.ImportActivity"
-            android:exported="true" android:windowSoftInputMode="stateAlwaysHidden"
-            android:excludeFromRecents="true">
-            <intent-filter android:label="net.gumbercules.loot.premium.IMPORT">
-                <action android:name="net.gumbercules.loot.premium.IMPORT" />
-            </intent-filter>
-        </activity>
-        <activity android:excludeFromRecents="true" android:exported="true"
-            android:name="net.gumbercules.loot.premium.ChartMenuActivity">
-            <intent-filter android:label="net.gumbercules.loot.premium.CHART">
-                <action android:name="net.gumbercules.loot.premium.CHART" />
-            </intent-filter>
-        </activity>
-        <activity android:excludeFromRecents="true"
-            android:name="net.gumbercules.loot.premium.ChartActivity"
-            android:screenOrientation="landscape" />
+	package="net.gumbercules.loot.premium.widget" android:installLocation="internalOnly"
+	android:versionCode="1" android:versionName="1.0.0">
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name="net.gumbercules.loot.premium.widget.WidgetConfigure"
             android:theme="@android:style/Theme.Dialog">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-        <!-- <activity android:name="net.gumbercules.loot.premium.synchronization.SyncActivity"
-            android:excludeFromRecents="true">
-            <intent-filter android:label="net.gumbercules.loot.premium.SYNC">
-                <action android:name="net.gumbercules.loot.premium.SYNC" />
-            </intent-filter>
-        </activity> -->
-        <service
-            android:name="net.gumbercules.loot.premium.synchronization.NetworkSyncService" 
-            android:process=":remote" />
-        <provider android:authorities="net.gumbercules.loot.transactionprovider"
-			android:name="net.gumbercules.loot.transaction.TransactionProvider" />
-		<provider android:name="net.gumbercules.loot.account.AccountProvider"
-			android:authorities="net.gumbercules.loot.accountprovider" />
-		<provider android:name="net.gumbercules.loot.backend.OptionsProvider"
-			android:authorities="net.gumbercules.loot.optionsprovider" />
-		<receiver android:name="net.gumbercules.loot.backend.DbUpdateReceiver">
-			<intent-filter>
-				<action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
-			</intent-filter>
-		</receiver>
         <receiver
             android:name="net.gumbercules.loot.premium.widget.LootPremiumSmallWidgetProvider"
             android:label="Loot Premium (Small)">
@@ -109,16 +29,8 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/premium_widget_provider" />
         </receiver>
-		<service android:name="net.gumbercules.loot.premium.DbBackupService">
-			<intent-filter>
-				<action android:name="net.gumbercules.action.BACKUP_DATABASE" />
-			</intent-filter>
-		</service>
 	</application>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
 	<uses-feature android:name="android.hardware.touchscreen" />
 	<supports-screens />
-	<meta-data android:name="com.google.android.backup.api_key"
-		android:value="AEdPqrEAAAAIQziDGE8ySN-KD7SlsbPnsZL6l_6-goAC9Zi9iw" />
 </manifest> 
