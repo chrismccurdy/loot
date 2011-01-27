@@ -63,12 +63,6 @@
         <activity android:excludeFromRecents="true"
             android:name="net.gumbercules.loot.premium.ChartActivity"
             android:screenOrientation="landscape" />
-        <activity android:name="net.gumbercules.loot.premium.widget.WidgetConfigure"
-            android:theme="@android:style/Theme.Dialog">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
         <!-- <activity android:name="net.gumbercules.loot.premium.synchronization.SyncActivity"
             android:excludeFromRecents="true">
             <intent-filter android:label="net.gumbercules.loot.premium.SYNC">
@@ -89,26 +83,6 @@
 				<action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
 			</intent-filter>
 		</receiver>
-        <receiver
-            android:name="net.gumbercules.loot.premium.widget.LootPremiumSmallWidgetProvider"
-            android:label="Loot Premium (Small)">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
-            </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/premium_small_widget_provider" />
-        </receiver>
-        <receiver
-            android:name="net.gumbercules.loot.premium.widget.LootPremiumWidgetProvider"
-            android:label="Loot Premium">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="net.gumbercules.loot.intent.ACCOUNT_UPDATED" />
-            </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/premium_widget_provider" />
-        </receiver>
 		<service android:name="net.gumbercules.loot.premium.DbBackupService">
 			<intent-filter>
 				<action android:name="net.gumbercules.action.BACKUP_DATABASE" />
