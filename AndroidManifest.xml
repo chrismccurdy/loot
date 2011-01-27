@@ -90,7 +90,7 @@
 		</service>
 	</application>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="8" />
 	<uses-feature android:name="android.hardware.touchscreen" />
 	<supports-screens />
 	<meta-data android:name="com.google.android.backup.api_key"
