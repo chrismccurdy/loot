@@ -1,4 +1,9 @@
 /*
+ * Portions of this file have been derived from code originally licensed
+ * under the Apache License, Version 2.0.
+ * 
+ * Changes made by Christopher McCurdy, 2009.
+ *
  * Copyright (C) 2007 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +20,6 @@
  */
 
 /*
- * Portions of this file have been derived from code originally licensed
- * under the Apache License, Version 2.0.
- * 
- * Changes made by Christopher McCurdy, 2009.
  */
 
 package net.gumbercules.loot.preferences;
