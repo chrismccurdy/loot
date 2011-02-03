@@ -63,15 +63,6 @@
         <activity android:excludeFromRecents="true"
             android:name="net.gumbercules.loot.premium.ChartActivity"
             android:screenOrientation="landscape" />
-        <!-- <activity android:name="net.gumbercules.loot.premium.synchronization.SyncActivity"
-            android:excludeFromRecents="true">
-            <intent-filter android:label="net.gumbercules.loot.premium.SYNC">
-                <action android:name="net.gumbercules.loot.premium.SYNC" />
-            </intent-filter>
-        </activity> -->
-        <service
-            android:name="net.gumbercules.loot.premium.synchronization.NetworkSyncService" 
-            android:process=":remote" />
         <provider android:authorities="net.gumbercules.loot.transactionprovider"
 			android:name="net.gumbercules.loot.transaction.TransactionProvider" />
 		<provider android:name="net.gumbercules.loot.account.AccountProvider"

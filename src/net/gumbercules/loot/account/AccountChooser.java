@@ -33,7 +33,6 @@ import net.gumbercules.loot.preferences.SettingsActivity;
 import net.gumbercules.loot.premium.ImportActivity;
 import net.gumbercules.loot.premium.chart.ChartMenuActivity;
 import net.gumbercules.loot.premium.export.ExportActivity;
-import net.gumbercules.loot.premium.synchronization.SyncActivity;
 import net.gumbercules.loot.repeat.RepeatManagerActivity;
 import net.gumbercules.loot.transaction.TransactionActivity;
 import android.app.AlertDialog;
@@ -74,7 +73,6 @@ public class AccountChooser extends ListActivity
 	public static final int CHART_ID		= Menu.FIRST + 7;
 	public static final int CHANGELOG_ID	= Menu.FIRST + 8;
 	public static final int RMANAGER_ID		= Menu.FIRST + 9;
-	public static final int SYNC_ID			= Menu.FIRST + 10;
 	
 	public static final int CONTEXT_EDIT	= Menu.FIRST;
 	public static final int CONTEXT_DEL		= Menu.FIRST + 1;
@@ -228,9 +226,6 @@ public class AccountChooser extends ListActivity
 		menu.add(0, BU_RESTORE_ID, 0, R.string.restore_db)
 			.setShortcut('3', 'r')
 			.setIcon(android.R.drawable.ic_menu_set_as);
-		/* menu.add(0, SYNC_ID, 0, R.string.sync)
-			.setShortcut('4', 'z');
-			// .setIcon(android.R.drawable.whatever) TODO: put an icon here; */
 		menu.add(0, RMANAGER_ID, 0, R.string.repeat_manager)
 			.setShortcut('5', 'm')
 			.setIcon(android.R.drawable.ic_menu_recent_history);
@@ -311,10 +306,6 @@ public class AccountChooser extends ListActivity
     	case RMANAGER_ID:
     		showRepeatManager();
     		return true;
-    		
-    	case SYNC_ID:
-    		showSync();
-    		return true;
     	}
     	
 		return false;
@@ -338,12 +329,6 @@ public class AccountChooser extends ListActivity
 		startActivityForResult(i, -1);
 	}
 	
-	private void showSync()
-	{
-		Intent i = new Intent(this, SyncActivity.class);
-		startActivityForResult(i, -1);
-	}
-
 	private void showRepeatManager()
 	{
 		Intent i = new Intent(this, RepeatManagerActivity.class);
