@@ -780,18 +780,18 @@ public class TransactionActivity extends ListActivity
 			final int red = Color.rgb(255, 50, 50);
 			if (mAcct.credit)
 			{
-				if (bal > mAcct.creditLimit)
+				if (bal.compareTo(mAcct.creditLimit) == 1) // bal > mAcct.creditLimit
 				{
 					textColor = red;
 				}
-				else if (bal >= (mAcct.creditLimit * 0.9))
+				else if (bal.compareTo(mAcct.creditLimit.multiply(new BigDecimal(0.9))) >= 0) // bal >= (mAcct.creditLimit * 0.9)
 				{
 					textColor = Color.YELLOW;
 				}
 			}
 			else
 			{
-				if (bal < 0.0)
+				if (bal.compareTo(new BigDecimal(0.0)) == -1) // bal < 0.0
 				{
 					textColor = red;
 				}

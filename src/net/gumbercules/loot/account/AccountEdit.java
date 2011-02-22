@@ -247,7 +247,7 @@ public class AccountEdit extends Activity
 		catch (NumberFormatException e)
 		{
 			// if there is no data (or bad data) in the field, set it to zero
-			acct.initialBalance = 0.0;
+			acct.initialBalance = new BigDecimal(0.0);
 		}
 		
 		try
@@ -265,7 +265,7 @@ public class AccountEdit extends Activity
 		}
 		catch (NumberFormatException e)
 		{
-			acct.creditLimit = 0.0;
+			acct.creditLimit = new BigDecimal(0.0);
 		}
 
 		acct.credit = credit;

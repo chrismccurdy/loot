@@ -463,7 +463,7 @@ public class ImportActivity extends Activity
 				{
 					try
 					{
-						cv.put("amount", new BigDecimal(line.replace(",", "")));
+						cv.put("amount", new BigDecimal(line.replace(",", "")).toString());
 					}
 					catch (NumberFormatException e)
 					{
@@ -734,7 +734,7 @@ public class ImportActivity extends Activity
 				{
 					BigDecimal amount = new BigDecimal(cv.getAsString("amount"));
 					cv.remove("amount");
-					cv.put("amount", -amount);
+					cv.put("amount", amount.negate().toString());
 				}
 			}
 		}
@@ -756,11 +756,11 @@ public class ImportActivity extends Activity
 			}
 			else if (column.equals("%a"))
 			{
-				cv.put("amount", new BigDecimal(val));
+				cv.put("amount", val);
 			}
 			else if (column.equals("%b"))
 			{
-				cv.put("amount", new BigDecimal(val));
+				cv.put("amount", val);
 				cv.put("abs", true);
 			}
 			else if (column.equals("%t"))

@@ -163,18 +163,18 @@ public class AccountAdapter extends ArrayAdapter<Account>
 				final int red = Color.rgb(255, 50, 50);
 				if (acct.credit)
 				{
-					if (bal > acct.creditLimit)
+					if (bal.compareTo(acct.creditLimit) == 1) // bal > acct.creditLimit
 					{
 						textColor = red;
 					}
-					else if (bal >= (acct.creditLimit * 0.9))
+					else if (bal.compareTo(acct.creditLimit.multiply(new BigDecimal(0.9))) >= 0) // bal >= (acct.creditLimit * 0.9)
 					{
 						textColor = Color.YELLOW;
 					}
 				}
 				else
 				{
-					if (bal < 0.0)
+					if (bal.compareTo(new BigDecimal(0.0)) == -1) // bal < 0.0
 					{
 						textColor = red;
 					}

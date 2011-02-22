@@ -977,7 +977,7 @@ public class TransactionEdit extends Activity
 		}
 		catch (NumberFormatException e)
 		{
-			trans.amount = 0.0;
+			trans.amount = new BigDecimal(0.0);
 		}
 
 		// get the type of transaction

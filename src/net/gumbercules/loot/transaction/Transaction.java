@@ -67,7 +67,7 @@ public class Transaction
 		this.budget = false;
 		this.date = null;
 		this.type = WITHDRAW;
-		this.amount = 0.00;
+		this.amount = new BigDecimal(0.00);
 		this.check_num = -1;
 		this.party = null;
 		this.tags = new ArrayList<String>();
@@ -272,10 +272,10 @@ public class Transaction
 		BigDecimal amount = this.amount;
 		int check = 0;
 		if ( this.type == Transaction.WITHDRAW )
-			amount = -amount;
+			amount = amount.negate();
 		else if ( this.type == Transaction.CHECK )
 		{
-			amount = -amount;
+			amount = amount.negate();
 			check = this.check_num;
 		}
 		
@@ -345,11 +345,11 @@ public class Transaction
 		int check = 0;
 		if ( this.type == Transaction.WITHDRAW )
 		{
-			amount = -amount;
+			amount = amount.negate();
 		}
 		else if ( this.type == Transaction.CHECK )
 		{
-			amount = -amount;
+			amount = amount.negate();
 			check = this.check_num;
 		}
 		
@@ -726,16 +726,16 @@ public class Transaction
 		if ( check > 0 )
 		{
 			type = Transaction.CHECK;
-			amount = -amount;
+			amount = amount.negate();
 		}
 		else
 		{
-			if ( amount >= 0 )
+			if (amount.compareTo(new BigDecimal(0.0)) >= 0) // amount >= 0
 				type = Transaction.DEPOSIT;
 			else
 			{
 				type = Transaction.WITHDRAW;
-				amount = -amount;
+				amount = amount.negate();
 			}
 		}
 		
@@ -761,16 +761,16 @@ public class Transaction
 		if ( check > 0 )
 		{
 			type = Transaction.CHECK;
-			amount = -amount;
+			amount = amount.negate();
 		}
 		else
 		{
-			if ( amount >= 0 )
+			if (amount.compareTo(new BigDecimal(0.0)) >= 0) // amount >= 0
 				type = Transaction.DEPOSIT;
 			else
 			{
 				type = Transaction.WITHDRAW;
-				amount = -amount;
+				amount = amount.negate();
 			}
 		}
 		
@@ -911,7 +911,7 @@ public class Transaction
 					b = old_trans.amount;
 				}
 				
-				acct2.initialBalance += a - b;
+				acct2.initialBalance = acct2.initialBalance.add(a.subtract(b));
 				if (acct2.write() == -1)
 				{
 					this.eraseTransfer();
@@ -953,9 +953,9 @@ public class Transaction
 			BigDecimal amt = trans2.amount;
 			if ( trans2.type == Transaction.WITHDRAW )
 			{
-				amt = -trans2.amount;
+				amt = trans2.amount.negate();
 			}
-			acct2.initialBalance -= amt;
+			acct2.initialBalance = acct2.initialBalance.subtract(amt);
 			acct2.write();
 		}
 		
@@ -1085,15 +1085,10 @@ public class Transaction
 	private int compareAmounts(Transaction t2)
 	{
 		// get the non-absolute value of the amount 
-		BigDecimal a = (this.type == DEPOSIT ? this.amount : -this.amount),
-			b = (t2.type == DEPOSIT ? t2.amount : -t2.amount);
+		BigDecimal a = (this.type == DEPOSIT ? this.amount : this.amount.negate()),
+			b = (t2.type == DEPOSIT ? t2.amount : t2.amount.negate());
 		
-		int alb = 0, agb = 0;
-		if (a < b)
-			alb = 1;
-		if (a > b)
-			agb = 1;
-		return alb - agb;
+        return a.compareTo(b);
 	}
 	
 	private int compareParties(Transaction t2)

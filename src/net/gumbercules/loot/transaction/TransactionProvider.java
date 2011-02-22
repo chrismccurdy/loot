@@ -134,9 +134,9 @@ public class TransactionProvider extends ContentProvider
 		}
 		
 		trans.amount = new BigDecimal(values.getAsString("amount"));
-		if (trans.amount < 0.0)
+		if (trans.amount.compareTo(new BigDecimal(0.0)) == 1) // amount > 0.0
 		{
-			trans.amount = -trans.amount;
+			trans.amount = trans.amount.negate();
 			if (trans.check_num > 0)
 			{
 				trans.type = Transaction.CHECK;

@@ -306,14 +306,14 @@ implements Cloneable
 		
 		if (trans.type != Transaction.DEPOSIT)
 		{
-			t.amount = -t.amount;
+			t.amount = t.amount.negate();
 		}
 		
 		ContentValues cv = new ContentValues();
 		cv.put("account", t.account);
 		cv.put("date", t.date.getTime());
 		cv.put("party", t.party);
-		cv.put("amount", t.amount);
+		cv.put("amount", t.amount.toString());
 		cv.put("check_num", t.check_num);
 		cv.put("budget", t.budget);
 		
@@ -503,12 +503,12 @@ implements Cloneable
 			
 			if (check_num > 0)
 			{
-				amount = -amount;
+				amount = amount.negate();
 				type = Transaction.CHECK;
 			}
-			else if (amount < 0.0)
+			else if (amount.compareTo(new BigDecimal(0.0)) == -1) // amount < 0.0
 			{
-				amount = -amount;
+				amount = amount.negate();
 				type = Transaction.WITHDRAW;
 			}
 			else

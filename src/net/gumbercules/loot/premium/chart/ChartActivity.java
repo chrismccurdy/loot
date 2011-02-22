@@ -261,11 +261,11 @@ public class ChartActivity extends Activity
 				continue;
 			}
 			
-			balances[i] = 0.0;
+			balances[i] = new BigDecimal(0.0);
 			
 			do
 			{
-				balances[i] += new BigDecimal(cur.getString(1));
+				balances[i] = balances[i].add(new BigDecimal(cur.getString(1)));
 			} while (cur.moveToNext());
 			cur.close();
 			
@@ -281,7 +281,7 @@ public class ChartActivity extends Activity
 			
 			do
 			{
-				balances[i] += new BigDecimal(cur.getString(0));
+				balances[i] = balances[i].add(new BigDecimal(cur.getString(0)));
 			} while (cur.moveToNext());
 			cur.close();
 		}
@@ -300,8 +300,8 @@ public class ChartActivity extends Activity
 		int account_data_set, selection_data_set, count, id, prev_id;
 		BigDecimal total, amount;
 		int total_count = 0;
-		BigDecimal total_amount = 0.0;
-		BigDecimal total_balance = 0.0;
+		BigDecimal total_amount = new BigDecimal(0.0);
+		BigDecimal total_balance = new BigDecimal(0.0);
 		BigDecimal[] running_balance = null;
 		boolean negative = true;
 		
@@ -325,8 +325,8 @@ public class ChartActivity extends Activity
 					count = 0;
 					id = 0;
 					prev_id = 0;
-					total = 0.0;
-					amount = 0.0;
+					total = new BigDecimal(0.0);
+					amount = new BigDecimal(0.0);
 
 					if (cur.moveToFirst())
 					{
@@ -338,10 +338,10 @@ public class ChartActivity extends Activity
 							if (id != prev_id)
 							{
 								++count;
-								total += amount;
-								running_balance[account_data_set] += amount;
+								total = total.add(amount);
+								running_balance[account_data_set] = running_balance[account_data_set].add(amount);
 								
-								if (amount > 0.0)
+								if (amount.compareTo(new BigDecimal(0.0)) == 1) // amount > 0.0
 								{
 									negative = false;
 								}
@@ -356,13 +356,13 @@ public class ChartActivity extends Activity
 					
 					// total over all points
 					total_count += count;
-					total_amount += total;
+					total_amount = total_amount.add(total);
 
 					cur.close();
 					++selection_data_set;
 				}
 				
-				total_balance += running_balance[account_data_set++];
+				total_balance = total_balance.add(running_balance[account_data_set++]);
 			}
 						
 			mHandler.addTicks(start_date);

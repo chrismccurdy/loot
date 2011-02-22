@@ -216,10 +216,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			}
 			else
 			{
-				amount = -trans.amount;
+				amount = trans.amount.negate();
 			}
 			
-			cur_balance = prev_balance + amount;
+			cur_balance = prev_balance.add(amount);
 			mRunningBalances.add(0, cur_balance);
 			
 			prev_balance = cur_balance;
@@ -270,10 +270,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 			}
 			else
 			{
-				amount = -trans.amount;
+				amount = trans.amount.negate();
 			}
 			
-			cur_balance = prev_balance + amount;
+			cur_balance = prev_balance.add(amount);
 			mRunningBalances.add(cur_balance);
 			
 			prev_balance = cur_balance;
@@ -555,10 +555,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 
 		// if not showing the prefix, make sure to specify difference between positive/negative values
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		BigDecimal amount = (trans.type == Transaction.DEPOSIT ? trans.amount : -trans.amount);
+		BigDecimal amount = (trans.type == Transaction.DEPOSIT ? trans.amount : trans.amount.negate());
 		if (prefs.getBoolean("prefix_party", false))
 		{
-			amount = Math.abs(trans.amount);
+			amount = trans.amount.abs();
 		}
 		
 		String amountStr = nf.format(amount);

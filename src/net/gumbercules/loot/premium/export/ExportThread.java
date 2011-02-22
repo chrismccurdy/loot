@@ -301,7 +301,7 @@ public class ExportThread extends Thread
 		out += "P" + trans.get("party") + "\n";
 		
 		BigDecimal amount = (BigDecimal)trans.get("amount");
-		String format_str = (amount > 0 ? "%010.2f" : "%011.2f");
+		String format_str = (amount.compareTo(new BigDecimal(0.0)) == 1 ? "%010.2f" : "%011.2f");
 		
 		String amt = String.format(format_str, amount);
 		out += "T" + amt + "\n";
@@ -390,7 +390,7 @@ public class ExportThread extends Thread
 		else if (column.equals("%b"))
 		{
 			BigDecimal amt = (BigDecimal)trans.get("amount");
-			value = Math.abs(amt);
+			value = amt.abs().toString();
 		}
 		else if (column.equals("%t"))
 		{
@@ -399,7 +399,7 @@ public class ExportThread extends Thread
 		else if (column.equals("%y"))
 		{
 			BigDecimal amt = (BigDecimal)trans.get("amount");
-			if (amt < 0.0)
+			if (amt.compareTo(new BigDecimal(0.0)) == -1) // amt < 0.0
 			{
 				value = mDebitKeyword;
 			}

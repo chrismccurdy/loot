@@ -425,8 +425,7 @@ public class ChartHandler
 					{
 						try
 						{
-							double ratio = ((BigDecimal)element.get(1) / 
-									((BigDecimal)mTotals[id])) * 360.0;
+							double ratio = ((BigDecimal)element.get(1)).divide(((BigDecimal)mTotals[id]).multiply(new BigDecimal(360.0))).doubleValue();
 							result.put("data", ratio);
 						}
 						catch (JSONException e)
