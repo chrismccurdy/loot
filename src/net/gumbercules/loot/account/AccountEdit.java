@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.account;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Currency;
@@ -192,7 +193,7 @@ public class AccountEdit extends Activity
 		}
 	}
 	
-	private void setupCurrencyEdit(EditText edit, double value)
+	private void setupCurrencyEdit(EditText edit, BigDecimal value)
 	{
 		NumberFormat nf = NumberFormat.getCurrencyInstance();
 		String new_currency = Database.getOptionString("override_locale");
@@ -241,7 +242,7 @@ public class AccountEdit extends Activity
 			
 			if (sep != '.')
 				balText = balText.replaceAll(String.valueOf(sep), ".");
-			acct.initialBalance = new Double(balText);
+			acct.initialBalance = new BigDecimal(balText);
 		}
 		catch (NumberFormatException e)
 		{
@@ -260,7 +261,7 @@ public class AccountEdit extends Activity
 		
 		try
 		{
-			acct.creditLimit = new Double(creditLimitText);
+			acct.creditLimit = new BigDecimal(creditLimitText);
 		}
 		catch (NumberFormatException e)
 		{

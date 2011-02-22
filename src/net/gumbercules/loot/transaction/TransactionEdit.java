@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.transaction;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -972,7 +973,7 @@ public class TransactionEdit extends Activity
 			String str = amountEdit.getText().toString();
 			if (sep != '.')
 				str = str.replaceAll(String.valueOf(sep), ".");
-			trans.amount = new Double(str);
+			trans.amount = new BigDecimal(str);
 		}
 		catch (NumberFormatException e)
 		{

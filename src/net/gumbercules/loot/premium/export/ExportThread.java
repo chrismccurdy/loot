@@ -22,6 +22,7 @@ import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -154,7 +155,7 @@ public class ExportThread extends Thread
 				trans.put("id", id);
 				trans.put("date", cur.getLong(1));
 				trans.put("party", cur.getString(2));
-				trans.put("amount", cur.getDouble(3));
+				trans.put("amount", new BigDecimal(cur.getString(3)));
 				trans.put("check_num", cur.getInt(4));
 				trans.put("tags", "");
 			}
@@ -299,7 +300,7 @@ public class ExportThread extends Thread
 		out += "D" + date + "\n";
 		out += "P" + trans.get("party") + "\n";
 		
-		double amount = (Double)trans.get("amount");
+		BigDecimal amount = (BigDecimal)trans.get("amount");
 		String format_str = (amount > 0 ? "%010.2f" : "%011.2f");
 		
 		String amt = String.format(format_str, amount);
@@ -384,12 +385,12 @@ public class ExportThread extends Thread
 		}
 		else if (column.equals("%a"))
 		{
-			value = ((Double)trans.get("amount")).toString();
+			value = ((BigDecimal)trans.get("amount")).toString();
 		}
 		else if (column.equals("%b"))
 		{
-			Double amt = (Double)trans.get("amount");
-			value = Double.toString(Math.abs(amt));
+			BigDecimal amt = (BigDecimal)trans.get("amount");
+			value = Math.abs(amt);
 		}
 		else if (column.equals("%t"))
 		{
@@ -397,7 +398,7 @@ public class ExportThread extends Thread
 		}
 		else if (column.equals("%y"))
 		{
-			double amt = (Double)trans.get("amount");
+			BigDecimal amt = (BigDecimal)trans.get("amount");
 			if (amt < 0.0)
 			{
 				value = mDebitKeyword;

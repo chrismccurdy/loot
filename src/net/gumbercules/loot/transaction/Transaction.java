@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.transaction;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -54,7 +55,7 @@ public class Transaction
 	public int check_num;
 	public Date date; 
 	public String party;
-	public double amount;
+	public BigDecimal amount;
 	ArrayList<String> tags;
 	ArrayList<Uri> images;
 	
@@ -73,7 +74,7 @@ public class Transaction
 		this.images = new ArrayList<Uri>();
 	}
 	
-	public Transaction( boolean po, boolean b, Date d, int t, String pa, double a, int c )
+	public Transaction( boolean po, boolean b, Date d, int t, String pa, BigDecimal a, int c )
 	{
 		this.id = -1;
 		this.account = -1;
@@ -268,7 +269,7 @@ public class Transaction
 	private int newTransaction()
 	{
 		// invert the amount if it removed money from the account
-		double amount = this.amount;
+		BigDecimal amount = this.amount;
 		int check = 0;
 		if ( this.type == Transaction.WITHDRAW )
 			amount = -amount;
@@ -282,7 +283,7 @@ public class Transaction
 		String insert = "insert into transactions (account,date,party,amount,check_num,budget,timestamp) " +
 						"values (?,?,?,?,?,?,strftime('%s','now'))";
 		Object[] bindArgs = {new Long(this.account), new Long(this.date.getTime()), this.party,
-				new Double(amount), new Long(check), new Long(Database.setBoolean(this.budget))};
+				amount.toString(), new Long(check), new Long(Database.setBoolean(this.budget))};
 
 		SQLiteDatabase lootDB = Database.getDatabase();
 		lootDB.beginTransaction();
@@ -340,7 +341,7 @@ public class Transaction
 	{
 		String update = "update transactions set account = ?, date = ?, party = ?, amount = ?, " +
 						"check_num = ?, budget = ?, timestamp = strftime('%s','now') where id = ?";
-		double amount = this.amount;
+		BigDecimal amount = this.amount;
 		int check = 0;
 		if ( this.type == Transaction.WITHDRAW )
 		{
@@ -356,7 +357,7 @@ public class Transaction
 		if ( this.account == -1 )
 			acct_id = Account.getCurrentAccountNum();
 		Object[] bindArgs = {new Long(acct_id), new Long(this.date.getTime()), this.party,
-				new Double(amount), new Long(check), new Long(Database.setBoolean(this.budget)),
+				amount.toString(), new Long(check), new Long(Database.setBoolean(this.budget)),
 				new Long(this.id)};
 		
 		SQLiteDatabase lootDB = Database.getDatabase();
@@ -716,7 +717,7 @@ public class Transaction
 			return null;
 		}
 		
-		double amount = cur.getDouble(3);
+		BigDecimal amount = new BigDecimal(cur.getString(3));
 		int check = cur.getInt(4);
 		int type;
 		boolean posted = Database.getBoolean(cur.getInt(0));
@@ -751,7 +752,7 @@ public class Transaction
 	
 	public void fromCursor(Cursor cur)
 	{
-		double amount = cur.getDouble(3);
+		BigDecimal amount = new BigDecimal(cur.getString(3));
 		int check = cur.getInt(4);
 		int type;
 		this.posted = Database.getBoolean(cur.getInt(0));
@@ -898,7 +899,7 @@ public class Transaction
 			if (purged)
 			{
 				// update the initialBalance of the secondary account if the transaction was purged
-				double a, b;
+				BigDecimal a, b;
 				if (trans2.type == Transaction.WITHDRAW)
 				{
 					a = old_trans.amount;
@@ -949,7 +950,7 @@ public class Transaction
 		if (purged)
 		{
 			Account acct2 = Account.getAccountById(trans2.account);
-			double amt = trans2.amount;
+			BigDecimal amt = trans2.amount;
 			if ( trans2.type == Transaction.WITHDRAW )
 			{
 				amt = -trans2.amount;
@@ -1084,7 +1085,7 @@ public class Transaction
 	private int compareAmounts(Transaction t2)
 	{
 		// get the non-absolute value of the amount 
-		double a = (this.type == DEPOSIT ? this.amount : -this.amount),
+		BigDecimal a = (this.type == DEPOSIT ? this.amount : -this.amount),
 			b = (t2.type == DEPOSIT ? t2.amount : -t2.amount);
 		
 		int alb = 0, agb = 0;

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -462,7 +463,7 @@ public class ImportActivity extends Activity
 				{
 					try
 					{
-						cv.put("amount", Double.valueOf(line.replace(",", "")));
+						cv.put("amount", new BigDecimal(line.replace(",", "")));
 					}
 					catch (NumberFormatException e)
 					{
@@ -731,7 +732,7 @@ public class ImportActivity extends Activity
 				
 				if (isDebit)
 				{
-					double amount = cv.getAsDouble("amount");
+					BigDecimal amount = new BigDecimal(cv.getAsString("amount"));
 					cv.remove("amount");
 					cv.put("amount", -amount);
 				}
@@ -755,11 +756,11 @@ public class ImportActivity extends Activity
 			}
 			else if (column.equals("%a"))
 			{
-				cv.put("amount", new Double(val));
+				cv.put("amount", new BigDecimal(val));
 			}
 			else if (column.equals("%b"))
 			{
-				cv.put("amount", new Double(val));
+				cv.put("amount", new BigDecimal(val));
 				cv.put("abs", true);
 			}
 			else if (column.equals("%t"))

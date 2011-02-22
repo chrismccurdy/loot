@@ -24,6 +24,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -148,7 +149,7 @@ public class ChartHandler
 		}
 	}
 	
-	public void addTotals(int count, double amount, double balance)
+	public void addTotals(int count, BigDecimal amount, BigDecimal balance)
 	{
 		mTotals[ID_COUNT] = count;
 		mTotals[ID_TOTAL] = amount;
@@ -156,7 +157,7 @@ public class ChartHandler
 	}
 	
 	public void addToDataset(long start_date, int account_id, String account_name,
-			int query_id, String query, int count, double total, double balance)
+			int query_id, String query, int count, BigDecimal total, BigDecimal balance)
 	{
 		if (!mAccounts.containsKey(account_id))
 		{
@@ -403,8 +404,12 @@ public class ChartHandler
 						
 						if (mNegative)
 						{
+                            // --------------------------------------------------------------
+                            // TODO really test this!!!!!!!!!!!
+                            // don't know if the exception will still show up with BigDecimal
+                            // ---------------------------------------------------------------
 							// ugly hack to avoid JSONException
-							element.put(new Double(Math.abs((((Number)obj[id]).doubleValue()))));
+							element.put(((BigDecimal)obj[id]).abs());
 						}
 						else
 						{
@@ -420,8 +425,8 @@ public class ChartHandler
 					{
 						try
 						{
-							double ratio = (((Number)element.get(1)).doubleValue() / 
-									((Number)mTotals[id]).doubleValue()) * 360.0;
+							double ratio = ((BigDecimal)element.get(1) / 
+									((BigDecimal)mTotals[id])) * 360.0;
 							result.put("data", ratio);
 						}
 						catch (JSONException e)

@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.account;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -37,18 +38,18 @@ public class Account
 	private static final int BUDGET			= 0x1 << 2;
 	
 	public String name;
-	public double initialBalance;
+	public BigDecimal initialBalance;
 	public int priority;
 	public boolean primary;
 	public int balanceDisplay;
 	public boolean credit; 
-	public double creditLimit;
+	public BigDecimal creditLimit;
 	
 	private static int currentAccount;
 	private int id;
-	private double actual_balance;
-	private double posted_balance;
-	private double budget_balance;
+	private BigDecimal actual_balance;
+	private BigDecimal posted_balance;
+	private BigDecimal budget_balance;
 	private int calculated_balances;
 	
 	public Account()
@@ -57,7 +58,7 @@ public class Account
 		calculated_balances = 0;
 	}
 	
-	public Account(String name, double initialBalance)
+	public Account(String name, BigDecimal initialBalance)
 	{
 		this.id = -1;
 		this.name = name;
@@ -87,9 +88,9 @@ public class Account
 		// insert the new row into the database
 		String insert = "insert into accounts (name,balance,timestamp,priority,primary_account," +
 				"display_balance,credit_account,credit_limit) values (?,?,strftime('%s','now'),?,?,?,?,?)";
-		Object[] bindArgs = {this.name, new Double(this.initialBalance),
+		Object[] bindArgs = {this.name, new BigDecimal(this.initialBalance),
 				new Long(this.priority), new Boolean(this.primary),
-				new Long(this.balanceDisplay), new Boolean(this.credit), new Double(this.creditLimit)};
+				new Long(this.balanceDisplay), new Boolean(this.credit), new BigDecimal(this.creditLimit)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -126,9 +127,9 @@ public class Account
 		String update = "update accounts set name = ?, balance = ?, priority = ?, " +
 						"primary_account = ?, display_balance = ?, credit_account = ?, " +
 						"credit_limit = ?, timestamp = strftime('%s','now') where id = ?";
-		Object[] bindArgs = {this.name, new Double(this.initialBalance), new Long(this.priority),
+		Object[] bindArgs = {this.name, new BigDecimal(this.initialBalance), new Long(this.priority),
 				new Boolean(this.primary), new Integer(this.balanceDisplay),
-				new Boolean(this.credit), new Double(this.creditLimit), new Integer(this.id)};
+				new Boolean(this.credit), new BigDecimal(this.creditLimit), new Integer(this.id)};
 		SQLiteDatabase lootDB = Database.getDatabase();
 		try
 		{
@@ -225,12 +226,12 @@ public class Account
 		return true;
 	}
 	
-	public static Double getTotalBalance()
+	public static BigDecimal getTotalBalance()
 	{
 		return getTotalBalance(false) - getTotalBalance(true);
 	}
 	
-	private static Double getTotalBalance(boolean credit)
+	private static BigDecimal getTotalBalance(boolean credit)
 	{
 		// get total balance for all non-credit accounts
 		SQLiteDatabase lootDB = Database.getDatabase();
@@ -240,10 +241,10 @@ public class Account
 		
 		Cursor cur = lootDB.rawQuery(query, null);
 		
-		Double bal = null;
+		BigDecimal bal = null;
 		if (cur.moveToFirst())
 		{
-			bal = cur.getDouble(0);
+			bal = new BigDecimal(cur.getString(0));
 		}
 		cur.close();
 		
@@ -253,7 +254,7 @@ public class Account
 		
 		if (cur.moveToFirst())
 		{
-			bal += cur.getDouble(0);
+			bal += new BigDecimal(cur.getString(0));
 		}
 		else
 		{
@@ -264,28 +265,28 @@ public class Account
 		return bal;
 	}
 	
-	private Double calculateBalance(String clause)
+	private BigDecimal calculateBalance(String clause)
 	{
 		SQLiteDatabase lootDB = Database.getDatabase();
 		String[] sArgs = {Integer.toString(this.id)};
 		Cursor cur = lootDB.rawQuery("select sum(amount) from transactions where " + clause, sArgs);
 		
-		Double bal = null;
+		BigDecimal bal = null;
 		if (cur.moveToFirst())
 		{
-			bal = cur.getDouble(0);
+			bal = new BigDecimal(cur.getString(0));
 		}
 		cur.close();
 		
 		return bal;
 	}
 	
-	public void setActualBalance(double b)
+	public void setActualBalance(BigDecimal b)
 	{
 		this.actual_balance = b;
 	}
 	
-	public double getActualBalance()
+	public BigDecimal getActualBalance()
 	{
 		if ((calculated_balances & ACTUAL) == 0)
 		{
@@ -294,9 +295,9 @@ public class Account
 		return this.actual_balance;
 	}
 	
-	public Double calculateActualBalance()
+	public BigDecimal calculateActualBalance()
 	{
-		Double bal = calculateBalance("account = ? and purged = 0 and budget = 0");
+		BigDecimal bal = calculateBalance("account = ? and purged = 0 and budget = 0");
 		if (bal != null)
 		{
 			this.actual_balance = bal + this.initialBalance;
@@ -306,12 +307,12 @@ public class Account
 		return bal;
 	}
 	
-	public void setPostedBalance(double b)
+	public void setPostedBalance(BigDecimal b)
 	{
 		this.posted_balance = b;
 	}
 	
-	public double getPostedBalance()
+	public BigDecimal getPostedBalance()
 	{
 		if ((calculated_balances & POSTED) == 0)
 		{
@@ -320,9 +321,9 @@ public class Account
 		return this.posted_balance;
 	}
 	
-	public Double calculatePostedBalance()
+	public BigDecimal calculatePostedBalance()
 	{
-		Double bal = calculateBalance("account = ? and posted = 1 and purged = 0");
+		BigDecimal bal = calculateBalance("account = ? and posted = 1 and purged = 0");
 		if (bal != null)
 		{
 			this.posted_balance = bal + this.initialBalance;
@@ -332,12 +333,12 @@ public class Account
 		return bal;
 	}
 	
-	public void setBudgetBalance(double b)
+	public void setBudgetBalance(BigDecimal b)
 	{
 		this.budget_balance = b;
 	}
 	
-	public double getBudgetBalance()
+	public BigDecimal getBudgetBalance()
 	{
 		if ((calculated_balances & BUDGET) == 0)
 		{
@@ -346,9 +347,9 @@ public class Account
 		return this.budget_balance;
 	}
 	
-	public Double calculateBudgetBalance()
+	public BigDecimal calculateBudgetBalance()
 	{
-		Double bal = calculateBalance("account = ? and purged = 0");
+		BigDecimal bal = calculateBalance("account = ? and purged = 0");
 		if (bal != null)
 		{
 			this.budget_balance = bal + this.initialBalance;
@@ -379,12 +380,12 @@ public class Account
 		
 		this.id = cur.getInt(0);
 		this.name = cur.getString(1);
-		this.initialBalance = cur.getDouble(2);
+		this.initialBalance = new BigDecimal(cur.getString(2));
 		this.priority = cur.getInt(3);
 		this.primary = Database.getBoolean(cur.getInt(4));
 		this.balanceDisplay = cur.getInt(5);
 		this.credit = Database.getBoolean(cur.getInt(6));
-		this.creditLimit = cur.getDouble(7);
+		this.creditLimit = new BigDecimal(cur.getString(7));
 		cur.close();
 		
 		return true;
@@ -452,12 +453,12 @@ public class Account
 			accounts[i] = new Account();
 			accounts[i].id = cur.getInt(0);
 			accounts[i].name = cur.getString(1);
-			accounts[i].initialBalance = cur.getDouble(2);
+			accounts[i].initialBalance = new BigDecimal(cur.getString(2));
 			accounts[i].priority = cur.getInt(3);
 			accounts[i].primary = Database.getBoolean(cur.getInt(4));
 			accounts[i].balanceDisplay = cur.getInt(5);
 			accounts[i].credit = Database.getBoolean(cur.getInt(6));
-			accounts[i++].creditLimit = cur.getDouble(7);
+			accounts[i++].creditLimit = new BigDecimal(cur.getString(7));
 		} while (cur.moveToNext());
 		
 		cur.close();
@@ -597,12 +598,12 @@ public class Account
 		Account acct = new Account();
 		acct.id = cur.getInt(0);
 		acct.name = cur.getString(1);
-		acct.initialBalance = cur.getDouble(2);
+		acct.initialBalance = new BigDecimal(cur.getString(2));
 		acct.priority = cur.getInt(3);
 		acct.primary = Database.getBoolean(cur.getInt(4));
 		acct.balanceDisplay = cur.getInt(5);
 		acct.credit = Database.getBoolean(cur.getInt(6));
-		acct.creditLimit = cur.getDouble(7);
+		acct.creditLimit = new BigDecimal(cur.getString(7));
 		cur.close();
 		
 		return acct;
@@ -772,7 +773,7 @@ public class Account
 		}
 		
 		// update the initial account balance to reflect these changes
-		this.initialBalance += cur.getDouble(0);
+		this.initialBalance += new BigDecimal(cur.getString(0));
 		cur.close();
 		
 		lootDB.beginTransaction();
@@ -878,7 +879,7 @@ public class Account
 			return null;
 		}
 		
-		this.initialBalance -= cur.getDouble(0);
+		this.initialBalance -= new BigDecimal(cur.getString(0));
 		cur.close();
 		
 		lootDB.beginTransaction();

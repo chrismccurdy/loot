@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.premium.chart;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -238,14 +239,14 @@ public class ChartActivity extends Activity
 		return ranges;
 	}
 	
-	private double[] getInitialBalances(long start_date, String[] accounts)
+	private BigDecimal[] getInitialBalances(long start_date, String[] accounts)
 	{
 		String[] acc_proj = new String[] { "id", "balance" };
 		String[] trans_proj = new String[] { "amount" };
 		String date_range = " date < " + start_date;
 		String selection;
 		Cursor cur;
-		double[] balances = new double[accounts.length];
+		BigDecimal[] balances = new BigDecimal[accounts.length];
 		Uri account_uri = Uri.parse("content://net.gumbercules.loot.accountprovider/");
 		Uri trans_uri = Uri.parse("content://net.gumbercules.loot.transactionprovider/transaction");
 		
@@ -264,7 +265,7 @@ public class ChartActivity extends Activity
 			
 			do
 			{
-				balances[i] += cur.getDouble(1);
+				balances[i] += new BigDecimal(cur.getString(1));
 			} while (cur.moveToNext());
 			cur.close();
 			
@@ -280,7 +281,7 @@ public class ChartActivity extends Activity
 			
 			do
 			{
-				balances[i] += cur.getDouble(0);
+				balances[i] += new BigDecimal(cur.getString(0));
 			} while (cur.moveToNext());
 			cur.close();
 		}
@@ -297,11 +298,11 @@ public class ChartActivity extends Activity
 		String[] projection = new String[] { "id", "amount" };
 		long start_date = 0;
 		int account_data_set, selection_data_set, count, id, prev_id;
-		double total, amount;
+		BigDecimal total, amount;
 		int total_count = 0;
-		double total_amount = 0.0;
-		double total_balance = 0.0;
-		double[] running_balance = null;
+		BigDecimal total_amount = 0.0;
+		BigDecimal total_balance = 0.0;
+		BigDecimal[] running_balance = null;
 		boolean negative = true;
 		
 		String[] searchAccounts = getSearchAccounts(mAccounts);
@@ -332,7 +333,7 @@ public class ChartActivity extends Activity
 						do
 						{
 							id = cur.getInt(0);
-							amount = cur.getDouble(1);
+							amount = new BigDecimal(cur.getString(1));
 							
 							if (id != prev_id)
 							{

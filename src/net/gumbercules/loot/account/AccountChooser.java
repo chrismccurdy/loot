@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.account;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -638,7 +639,7 @@ public class AccountChooser extends ListActivity
 			{
 				nf.setCurrency(Currency.getInstance(new_currency));
 			}
-			Double bal = Account.getTotalBalance();
+			BigDecimal bal = Account.getTotalBalance();
 			String text;
 			if (bal != null)
 			{

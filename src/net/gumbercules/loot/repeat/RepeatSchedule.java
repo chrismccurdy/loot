@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.repeat;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -420,11 +421,11 @@ implements Cloneable
 		boolean ret = false;
 		if (cur.moveToFirst())
 		{
-			double end = cur.getLong(1);
+			long end = cur.getLong(1);
 			this.start = new Date(cur.getLong(0));
 			
 			if (end > 0)
-				this.end = new Date(cur.getLong(1));
+				this.end = new Date(end);
 			else
 				this.end = null;
 			
@@ -496,7 +497,7 @@ implements Cloneable
 		if (cur.moveToFirst())
 		{
 			int type, check_num = cur.getInt(4);
-			double amount = cur.getDouble(3);
+			BigDecimal amount = new BigDecimal(cur.getString(3));
 			boolean budget = Database.getBoolean(cur.getInt(5));
 			Date date = new Date(cur.getLong(1));
 			
@@ -583,7 +584,7 @@ implements Cloneable
 	
 	public static int[] getDueRepeatIds(Date date)
 	{
-		String[] wArgs = {Double.toString(date.getTime())};
+		String[] wArgs = {Long.toString(date.getTime())};
 		return getIds("due <= ?", wArgs);
 	}
 	

@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.transaction;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -742,9 +743,9 @@ public class TransactionActivity extends ListActivity
     
     public void setBalances()
     {
-    	Double posted = mAcct.calculatePostedBalance();
-    	Double balance = mAcct.calculateActualBalance();
-    	Double budget = mAcct.calculateBudgetBalance();
+    	BigDecimal posted = mAcct.calculatePostedBalance();
+    	BigDecimal balance = mAcct.calculateActualBalance();
+    	BigDecimal budget = mAcct.calculateBudgetBalance();
     	
 		// change the numbers to the locale currency format
 		NumberFormat nf = NumberFormat.getCurrencyInstance();
@@ -762,7 +763,7 @@ public class TransactionActivity extends ListActivity
 		setBalance(budgetValue, budget, color, nf);
     }
     
-    private void setBalance(TextView view, Double bal, boolean color, NumberFormat nf)
+    private void setBalance(TextView view, BigDecimal bal, boolean color, NumberFormat nf)
     {
     	String str = "Error";
     	if (bal != null)

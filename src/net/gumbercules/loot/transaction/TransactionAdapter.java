@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.transaction;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 {
 	private ArrayList<Transaction> mTransList;
 	private ArrayList<Transaction> mOriginalList;
-	private ArrayList<Double> mRunningBalances;
+	private ArrayList<BigDecimal> mRunningBalances;
 	private int mRowResId;
 	private Context mContext;
 	private LayoutInflater mInflater;
@@ -81,7 +82,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 		this.mTransList = tr;
 		this.mOriginalList = tr;
-		this.mRunningBalances = new ArrayList<Double>();
+		this.mRunningBalances = new ArrayList<BigDecimal>();
 		this.mRowResId = row;
 		this.mContext = con;
 		this.mAcctId = acct_id;
@@ -186,7 +187,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		
 		len_diff = (len_diff > 0 ? 0 : len_diff);
 		
-		double cur_balance, prev_balance, amount;
+		BigDecimal cur_balance, prev_balance, amount;
 		Transaction trans;
 		
 		if (pos == (len - 1) || mRunningBalances.isEmpty())
@@ -247,7 +248,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 		}
 		
 		int len = mOriginalList.size();
-		double cur_balance, prev_balance, amount;
+		BigDecimal cur_balance, prev_balance, amount;
 		Transaction trans;
 		
 		if (pos == 0 || mRunningBalances.isEmpty())
@@ -554,7 +555,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> implements Fil
 
 		// if not showing the prefix, make sure to specify difference between positive/negative values
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		double amount = (trans.type == Transaction.DEPOSIT ? trans.amount : -trans.amount);
+		BigDecimal amount = (trans.type == Transaction.DEPOSIT ? trans.amount : -trans.amount);
 		if (prefs.getBoolean("prefix_party", false))
 		{
 			amount = Math.abs(trans.amount);

@@ -16,6 +16,7 @@
 
 package net.gumbercules.loot.transaction;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -132,7 +133,7 @@ public class TransactionProvider extends ContentProvider
 			trans.check_num = -1;
 		}
 		
-		trans.amount = values.getAsDouble("amount");
+		trans.amount = new BigDecimal(values.getAsString("amount"));
 		if (trans.amount < 0.0)
 		{
 			trans.amount = -trans.amount;
