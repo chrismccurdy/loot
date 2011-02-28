@@ -54,15 +54,19 @@ public class NoDecimalCurrencyWatcher extends CurrencyWatcher
 			mOld = str;
 			return;
 		}
-		
+
 		final ArrayList<Character> accepted = new ArrayList<Character>(Arrays.asList(mAccepted));
 		int pos = 0;
+		str = str.replace(String.valueOf(mSeparator), ""); // remove the separator for now
+
+        // Log.i(TAG + ".afterTextChanged()", "Attempting input: " + str);
+		
 		for (char c : str.toCharArray())
 		{
 			if (!accepted.contains(c))
 			{
-				s.replace(pos, pos + 1, "", 0, 0);
 				Log.i(TAG + ".afterTextChanged()", "Input rejected because of invalid character: " + c);
+				s.replace(pos, pos + 1, "", 0, 0);
 				return;
 			}
 			++pos;
@@ -74,7 +78,6 @@ public class NoDecimalCurrencyWatcher extends CurrencyWatcher
 			++index;
 		}
 		str = str.substring(index);
-		str = str.replace(String.valueOf(mSeparator), ""); // remove the separator for now
 		final int min_length = mFractionDigits + 1; // number of fractional digits + one digit to the left of separator
 		while (str.length() < min_length)
 		{
@@ -87,8 +90,11 @@ public class NoDecimalCurrencyWatcher extends CurrencyWatcher
 			.append(str.substring(str.length() - 2));
 		
 		str = sb.toString();
-		mChanged = true;
-		s.replace(0, s.length(), str);
+        if (!str.equals(mOld))
+        {
+		    mChanged = true;
+		    s.replace(0, s.length(), str);
+        }
 	}
 
 	@Override
