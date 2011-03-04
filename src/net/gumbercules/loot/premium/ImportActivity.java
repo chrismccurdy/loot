@@ -747,7 +747,11 @@ public class ImportActivity extends Activity
 			}
 			else if (column.equals("%c"))
 			{
-				cv.put("check_num", new Integer(val));
+				// check number may or may not be present
+				if (val != null && !val.trim().equals(""))
+				{
+					cv.put("check_num", new Integer(val));
+				}
 			}
 			else if (column.equals("%p"))
 			{

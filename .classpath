@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="javacsv.jar">
+	<classpathentry kind="lib" path="C:/Users/Christopher McCurdy/Documents/eclipse/loot/libs/javacsv.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/C:/javacsv/doc/"/>
 		</attributes>
