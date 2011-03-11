@@ -122,6 +122,7 @@
 &#8226; Added option to remove transaction type prefixes\n
 &#8226; Fixed a bug which caused crashing when charting based on words with apostrophes in them\n
 &#8226; Added an option to automatically insert decimals in currency text edits\n
+&#8226; Fixed a bug which prevented importing certain transactions\n
 	    </item>
         <item>\n
 &#8226; Fixed layout issue for Simply Stunning ROM\n

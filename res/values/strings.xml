@@ -52,15 +52,6 @@
 	</string>
 	<string name="restoring">Restoring the database. This may take a while.
 	</string>
-	<string name="new_version">You have upgraded to a new version of loot. If you
-		encounter any bugs, please email me at christopher.mccurdy@gmail.com
-		with what you were doing at the time. Also, please feel free to donate
-		to me through PayPal. Would you like to donate now?</string>
-	<string name="donate_location">You can always donate at a later time by going to
-		\&quot;Settings\&quot;, choosing \&quot;About\&quot;, and clicking on
-		the donation button.</string>
-	<string name="donate_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=1368357
-	</string>
 	<string name="trans_amt">Amount</string>
 	<string name="trans_party">Party</string>
 	<string name="trans_date">Date</string>
@@ -100,12 +91,12 @@
 	<string name="no_market">Market is not available</string>
 	<string name="about">About Loot</string>
 	<string name="created_by">Created by Christopher McCurdy</string>
-	<string name="donate">Please feel free to donate to support the continued
-		development of free software. I would like to thank everyone who has
-		donated so far for your support.</string>
 	<string name="comments">If you have any comments, questions, suggestions,
 		or have discovered any bugs, please feel free to let me know at
 		christopher.mccurdy@gmail.com.</string>
+	<string name="license">Loot is licensed under the GNU General Public License
+	    version 3. The source code and licensing details are available at
+	    https://github.com/chrismccurdy/loot</string>
 	<string name="javacsv">Portions of loot may be using JavaCSV. JavaCSV is
 		provided for free under the LGPL license. The source code and
 		licensing details are available at
@@ -113,8 +104,6 @@
 	<string name="flot">Portions of loot may be using flot, which is
 		provided for free under the MIT license. The source code and licensing
 		details are available at http://code.google.com/p/flot/</string>
-	<string name="paypal">Donate @ Paypal</string>
-	<string name="checkout">Donate @ Google Checkout</string>
 	<string name="no_external_storage">External storage is not available. This operation
 		will not function properly.</string>
 	<string name="low_external_memory">There is less than 1% total available memory on the
