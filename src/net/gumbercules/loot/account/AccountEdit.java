@@ -22,6 +22,7 @@ import java.text.NumberFormat;
 import java.util.Currency;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.BigMoney;
 import net.gumbercules.loot.backend.CurrencyWatcher;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.NoDecimalCurrencyWatcher;
@@ -242,12 +243,12 @@ public class AccountEdit extends Activity
 			
 			if (sep != '.')
 				balText = balText.replaceAll(String.valueOf(sep), ".");
-			acct.initialBalance = new BigDecimal(balText);
+			acct.initialBalance = BigMoney.money(balText);
 		}
 		catch (NumberFormatException e)
 		{
 			// if there is no data (or bad data) in the field, set it to zero
-			acct.initialBalance = new BigDecimal(0.0);
+			acct.initialBalance = BigDecimal.ZERO;
 		}
 		
 		try
@@ -261,11 +262,11 @@ public class AccountEdit extends Activity
 		
 		try
 		{
-			acct.creditLimit = new BigDecimal(creditLimitText);
+			acct.creditLimit = BigMoney.money(creditLimitText);
 		}
 		catch (NumberFormatException e)
 		{
-			acct.creditLimit = new BigDecimal(0.0);
+			acct.creditLimit = BigDecimal.ZERO;
 		}
 
 		acct.credit = credit;

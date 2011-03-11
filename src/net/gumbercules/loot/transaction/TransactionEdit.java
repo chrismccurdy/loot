@@ -29,6 +29,7 @@ import java.util.Date;
 
 import net.gumbercules.loot.R;
 import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.BigMoney;
 import net.gumbercules.loot.backend.CurrencyWatcher;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.backend.Logger;
@@ -973,11 +974,11 @@ public class TransactionEdit extends Activity
 			String str = amountEdit.getText().toString();
 			if (sep != '.')
 				str = str.replaceAll(String.valueOf(sep), ".");
-			trans.amount = new BigDecimal(str);
+			trans.amount = BigMoney.money(str);
 		}
 		catch (NumberFormatException e)
 		{
-			trans.amount = new BigDecimal(0.0);
+			trans.amount = BigDecimal.ZERO;
 		}
 
 		// get the type of transaction

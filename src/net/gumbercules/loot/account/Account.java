@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 
+import net.gumbercules.loot.backend.BigMoney;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.transaction.Transaction;
 import android.database.Cursor;
@@ -244,7 +245,7 @@ public class Account
 		BigDecimal bal = null;
 		if (cur.moveToFirst())
 		{
-			bal = new BigDecimal(cur.getString(0));
+			bal = BigMoney.money(cur.getString(0));
 		}
 		cur.close();
 		
@@ -254,7 +255,7 @@ public class Account
 		
 		if (cur.moveToFirst())
 		{
-			bal = bal.add(new BigDecimal(cur.getString(0)));
+			bal = bal.add(BigMoney.money(cur.getString(0)));
 		}
 		else
 		{
@@ -274,7 +275,7 @@ public class Account
 		BigDecimal bal = null;
 		if (cur.moveToFirst())
 		{
-			bal = new BigDecimal(cur.getString(0));
+			bal = BigMoney.money(cur.getString(0));
 		}
 		cur.close();
 		
@@ -380,12 +381,12 @@ public class Account
 		
 		this.id = cur.getInt(0);
 		this.name = cur.getString(1);
-		this.initialBalance = new BigDecimal(cur.getString(2));
+		this.initialBalance = BigMoney.money(cur.getString(2));
 		this.priority = cur.getInt(3);
 		this.primary = Database.getBoolean(cur.getInt(4));
 		this.balanceDisplay = cur.getInt(5);
 		this.credit = Database.getBoolean(cur.getInt(6));
-		this.creditLimit = new BigDecimal(cur.getString(7));
+		this.creditLimit = BigMoney.money(cur.getString(7));
 		cur.close();
 		
 		return true;
@@ -453,12 +454,12 @@ public class Account
 			accounts[i] = new Account();
 			accounts[i].id = cur.getInt(0);
 			accounts[i].name = cur.getString(1);
-			accounts[i].initialBalance = new BigDecimal(cur.getString(2));
+			accounts[i].initialBalance = BigMoney.money(cur.getString(2));
 			accounts[i].priority = cur.getInt(3);
 			accounts[i].primary = Database.getBoolean(cur.getInt(4));
 			accounts[i].balanceDisplay = cur.getInt(5);
 			accounts[i].credit = Database.getBoolean(cur.getInt(6));
-			accounts[i++].creditLimit = new BigDecimal(cur.getString(7));
+			accounts[i++].creditLimit = BigMoney.money(cur.getString(7));
 		} while (cur.moveToNext());
 		
 		cur.close();
@@ -598,12 +599,12 @@ public class Account
 		Account acct = new Account();
 		acct.id = cur.getInt(0);
 		acct.name = cur.getString(1);
-		acct.initialBalance = new BigDecimal(cur.getString(2));
+		acct.initialBalance = BigMoney.money(cur.getString(2));
 		acct.priority = cur.getInt(3);
 		acct.primary = Database.getBoolean(cur.getInt(4));
 		acct.balanceDisplay = cur.getInt(5);
 		acct.credit = Database.getBoolean(cur.getInt(6));
-		acct.creditLimit = new BigDecimal(cur.getString(7));
+		acct.creditLimit = BigMoney.money(cur.getString(7));
 		cur.close();
 		
 		return acct;
@@ -773,7 +774,7 @@ public class Account
 		}
 		
 		// update the initial account balance to reflect these changes
-		this.initialBalance = this.initialBalance.add(new BigDecimal(cur.getString(0)));
+		this.initialBalance = this.initialBalance.add(BigMoney.money(cur.getString(0)));
 		cur.close();
 		
 		lootDB.beginTransaction();
@@ -879,7 +880,7 @@ public class Account
 			return null;
 		}
 		
-		this.initialBalance = this.initialBalance.subtract(new BigDecimal(cur.getString(0)));
+		this.initialBalance = this.initialBalance.subtract(BigMoney.money(cur.getString(0)));
 		cur.close();
 		
 		lootDB.beginTransaction();

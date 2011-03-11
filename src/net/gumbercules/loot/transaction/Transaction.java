@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.BigMoney;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.repeat.RepeatSchedule;
 import android.database.Cursor;
@@ -67,7 +68,7 @@ public class Transaction
 		this.budget = false;
 		this.date = null;
 		this.type = WITHDRAW;
-		this.amount = new BigDecimal(0.00);
+		this.amount = BigDecimal.ZERO;
 		this.check_num = -1;
 		this.party = null;
 		this.tags = new ArrayList<String>();
@@ -717,7 +718,7 @@ public class Transaction
 			return null;
 		}
 		
-		BigDecimal amount = new BigDecimal(cur.getString(3));
+		BigDecimal amount = BigMoney.money(cur.getString(3));
 		int check = cur.getInt(4);
 		int type;
 		boolean posted = Database.getBoolean(cur.getInt(0));
@@ -730,7 +731,7 @@ public class Transaction
 		}
 		else
 		{
-			if (amount.compareTo(new BigDecimal(0.0)) >= 0) // amount >= 0
+			if (amount.compareTo(BigDecimal.ZERO) >= 0) // amount >= 0
 				type = Transaction.DEPOSIT;
 			else
 			{
@@ -752,7 +753,7 @@ public class Transaction
 	
 	public void fromCursor(Cursor cur)
 	{
-		BigDecimal amount = new BigDecimal(cur.getString(3));
+		BigDecimal amount = BigMoney.money(cur.getString(3));
 		int check = cur.getInt(4);
 		int type;
 		this.posted = Database.getBoolean(cur.getInt(0));
@@ -765,7 +766,7 @@ public class Transaction
 		}
 		else
 		{
-			if (amount.compareTo(new BigDecimal(0.0)) >= 0) // amount >= 0
+			if (amount.compareTo(BigDecimal.ZERO) >= 0) // amount >= 0
 				type = Transaction.DEPOSIT;
 			else
 			{

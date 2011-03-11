@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.BigMoney;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -155,7 +156,7 @@ public class ExportThread extends Thread
 				trans.put("id", id);
 				trans.put("date", cur.getLong(1));
 				trans.put("party", cur.getString(2));
-				trans.put("amount", new BigDecimal(cur.getString(3)));
+				trans.put("amount", BigMoney.money(cur.getString(3)));
 				trans.put("check_num", cur.getInt(4));
 				trans.put("tags", "");
 			}
@@ -301,7 +302,7 @@ public class ExportThread extends Thread
 		out += "P" + trans.get("party") + "\n";
 		
 		BigDecimal amount = (BigDecimal)trans.get("amount");
-		String format_str = (amount.compareTo(new BigDecimal(0.0)) == 1 ? "%010.2f" : "%011.2f");
+		String format_str = (amount.compareTo(BigDecimal.ZERO) == 1 ? "%010.2f" : "%011.2f");
 		
 		String amt = String.format(format_str, amount);
 		out += "T" + amt + "\n";
@@ -399,7 +400,7 @@ public class ExportThread extends Thread
 		else if (column.equals("%y"))
 		{
 			BigDecimal amt = (BigDecimal)trans.get("amount");
-			if (amt.compareTo(new BigDecimal(0.0)) == -1) // amt < 0.0
+			if (amt.compareTo(BigDecimal.ZERO) == -1) // amt < 0.0
 			{
 				value = mDebitKeyword;
 			}

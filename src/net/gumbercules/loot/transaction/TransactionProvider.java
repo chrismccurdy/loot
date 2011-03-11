@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import net.gumbercules.loot.backend.BigMoney;
 import net.gumbercules.loot.backend.Database;
 
 import android.content.ContentProvider;
@@ -133,8 +134,8 @@ public class TransactionProvider extends ContentProvider
 			trans.check_num = -1;
 		}
 		
-		trans.amount = new BigDecimal(values.getAsString("amount"));
-		if (trans.amount.compareTo(new BigDecimal(0.0)) == 1) // amount > 0.0
+		trans.amount = BigMoney.money(values.getAsString("amount"));
+		if (trans.amount.compareTo(BigDecimal.ZERO) == 1) // amount > 0.0
 		{
 			trans.amount = trans.amount.negate();
 			if (trans.check_num > 0)

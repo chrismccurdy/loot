@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.BigMoney;
 import net.gumbercules.loot.backend.MemoryStatus;
 
 import android.app.Activity;
@@ -261,11 +262,11 @@ public class ChartActivity extends Activity
 				continue;
 			}
 			
-			balances[i] = new BigDecimal(0.0);
+			balances[i] = BigDecimal.ZERO;
 			
 			do
 			{
-				balances[i] = balances[i].add(new BigDecimal(cur.getString(1)));
+				balances[i] = balances[i].add(BigMoney.money(cur.getString(1)));
 			} while (cur.moveToNext());
 			cur.close();
 			
@@ -281,7 +282,7 @@ public class ChartActivity extends Activity
 			
 			do
 			{
-				balances[i] = balances[i].add(new BigDecimal(cur.getString(0)));
+				balances[i] = balances[i].add(BigMoney.money(cur.getString(0)));
 			} while (cur.moveToNext());
 			cur.close();
 		}
@@ -300,8 +301,8 @@ public class ChartActivity extends Activity
 		int account_data_set, selection_data_set, count, id, prev_id;
 		BigDecimal total, amount;
 		int total_count = 0;
-		BigDecimal total_amount = new BigDecimal(0.0);
-		BigDecimal total_balance = new BigDecimal(0.0);
+		BigDecimal total_amount = BigDecimal.ZERO;
+		BigDecimal total_balance = BigDecimal.ZERO;
 		BigDecimal[] running_balance = null;
 		boolean negative = true;
 		
@@ -325,15 +326,15 @@ public class ChartActivity extends Activity
 					count = 0;
 					id = 0;
 					prev_id = 0;
-					total = new BigDecimal(0.0);
-					amount = new BigDecimal(0.0);
+					total = BigDecimal.ZERO;
+					amount = BigDecimal.ZERO;
 
 					if (cur.moveToFirst())
 					{
 						do
 						{
 							id = cur.getInt(0);
-							amount = new BigDecimal(cur.getString(1));
+							amount = BigMoney.money(cur.getString(1));
 							
 							if (id != prev_id)
 							{
@@ -341,7 +342,7 @@ public class ChartActivity extends Activity
 								total = total.add(amount);
 								running_balance[account_data_set] = running_balance[account_data_set].add(amount);
 								
-								if (amount.compareTo(new BigDecimal(0.0)) == 1) // amount > 0.0
+								if (amount.compareTo(BigDecimal.ZERO) == 1) // amount > 0.0
 								{
 									negative = false;
 								}

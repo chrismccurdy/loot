@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 import net.gumbercules.loot.R;
+import net.gumbercules.loot.backend.BigMoney;
 import net.gumbercules.loot.backend.MemoryStatus;
 
 import android.app.Activity;
@@ -463,7 +464,7 @@ public class ImportActivity extends Activity
 				{
 					try
 					{
-						cv.put("amount", new BigDecimal(line.replace(",", "")).toString());
+						cv.put("amount", BigMoney.money(line.replace(",", "")).toString());
 					}
 					catch (NumberFormatException e)
 					{
@@ -732,7 +733,7 @@ public class ImportActivity extends Activity
 				
 				if (isDebit)
 				{
-					BigDecimal amount = new BigDecimal(cv.getAsString("amount"));
+					BigDecimal amount = BigMoney.money(cv.getAsString("amount"));
 					cv.remove("amount");
 					cv.put("amount", amount.negate().toString());
 				}

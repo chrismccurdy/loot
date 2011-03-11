@@ -174,7 +174,7 @@ public class AccountAdapter extends ArrayAdapter<Account>
 				}
 				else
 				{
-					if (bal.compareTo(new BigDecimal(0.0)) == -1) // bal < 0.0
+					if (bal.compareTo(BigDecimal.ZERO) == -1) // bal < 0.0
 					{
 						textColor = red;
 					}

@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import net.gumbercules.loot.account.Account;
+import net.gumbercules.loot.backend.BigMoney;
 import net.gumbercules.loot.backend.Database;
 import net.gumbercules.loot.transaction.Transaction;
 import android.content.ContentValues;
@@ -497,7 +498,7 @@ implements Cloneable
 		if (cur.moveToFirst())
 		{
 			int type, check_num = cur.getInt(4);
-			BigDecimal amount = new BigDecimal(cur.getString(3));
+			BigDecimal amount = BigMoney.money(cur.getString(3));
 			boolean budget = Database.getBoolean(cur.getInt(5));
 			Date date = new Date(cur.getLong(1));
 			
@@ -506,7 +507,7 @@ implements Cloneable
 				amount = amount.negate();
 				type = Transaction.CHECK;
 			}
-			else if (amount.compareTo(new BigDecimal(0.0)) == -1) // amount < 0.0
+			else if (amount.compareTo(BigDecimal.ZERO) == -1) // amount < 0.0
 			{
 				amount = amount.negate();
 				type = Transaction.WITHDRAW;
