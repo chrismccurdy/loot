@@ -3,7 +3,8 @@
 	package="net.gumbercules.loot" android:installLocation="auto"
 	android:versionCode="53" android:versionName="3.0.0_alpha1">
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
-	   android:backupAgent="net.gumbercules.loot.premium.DbBackupAgent">
+		android:backupAgent="net.gumbercules.loot.premium.DbBackupAgent"
+		android:name="LootApplication">
 		<activity android:label="@string/app_name"
 			android:launchMode="singleTask" android:clearTaskOnLaunch="true"
 			android:name="net.gumbercules.loot.account.AccountChooser" />
@@ -28,8 +29,6 @@
 				<data android:scheme="widget" android:host="net.gumbercules.loot" />
 			</intent-filter>
 		</activity>
-		
-		
 		<activity android:name="net.gumbercules.loot.AboutActivity">
 			<intent-filter>
 				<action android:name="net.gumbercules.loot.intent.action.ABOUT" />
@@ -40,30 +39,30 @@
 		<activity android:name="net.gumbercules.loot.repeat.RepeatManagerActivity" />
 		<activity android:name="net.gumbercules.loot.premium.ViewImage"
 			android:theme="@android:style/Theme.Dialog" />
-        <activity android:name="net.gumbercules.loot.premium.export.ExportActivity"
-            android:exported="true" android:windowSoftInputMode="stateAlwaysHidden"
-            android:excludeFromRecents="true">
-            <intent-filter android:label="net.gumbercules.loot.premium.EXPORT">
-                <action android:name="net.gumbercules.loot.premium.EXPORT" />
-            </intent-filter>
-        </activity>
-        <activity android:name="net.gumbercules.loot.premium.ImportActivity"
-            android:exported="true" android:windowSoftInputMode="stateAlwaysHidden"
-            android:excludeFromRecents="true">
-            <intent-filter android:label="net.gumbercules.loot.premium.IMPORT">
-                <action android:name="net.gumbercules.loot.premium.IMPORT" />
-            </intent-filter>
-        </activity>
-        <activity android:excludeFromRecents="true" android:exported="true"
-            android:name="net.gumbercules.loot.premium.chart.ChartMenuActivity">
-            <intent-filter android:label="net.gumbercules.loot.premium.CHART">
-                <action android:name="net.gumbercules.loot.premium.CHART" />
-            </intent-filter>
-        </activity>
-        <activity android:excludeFromRecents="true"
-            android:name="net.gumbercules.loot.premium.chart.ChartActivity"
-            android:screenOrientation="landscape" />
-        <provider android:authorities="net.gumbercules.loot.transactionprovider"
+		<activity android:name="net.gumbercules.loot.premium.export.ExportActivity"
+			android:exported="true" android:windowSoftInputMode="stateAlwaysHidden"
+			android:excludeFromRecents="true">
+			<intent-filter android:label="net.gumbercules.loot.premium.EXPORT">
+				<action android:name="net.gumbercules.loot.premium.EXPORT" />
+			</intent-filter>
+		</activity>
+		<activity android:name="net.gumbercules.loot.premium.ImportActivity"
+			android:exported="true" android:windowSoftInputMode="stateAlwaysHidden"
+			android:excludeFromRecents="true">
+			<intent-filter android:label="net.gumbercules.loot.premium.IMPORT">
+				<action android:name="net.gumbercules.loot.premium.IMPORT" />
+			</intent-filter>
+		</activity>
+		<activity android:excludeFromRecents="true" android:exported="true"
+			android:name="net.gumbercules.loot.premium.chart.ChartMenuActivity">
+			<intent-filter android:label="net.gumbercules.loot.premium.CHART">
+				<action android:name="net.gumbercules.loot.premium.CHART" />
+			</intent-filter>
+		</activity>
+		<activity android:excludeFromRecents="true"
+			android:name="net.gumbercules.loot.premium.chart.ChartActivity"
+			android:screenOrientation="landscape" />
+		<provider android:authorities="net.gumbercules.loot.transactionprovider"
 			android:name="net.gumbercules.loot.transaction.TransactionProvider" />
 		<provider android:name="net.gumbercules.loot.account.AccountProvider"
 			android:authorities="net.gumbercules.loot.accountprovider" />
@@ -81,6 +80,7 @@
 		</service>
 	</application>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="8" />
 	<uses-feature android:name="android.hardware.touchscreen" />
 	<supports-screens />
