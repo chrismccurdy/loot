@@ -3,7 +3,7 @@
 	package="net.gumbercules.loot" android:installLocation="auto"
 	android:versionCode="53" android:versionName="3.0.0_alpha1">
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
-	   android:backupAgent="net.gumbercules.loot.premium.DbBackupAgent">
+	   android:backupAgent="net.gumbercules.loot.premium.backup.DbBackupAgent">
 		<activity android:label="@string/app_name"
 			android:launchMode="singleTask" android:clearTaskOnLaunch="true"
 			android:name="net.gumbercules.loot.account.AccountChooser" />
