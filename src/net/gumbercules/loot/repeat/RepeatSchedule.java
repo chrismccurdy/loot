@@ -587,6 +587,7 @@ implements Cloneable
 		return getIds("due <= ?", wArgs);
 	}
 	
+	@SuppressWarnings("unused")
 	public static int[] processDueRepetitions(Date date)
 	{
 		Calendar cal = Calendar.getInstance();

@@ -63,9 +63,12 @@ public class DateButton
 			// set the date to today if there's a parsing error
 			date = new Date();
 		}
-		date.setHours(0);
-		date.setMinutes(0);
-		date.setSeconds(0);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		date = cal.getTime();
 		
 		return date;
 	}

@@ -357,9 +357,12 @@ public class RepeatActivity extends TabActivity
 		try
 		{
 			date = df.parse(mOldDate);
-			date.setHours(0);
-			date.setMinutes(0);
-			date.setSeconds(0);
+    		Calendar cal = Calendar.getInstance();
+    		cal.setTime(date);
+    		cal.set(Calendar.HOUR, 0);
+    		cal.set(Calendar.MINUTE, 0);
+    		cal.set(Calendar.SECOND, 0);
+    		date = cal.getTime();
 		}
 		catch (Exception e)
 		{

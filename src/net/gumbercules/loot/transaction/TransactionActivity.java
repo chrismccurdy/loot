@@ -371,10 +371,11 @@ public class TransactionActivity extends ListActivity
     	
     	if (scroll_pos == -1 && new_account)
     	{
-    		Date d = new Date();
-    		d.setHours(0);
-    		d.setMinutes(0);
-    		d.setSeconds(0);
+    		Calendar cal = Calendar.getInstance();
+    		cal.set(Calendar.HOUR, 0);
+    		cal.set(Calendar.MINUTE, 0);
+    		cal.set(Calendar.SECOND, 0);
+    		Date d = cal.getTime();
     		scroll_pos = mTa.findItemByDate(d);
     	}
     	

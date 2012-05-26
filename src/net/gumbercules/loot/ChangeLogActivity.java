@@ -18,6 +18,7 @@ package net.gumbercules.loot;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -42,12 +43,13 @@ public class ChangeLogActivity extends ListActivity
 	{
 		super.onCreate(savedInstanceState);
 		
-		Bitmap bmp = BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_menu_more);
+		final Resources res = getResources();
+		Bitmap bmp = BitmapFactory.decodeResource(res, android.R.drawable.ic_menu_more);
 		Matrix mtx = new Matrix();
 		mtx.postRotate(-90.0f);
 		Bitmap new_bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), mtx, true);
-		mCollapsed = new BitmapDrawable(new_bmp);
-		mExpanded = new BitmapDrawable(bmp);
+		mCollapsed = new BitmapDrawable(res, new_bmp);
+		mExpanded = new BitmapDrawable(res, bmp);
 		
 		setTitle(R.string.changelog);
 		setListAdapter(new ChangeLogAdapter(this));
@@ -141,13 +143,13 @@ public class ChangeLogActivity extends ListActivity
             header.addView(mImage, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
             		LayoutParams.WRAP_CONTENT));
             
-            addView(header, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+            addView(header, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
             		LayoutParams.WRAP_CONTENT));
 			
 			mLog = new TextView(context);
 			mLog.setText(log);
 			mLog.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-            addView(mLog, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 
+            addView(mLog, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 
             		LayoutParams.WRAP_CONTENT));
             
             setExpanded(expanded);

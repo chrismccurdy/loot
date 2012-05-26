@@ -77,7 +77,7 @@ public class ViewImage extends Activity implements OnGestureListener
 		}
 		
 		setContentView(R.layout.animated_image_view);
-		mGesture = new GestureDetector(this);
+		mGesture = new GestureDetector(this, this);
 		mSwitcher = (ImageSwitcher)findViewById(R.id.ImageSwitcher);
 		mActive = (ImageView)findViewById(R.id.FirstImage);
 		

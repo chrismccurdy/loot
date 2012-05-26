@@ -109,7 +109,7 @@ public class ChartActivity extends Activity
 		
 		FrameLayout cv = (FrameLayout)getWindow().getDecorView().findViewById(android.R.id.content);
 		final View zoom = wv.getZoomControls();
-		cv.addView(zoom, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+		cv.addView(zoom, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM));
 		zoom.setVisibility(View.GONE);
 
